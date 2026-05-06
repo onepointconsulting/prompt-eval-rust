@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "question": "What is the capital of Afghanistan?",
+    "answer": "Kabul is the capital and largest city of Afghanistan."
+  },
+  {
+    "id": 2,
+    "question": "In one sentence, what does HTTP stand for?",
+    "answer": "HTTP stands for Hypertext Transfer Protocol, the application-layer protocol used for fetching web pages and APIs on the Internet."
+  },
+  {
+    "id": 3,
+    "question": "What is 15% of 80?",
+    "answer": "15% of 80 is 12, because 0.15 × 80 = 12."
+  },
+  {
+    "id": 4,
+    "question": "What is ownership in Rust?",
+    "answer": "Ownership is Rust’s compile-time rule that each value has a single owner, values are freed when their owner goes out of scope, and ownership can move or be temporarily borrowed (& and &mut) without violating aliasing XOR mutability rules."
+  },
+  {
+    "id": 5,
+    "question": "Name two greenhouse gases.",
+    "answer": "Carbon dioxide (CO₂) and methane (CH₄) are two greenhouse gases that trap heat in Earth’s atmosphere."
+  }
+]

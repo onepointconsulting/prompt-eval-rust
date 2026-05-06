@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "question": "What is the capital of Afghanistan?"
+  },
+  {
+    "id": 2,
+    "question": "In one sentence, what does HTTP stand for?"
+  },
+  {
+    "id": 3,
+    "question": "What is 15% of 80?"
+  },
+  {
+    "id": 4,
+    "question": "What is ownership in Rust?"
+  },
+  {
+    "id": 5,
+    "question": "Name two greenhouse gases."
+  }
+]
