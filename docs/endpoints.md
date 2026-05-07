@@ -1,26 +1,32 @@
-# API Endpoints Needed for Full UI
+# API Endpoints
 
-Total endpoints: **12**
+Total endpoints: **18**
 
 ## Evaluations (3)
 
 - `POST /api/evaluate` - Run a new evaluation
-- `GET /api/evaluations` - List all evaluations
-- `GET /api/evaluations/:id` - Get specific evaluation details
+- `GET /api/evaluations` - List evaluations
+- `GET /api/evaluations/:id` - Get evaluation details
 
-## Datasets (4)
+## Datasets (7)
 
-- `GET /api/datasets` - List all datasets
-- `POST /api/datasets` - Upload a new dataset
+- `GET /api/datasets` - List datasets
+- `POST /api/datasets` - Create dataset (supports `question_count` or `questions[]`)
+- `POST /api/datasets/upload` - Upload dataset with questions
 - `GET /api/datasets/:id` - Get dataset details
-- `DELETE /api/datasets/:id` - Delete a dataset
+- `DELETE /api/datasets/:id` - Delete dataset
+- `GET /api/datasets/:id/questions` - List dataset questions
+- `POST /api/datasets/:id/questions` - Add a question to dataset
 
-## Prompts (4)
+## Prompts & Generation (7)
 
-- `GET /api/prompts` - List all prompts
-- `POST /api/prompts` - Create a new prompt
-- `PUT /api/prompts/:id` - Update a prompt
-- `DELETE /api/prompts/:id` - Delete a prompt
+- `GET /api/prompts` - List prompts
+- `POST /api/prompts` - Create prompt
+- `POST /api/prompts/generate` - Generate prompt template from description
+- `GET /api/prompts/:id` - Get prompt details
+- `PUT /api/prompts/:id` - Update prompt
+- `DELETE /api/prompts/:id` - Delete prompt
+- `POST /api/questions/generate` - Generate test cases for a prompt
 
 ## Stats (1)
 
