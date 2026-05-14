@@ -1,11 +1,14 @@
 import type {
   DashboardStats,
   DatasetItem,
+  DatasetQuestion,
+  DimensionScore,
   EvalSummary,
   GeneratedPrompt,
   GeneratedTestCase,
   PromptTemplate,
   ResultsDetail,
+  RubricCriterion,
   TrendPoint,
 } from "@/lib/types";
 
@@ -36,12 +39,21 @@ async function requestWithBody<T>(
   return res.json() as Promise<T>;
 }
 
+// ── Internal API shapes (snake_case from Rust backend) ─────────────────────────
+
 type ApiStats = {
   total_evaluations: number;
   active_prompts: number;
   average_score: number;
   success_rate: number;
 };
+
+type ApiRubricCriterion = {
+  name: string;
+  description: string;
+  weight: number;
+};
+
 type ApiPrompt = {
   id: string;
   name: string;
@@ -52,7 +64,11 @@ type ApiPrompt = {
   runs: number;
   updated_at: string;
   average_score?: number | null;
+  domain?: string | null;
+  rubric?: ApiRubricCriterion[] | null;
+  expected_output_format?: string | null;
 };
+
 type ApiDataset = {
   id: string;
   name: string;
@@ -60,7 +76,21 @@ type ApiDataset = {
   avg_score?: number | null;
   evaluations: number;
   last_used?: string | null;
+  created_at?: string | null;
 };
+
+type ApiQuestion = {
+  id: number;
+  dataset_id: string;
+  question_text: string;
+  expected_answer?: string | null;
+  question_order: number;
+  variable_values?: Record<string, unknown> | null;
+  tags?: string[] | null;
+  difficulty?: string | null;
+  case_type?: string | null;
+};
+
 type ApiDatasetWithQuestions = {
   dataset: ApiDataset;
   questions: Array<{
@@ -71,15 +101,25 @@ type ApiDatasetWithQuestions = {
     question_order: number;
     variable_values?: Record<string, unknown> | null;
     tags?: string[] | null;
+    difficulty?: string | null;
+    case_type?: string | null;
   }>;
 };
+
+type ApiDimensionScore = {
+  score: number;
+  reasoning: string;
+};
+
 type ApiEvaluation = {
   id: string;
   average_score: number;
   dataset: string;
   prompts: string[];
   created_at: string;
+  per_prompt_scores?: Record<string, number> | null;
 };
+
 type ApiEvaluationWithDetails = ApiEvaluation & {
   total_items: number;
   scores: number[];
@@ -90,13 +130,68 @@ type ApiEvaluationWithDetails = ApiEvaluation & {
     score: number;
     strengths: string[] | null;
     weaknesses: string[] | null;
+    dimension_scores?: Record<string, ApiDimensionScore> | null;
+    judge_reasoning?: string | null;
+    reference_used?: boolean | null;
   }>;
 };
+
 type ApiGenerateTestCases = {
   test_cases: GeneratedTestCase[];
 };
 
+// ── Mapper helpers ─────────────────────────────────────────────────────────────
+
+function mapPrompt(p: ApiPrompt): PromptTemplate {
+  return {
+    id: p.id,
+    name: p.name,
+    content: p.template,
+    variables: p.variables ?? undefined,
+    isTemplated: p.is_templated ?? undefined,
+    status: p.status,
+    avgScore: p.average_score ?? undefined,
+    runs: p.runs,
+    updatedAt: p.updated_at,
+    domain: p.domain ?? undefined,
+    rubric: p.rubric
+      ? p.rubric.map((r): RubricCriterion => ({ name: r.name, description: r.description, weight: r.weight }))
+      : undefined,
+    expectedOutputFormat: p.expected_output_format ?? undefined,
+  };
+}
+
+function mapDataset(d: ApiDataset): DatasetItem {
+  return {
+    id: d.id,
+    name: d.name,
+    questions: d.question_count,
+    avgScore: d.avg_score ?? undefined,
+    evaluations: d.evaluations,
+    lastUsed: d.last_used ?? "never",
+    createdAt: d.created_at ?? undefined,
+  };
+}
+
+function mapQuestion(q: ApiQuestion): DatasetQuestion {
+  return {
+    id: q.id,
+    datasetId: q.dataset_id,
+    questionText: q.question_text,
+    expectedAnswer: q.expected_answer ?? undefined,
+    questionOrder: q.question_order,
+    variableValues: q.variable_values ?? undefined,
+    tags: q.tags ?? undefined,
+    difficulty: q.difficulty ?? undefined,
+    caseType: q.case_type ?? undefined,
+  };
+}
+
+// ── API client ─────────────────────────────────────────────────────────────────
+
 export const api = {
+  // ── Dashboard ──────────────────────────────────────────────────────────────
+
   getDashboardStats: async (): Promise<DashboardStats> => {
     const s = await request<ApiStats>("/stats");
     return {
@@ -106,6 +201,7 @@ export const api = {
       successRate: s.success_rate,
     };
   },
+
   getPerformanceTrend: async (): Promise<TrendPoint[]> => {
     const evals = await request<ApiEvaluation[]>("/evaluations");
     return evals.slice(0, 7).map((e, i) => ({
@@ -113,6 +209,7 @@ export const api = {
       score: e.average_score,
     }));
   },
+
   getRecentEvals: async (): Promise<EvalSummary[]> => {
     const evals = await request<ApiEvaluation[]>("/evaluations");
     return evals.map((e) => ({
@@ -124,47 +221,88 @@ export const api = {
       createdAt: e.created_at,
     }));
   },
+
+  // ── Prompts ────────────────────────────────────────────────────────────────
+
   getTopPrompts: async (): Promise<PromptTemplate[]> => {
     const prompts = await request<ApiPrompt[]>("/prompts");
-    return prompts
-      .map((p) => ({
-        id: p.id,
-        name: p.name,
-        content: p.template,
-        variables: p.variables ?? undefined,
-        isTemplated: p.is_templated ?? undefined,
-        status: p.status,
-        avgScore: p.average_score ?? undefined,
-        runs: p.runs,
-        updatedAt: p.updated_at,
-      }))
-      .sort((a, b) => (b.avgScore ?? 0) - (a.avgScore ?? 0));
+    return prompts.map(mapPrompt).sort((a, b) => (b.avgScore ?? 0) - (a.avgScore ?? 0));
   },
+
+  getPrompts: async (): Promise<PromptTemplate[]> => {
+    const prompts = await request<ApiPrompt[]>("/prompts");
+    return prompts.map(mapPrompt);
+  },
+
+  getPrompt: async (id: string): Promise<PromptTemplate> => {
+    const p = await request<ApiPrompt>(`/prompts/${encodeURIComponent(id)}`);
+    return mapPrompt(p);
+  },
+
+  createPrompt: async (payload: {
+    name: string;
+    template: string;
+    variables?: string[];
+    is_templated?: boolean;
+    status?: "active" | "draft" | "archived";
+    domain?: string;
+    rubric?: RubricCriterion[];
+    expected_output_format?: string;
+  }): Promise<PromptTemplate> => {
+    const p = await requestWithBody<ApiPrompt>("/prompts", "POST", payload);
+    return mapPrompt(p);
+  },
+
+  updatePrompt: async (
+    id: string,
+    payload: {
+      name?: string;
+      template?: string;
+      status?: string;
+      domain?: string;
+      rubric?: RubricCriterion[];
+      expected_output_format?: string;
+    }
+  ): Promise<PromptTemplate> => {
+    const p = await requestWithBody<ApiPrompt>(`/prompts/${id}`, "PUT", payload);
+    return mapPrompt(p);
+  },
+
+  deletePrompt: async (id: string): Promise<{ deleted: boolean; id: string }> =>
+    requestWithBody(`/prompts/${id}`, "DELETE"),
+
+  generatePrompt: async (description: string): Promise<GeneratedPrompt> => {
+    const raw = await requestWithBody<{
+      template: string;
+      variables: string[];
+      domain: string;
+      rubric: ApiRubricCriterion[];
+      expected_output_format: string;
+    }>("/prompts/generate", "POST", { description });
+    return {
+      template: raw.template,
+      variables: raw.variables,
+      domain: raw.domain,
+      rubric: raw.rubric.map((r) => ({ name: r.name, description: r.description, weight: r.weight })),
+      expectedOutputFormat: raw.expected_output_format,
+    };
+  },
+
+  // ── Datasets ───────────────────────────────────────────────────────────────
+
   getDatasets: async (): Promise<DatasetItem[]> => {
     const datasets = await request<ApiDataset[]>("/datasets");
-    return datasets.map((d) => ({
-      id: d.id,
-      name: d.name,
-      questions: d.question_count,
-      avgScore: d.avg_score ?? undefined,
-      evaluations: d.evaluations,
-      lastUsed: d.last_used ?? "never",
-    }));
+    return datasets.map(mapDataset);
   },
+
   createDataset: async (payload: {
     name: string;
     question_count: number;
   }): Promise<DatasetItem> => {
     const d = await requestWithBody<ApiDataset>("/datasets", "POST", payload);
-    return {
-      id: d.id,
-      name: d.name,
-      questions: d.question_count,
-      avgScore: d.avg_score ?? undefined,
-      evaluations: d.evaluations,
-      lastUsed: d.last_used ?? "never",
-    };
+    return mapDataset(d);
   },
+
   createDatasetFromQuestions: async (payload: {
     name: string;
     description?: string;
@@ -173,88 +311,35 @@ export const api = {
       answer?: string | null;
       variable_values?: Record<string, unknown>;
       tags?: string[];
+      difficulty?: string;
+      case_type?: string;
+      reasoning?: string;
     }>;
   }): Promise<DatasetItem> => {
     const res = await requestWithBody<ApiDatasetWithQuestions>("/datasets", "POST", payload);
-    const d = res.dataset;
-    return {
-      id: d.id,
-      name: d.name,
-      questions: d.question_count,
-      avgScore: d.avg_score ?? undefined,
-      evaluations: d.evaluations,
-      lastUsed: d.last_used ?? "never",
-    };
+    return mapDataset(res.dataset);
   },
+
+  getDataset: async (id: string): Promise<DatasetItem> => {
+    const d = await request<ApiDataset>(`/datasets/${encodeURIComponent(id)}`);
+    return mapDataset(d);
+  },
+
+  getDatasetQuestions: async (id: string): Promise<DatasetQuestion[]> => {
+    const qs = await request<ApiQuestion[]>(`/datasets/${encodeURIComponent(id)}/questions`);
+    return qs.map(mapQuestion);
+  },
+
+  updateDataset: async (id: string, payload: { name?: string }): Promise<DatasetItem> => {
+    const d = await requestWithBody<ApiDataset>(`/datasets/${encodeURIComponent(id)}`, "PUT", payload);
+    return mapDataset(d);
+  },
+
   deleteDataset: async (id: string): Promise<{ deleted: boolean; id: string }> =>
     requestWithBody(`/datasets/${id}`, "DELETE"),
-  getPrompts: async (): Promise<PromptTemplate[]> => {
-    const prompts = await request<ApiPrompt[]>("/prompts");
-    return prompts.map((p) => ({
-      id: p.id,
-      name: p.name,
-      content: p.template,
-      variables: p.variables ?? undefined,
-      isTemplated: p.is_templated ?? undefined,
-      status: p.status,
-      avgScore: p.average_score ?? undefined,
-      runs: p.runs,
-      updatedAt: p.updated_at,
-    }));
-  },
-  getPrompt: async (id: string): Promise<PromptTemplate> => {
-    const p = await request<ApiPrompt>(`/prompts/${encodeURIComponent(id)}`);
-    return {
-      id: p.id,
-      name: p.name,
-      content: p.template,
-      variables: p.variables ?? undefined,
-      isTemplated: p.is_templated ?? undefined,
-      status: p.status,
-      avgScore: p.average_score ?? undefined,
-      runs: p.runs,
-      updatedAt: p.updated_at,
-    };
-  },
-  createPrompt: async (payload: {
-    name: string;
-    template: string;
-    variables?: string[];
-    is_templated?: boolean;
-    status?: "active" | "draft" | "archived";
-  }): Promise<PromptTemplate> => {
-    const p = await requestWithBody<ApiPrompt>("/prompts", "POST", payload);
-    return {
-      id: p.id,
-      name: p.name,
-      content: p.template,
-      variables: p.variables ?? undefined,
-      isTemplated: p.is_templated ?? undefined,
-      status: p.status,
-      avgScore: p.average_score ?? undefined,
-      runs: p.runs,
-      updatedAt: p.updated_at,
-    };
-  },
-  updatePrompt: async (
-    id: string,
-    payload: { name?: string; template?: string; status?: string }
-  ): Promise<PromptTemplate> => {
-    const p = await requestWithBody<ApiPrompt>(`/prompts/${id}`, "PUT", payload);
-    return {
-      id: p.id,
-      name: p.name,
-      content: p.template,
-      variables: p.variables ?? undefined,
-      isTemplated: p.is_templated ?? undefined,
-      status: p.status,
-      avgScore: p.average_score ?? undefined,
-      runs: p.runs,
-      updatedAt: p.updated_at,
-    };
-  },
-  generatePrompt: async (description: string): Promise<GeneratedPrompt> =>
-    requestWithBody("/prompts/generate", "POST", { description }),
+
+  // ── Test cases ─────────────────────────────────────────────────────────────
+
   generateTestCases: async (payload: {
     prompt_id: string;
     count?: number;
@@ -262,113 +347,82 @@ export const api = {
     const res = await requestWithBody<ApiGenerateTestCases>("/questions/generate", "POST", payload);
     return res.test_cases;
   },
-  deletePrompt: async (id: string): Promise<{ deleted: boolean; id: string }> =>
-    requestWithBody(`/prompts/${id}`, "DELETE"),
-  getHistory: async () => api.getRecentEvals(),
-  getResultsList: async () => api.getRecentEvals(),
+
+  // ── Evaluations ────────────────────────────────────────────────────────────
+
   runEvaluation: async (payload: {
     dataset_id?: string;
-    /** @deprecated Prefer dataset_id — still accepted for older clients */
     dataset_path?: string;
     prompt_ids: string[];
   }): Promise<ApiEvaluation> => requestWithBody("/evaluate", "POST", payload),
+
+  getHistory: async () => api.getRecentEvals(),
+  getResultsList: async () => api.getRecentEvals(),
+
   getResultDetail: async (id: string): Promise<ResultsDetail> => {
     const e = await request<ApiEvaluationWithDetails>(`/evaluations/${id}`);
 
-    const parseClaudeJson = (raw: string) => {
-      try {
-        return JSON.parse(raw) as unknown;
-      } catch {
-        return null;
-      }
-    };
-    const extractAssistantText = (raw: string) => {
-      const j = parseClaudeJson(raw);
-      if (!j || typeof j !== "object") return raw;
-      const content = (j as { content?: unknown }).content;
-      if (!Array.isArray(content)) return raw;
-      const firstText = content.find(
-        (c): c is { type: "text"; text: string } =>
-          typeof c === "object" &&
-          c !== null &&
-          (c as { type?: unknown }).type === "text" &&
-          typeof (c as { text?: unknown }).text === "string"
-      );
-      const text = firstText?.text;
-      return typeof text === "string" && text.trim().length ? text : raw;
-    };
-    const extractMeta = (raw: string): Record<string, string | number | boolean | null> => {
-      const j = parseClaudeJson(raw);
-      if (!j || typeof j !== "object") return {};
-      const usage = (j as { usage?: unknown }).usage;
-      const usageObj = usage && typeof usage === "object" ? (usage as Record<string, unknown>) : {};
-      return {
-        model: ((j as { model?: unknown }).model as string | undefined) ?? null,
-        message_id: ((j as { id?: unknown }).id as string | undefined) ?? null,
-        stop_reason: ((j as { stop_reason?: unknown }).stop_reason as string | undefined) ?? null,
-        input_tokens: (usageObj.input_tokens as number | undefined) ?? null,
-        output_tokens: (usageObj.output_tokens as number | undefined) ?? null,
-        service_tier:
-          (usageObj.service_tier as string | undefined) ??
-          (((j as { service_tier?: unknown }).service_tier as string | undefined) ?? null),
-      };
-    };
-
-    // Compute per-prompt averages from details (better than duplicating overall average_score).
-    const byPrompt = new Map<string, { sum: number; n: number }>();
-    for (const d of e.details ?? []) {
-      const curr = byPrompt.get(d.prompt_id) ?? { sum: 0, n: 0 };
-      curr.sum += d.score ?? 0;
-      curr.n += 1;
-      byPrompt.set(d.prompt_id, curr);
-    }
-    const promptScores = e.prompts.map((pid) => {
-      const agg = byPrompt.get(pid);
-      const score = agg && agg.n > 0 ? agg.sum / agg.n : e.average_score;
+    // Use server-computed per_prompt_scores when available, fall back to computing from details.
+    const promptScores: { name: string; score: number }[] = e.prompts.map((pid) => {
+      const fromServer = e.per_prompt_scores?.[pid];
+      if (fromServer !== undefined) return { name: pid, score: fromServer };
+      const rows = (e.details ?? []).filter((d) => d.prompt_id === pid);
+      const score =
+        rows.length > 0 ? rows.reduce((s, d) => s + (d.score ?? 0), 0) / rows.length : e.average_score;
       return { name: pid, score };
     });
 
-    // Group details by question, and map into the UI's QuestionDetail structure.
+    // Group details by question text, then build QuestionComparison entries.
     const byQuestion = new Map<string, ApiEvaluationWithDetails["details"]>();
     for (const d of e.details ?? []) {
       const list = byQuestion.get(d.question) ?? [];
       list.push(d);
       byQuestion.set(d.question, list);
     }
+
     const questions = Array.from(byQuestion.entries()).map(([question, rows]) => {
       const sorted = [...rows].sort(
         (a, b) => e.prompts.indexOf(a.prompt_id) - e.prompts.indexOf(b.prompt_id)
       );
       const a = sorted[0];
       const b = sorted[1];
+
+      const mapDimScores = (
+        raw?: Record<string, ApiDimensionScore> | null
+      ): Record<string, DimensionScore> | undefined =>
+        raw
+          ? Object.fromEntries(
+              Object.entries(raw).map(([k, v]) => [k, { score: v.score, reasoning: v.reasoning }])
+            )
+          : undefined;
+
       return {
         question,
         promptA: {
           name: a?.prompt_id ?? "—",
           score: a?.score ?? 0,
-          response: extractAssistantText(a?.response ?? ""),
+          response: a?.response ?? "",
           strengths: a?.strengths ?? [],
           weaknesses: a?.weaknesses ?? [],
-          meta: extractMeta(a?.response ?? ""),
+          dimensionScores: mapDimScores(a?.dimension_scores),
+          judgeReasoning: a?.judge_reasoning ?? undefined,
+          referenceUsed: a?.reference_used ?? undefined,
         },
         promptB: b
           ? {
               name: b.prompt_id,
               score: b.score ?? 0,
-              response: extractAssistantText(b.response ?? ""),
+              response: b.response ?? "",
               strengths: b.strengths ?? [],
               weaknesses: b.weaknesses ?? [],
-              meta: extractMeta(b.response ?? ""),
+              dimensionScores: mapDimScores(b.dimension_scores),
+              judgeReasoning: b.judge_reasoning ?? undefined,
+              referenceUsed: b.reference_used ?? undefined,
             }
           : undefined,
       };
     });
 
-    return {
-      id: e.id,
-      dataset: e.dataset,
-      promptScores,
-      questions,
-    };
+    return { id: e.id, dataset: e.dataset, promptScores, questions };
   },
 };

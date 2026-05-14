@@ -1,6 +1,7 @@
+use crate::llm::anthropic_client::AnthropicClient;
 use crate::models::{
     CreatePromptRequest, DeleteResponse, GeneratePromptRequest, GeneratePromptResponse, Prompt,
-    UpdatePromptRequest,
+    RubricCriterion, UpdatePromptRequest,
 };
 use crate::utils::template_parser::extract_variables;
 use axum::{
@@ -9,18 +10,44 @@ use axum::{
     Json,
 };
 use chrono::Utc;
-use reqwest::Client;
-use serde_json::json;
+use serde_json::Value;
 use sqlx::PgPool;
-use std::env;
+
+/// Generic four-dimension rubric used when a prompt has no domain-specific rubric.
+/// Weights sum to 1.0, no domain assumptions.
+fn default_rubric() -> Vec<RubricCriterion> {
+    vec![
+        RubricCriterion {
+            name: "relevance".to_string(),
+            description: "Does the response directly address what was asked?".to_string(),
+            weight: 0.25,
+        },
+        RubricCriterion {
+            name: "accuracy".to_string(),
+            description: "Are the claims and information factually correct?".to_string(),
+            weight: 0.25,
+        },
+        RubricCriterion {
+            name: "completeness".to_string(),
+            description: "Does it cover all aspects of the question?".to_string(),
+            weight: 0.25,
+        },
+        RubricCriterion {
+            name: "clarity".to_string(),
+            description: "Is it well-structured and easy to understand?".to_string(),
+            weight: 0.25,
+        },
+    ]
+}
+
+// ── Read handlers (DB only) ───────────────────────────────────────────────────
 
 // GET /api/prompts
 pub async fn list(State(pool): State<PgPool>) -> Result<Json<Vec<Prompt>>, StatusCode> {
-    println!("📋 Listing prompts from database");
-
     let prompts = sqlx::query_as::<_, Prompt>(
         r#"
-        SELECT id, name, template, variables, is_templated, status, runs, updated_at, average_score
+        SELECT id, name, template, variables, is_templated, status, runs,
+               updated_at, average_score, domain, rubric, expected_output_format
         FROM prompts
         ORDER BY updated_at DESC
         "#,
@@ -28,7 +55,7 @@ pub async fn list(State(pool): State<PgPool>) -> Result<Json<Vec<Prompt>>, Statu
     .fetch_all(&pool)
     .await
     .map_err(|e| {
-        eprintln!("Database error: {}", e);
+        eprintln!("DB error listing prompts: {}", e);
         StatusCode::INTERNAL_SERVER_ERROR
     })?;
 
@@ -40,11 +67,10 @@ pub async fn get(
     State(pool): State<PgPool>,
     Path(id): Path<String>,
 ) -> Result<Json<Prompt>, StatusCode> {
-    println!("🔎 Fetching prompt {}", id);
-
     let prompt = sqlx::query_as::<_, Prompt>(
         r#"
-        SELECT id, name, template, variables, is_templated, status, runs, updated_at, average_score
+        SELECT id, name, template, variables, is_templated, status, runs,
+               updated_at, average_score, domain, rubric, expected_output_format
         FROM prompts WHERE id = $1
         "#,
     )
@@ -52,13 +78,15 @@ pub async fn get(
     .fetch_optional(&pool)
     .await
     .map_err(|e| {
-        eprintln!("Database error: {}", e);
+        eprintln!("DB error fetching prompt {}: {}", id, e);
         StatusCode::INTERNAL_SERVER_ERROR
     })?
     .ok_or(StatusCode::NOT_FOUND)?;
 
     Ok(Json(prompt))
 }
+
+// ── Write handlers ────────────────────────────────────────────────────────────
 
 // POST /api/prompts
 pub async fn create(
@@ -68,7 +96,7 @@ pub async fn create(
     println!("➕ Creating prompt: {}", payload.name);
 
     let id = format!("p_{}", Utc::now().timestamp());
-    let now = Utc::now(); // ← Use DateTime instead of String
+    let now = Utc::now();
     let variables = payload
         .variables
         .unwrap_or_else(|| extract_variables(&payload.template));
@@ -77,22 +105,28 @@ pub async fn create(
 
     let prompt = sqlx::query_as::<_, Prompt>(
         r#"
-        INSERT INTO prompts (id, name, template, variables, is_templated, status, runs, updated_at, average_score)
-        VALUES ($1, $2, $3, $4, $5, $6, 0, $7, NULL)
-        RETURNING id, name, template, variables, is_templated, status, runs, updated_at, average_score
+        INSERT INTO prompts
+            (id, name, template, variables, is_templated, status, runs,
+             updated_at, average_score, domain, rubric, expected_output_format)
+        VALUES ($1, $2, $3, $4, $5, $6, 0, $7, NULL, $8, $9, $10)
+        RETURNING id, name, template, variables, is_templated, status, runs,
+                  updated_at, average_score, domain, rubric, expected_output_format
         "#,
     )
-    .bind(id)
-    .bind(payload.name)
-    .bind(payload.template)
-    .bind(variables)
+    .bind(&id)
+    .bind(&payload.name)
+    .bind(&payload.template)
+    .bind(&variables)
     .bind(is_templated)
-    .bind(status)
+    .bind(&status)
     .bind(now)
+    .bind(&payload.domain)
+    .bind(&payload.rubric)
+    .bind(&payload.expected_output_format)
     .fetch_one(&pool)
     .await
     .map_err(|e| {
-        eprintln!("Database error: {}", e);
+        eprintln!("DB error creating prompt: {}", e);
         StatusCode::INTERNAL_SERVER_ERROR
     })?;
 
@@ -107,10 +141,10 @@ pub async fn update(
 ) -> Result<Json<Prompt>, StatusCode> {
     println!("✏️  Updating prompt: {}", id);
 
-    // Get existing prompt
     let existing = sqlx::query_as::<_, Prompt>(
         r#"
-        SELECT id, name, template, variables, is_templated, status, runs, updated_at, average_score
+        SELECT id, name, template, variables, is_templated, status, runs,
+               updated_at, average_score, domain, rubric, expected_output_format
         FROM prompts WHERE id = $1
         "#,
     )
@@ -120,37 +154,30 @@ pub async fn update(
     .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
     .ok_or(StatusCode::NOT_FOUND)?;
 
-    // Handle Option<String> fields
-    let new_name = match payload.name {
-        Some(n) => n,
-        None => existing.name.clone(),
-    };
-
-    let new_template = match payload.template {
-        Some(t) => t,
-        None => existing.template.clone(),
-    };
-
-    let new_status = match payload.status {
-        Some(s) => s,
-        None => existing.status.clone(),
-    };
+    let new_name = payload.name.unwrap_or(existing.name);
+    let new_template = payload.template.unwrap_or(existing.template.clone());
+    let new_status = payload.status.unwrap_or(existing.status);
     let new_variables = payload
         .variables
-        .or(existing.variables.clone())
+        .or(existing.variables)
         .unwrap_or_else(|| extract_variables(&new_template));
     let new_is_templated = payload
         .is_templated
         .unwrap_or(existing.is_templated || !new_variables.is_empty());
-
-    let now = Utc::now(); // ← DateTime type
+    let new_domain = payload.domain.or(existing.domain);
+    let new_rubric: Option<Value> = payload.rubric.or(existing.rubric);
+    let new_output_format = payload.expected_output_format.or(existing.expected_output_format);
+    let now = Utc::now();
 
     let updated = sqlx::query_as::<_, Prompt>(
         r#"
         UPDATE prompts
-        SET name = $1, template = $2, variables = $3, is_templated = $4, status = $5, updated_at = $6
-        WHERE id = $7
-        RETURNING id, name, template, variables, is_templated, status, runs, updated_at, average_score
+        SET name = $1, template = $2, variables = $3, is_templated = $4,
+            status = $5, updated_at = $6, domain = $7, rubric = $8,
+            expected_output_format = $9
+        WHERE id = $10
+        RETURNING id, name, template, variables, is_templated, status, runs,
+                  updated_at, average_score, domain, rubric, expected_output_format
         "#,
     )
     .bind(new_name)
@@ -159,7 +186,10 @@ pub async fn update(
     .bind(new_is_templated)
     .bind(new_status)
     .bind(now)
-    .bind(id)
+    .bind(new_domain)
+    .bind(new_rubric)
+    .bind(new_output_format)
+    .bind(&id)
     .fetch_one(&pool)
     .await
     .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
@@ -187,8 +217,16 @@ pub async fn delete(
     Ok(Json(DeleteResponse { deleted: true, id }))
 }
 
-// POST /api/prompts/generate
+// ── AI generation ─────────────────────────────────────────────────────────────
+
+/// POST /api/prompts/generate
+///
+/// Uses Sonnet (not Haiku) because template quality is the root of the evaluation
+/// chain — a weak template poisons every downstream result. The model returns
+/// structured JSON containing the template, rubric, domain, and output format.
+/// The frontend should persist the response via POST /api/prompts.
 pub async fn generate_prompt(
+    State(llm): State<AnthropicClient>,
     Json(payload): Json<GeneratePromptRequest>,
 ) -> Result<Json<GeneratePromptResponse>, StatusCode> {
     let description = payload.description.trim();
@@ -196,58 +234,117 @@ pub async fn generate_prompt(
         return Err(StatusCode::BAD_REQUEST);
     }
 
-    let generated_template = generate_template_with_ai(description)
+    let system = "You are an expert prompt engineer. \
+                  Generate high-quality, structured prompt templates for LLM evaluation systems. \
+                  Always respond with valid JSON only — no markdown, no prose.";
+
+    let user_prompt = format!(
+        r#"Design a production-quality reusable prompt template for this task:
+
+{}
+
+Return ONLY valid JSON (no markdown fences, no text before or after):
+{{
+  "template": "<the full prompt with {{{{VAR_NAME}}}} double-brace placeholders>",
+  "variables": [
+    {{"name": "VAR_NAME", "description": "what this variable contains and its expected format"}}
+  ],
+  "domain": "<short snake_case label e.g. educational_assistant, code_review, customer_support>",
+  "rubric": [
+    {{"name": "criterion_name", "description": "what to assess", "weight": 0.25}}
+  ],
+  "expected_output_format": "<description of what ideal output looks like>"
+}}
+
+Requirements:
+- Use {{{{DOUBLE_BRACES}}}} for all template variables — single braces are not valid
+- Rubric weights must sum exactly to 1.0
+- Include 3-5 rubric criteria specific to this task's goals (not generic)
+- Template must include: role definition, clear task description, variable placeholders, output guidance
+- The variables list must match exactly the {{{{VAR}}}} placeholders in the template"#,
+        description
+    );
+
+    let text = llm
+        .send_text(llm.model_sonnet(), 2000, &user_prompt, Some(system))
         .await
-        .unwrap_or_else(|_| {
-            format!(
-                "You are a helpful assistant.\nContext: {{{{CONTEXT}}}}\nUser question: {{{{QUESTION}}}}\nTask: {}",
-                description
-            )
-        });
+        .unwrap_or_default();
 
-    let variables = extract_variables(&generated_template);
+    let cleaned = text
+        .trim()
+        .trim_start_matches("```json")
+        .trim_start_matches("```")
+        .trim_end_matches("```")
+        .trim();
 
-    Ok(Json(GeneratePromptResponse {
-        template: generated_template,
-        variables,
-    }))
-}
-
-async fn generate_template_with_ai(description: &str) -> Result<String, StatusCode> {
-    let api_key = env::var("ANTHROPIC_API_KEY").map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
-    let client = Client::new();
-
-    let request_body = json!({
-        "model": "claude-haiku-4-5-20251001",
-        "max_tokens": 1024,
-        "messages": [{
-            "role": "user",
-            "content": format!(
-                "Generate a reusable prompt template for this description: {}\nUse placeholders in {{VAR_NAME}} format (double braces). Include at least {{QUESTION}} when relevant. Return only the template text.",
-                description
-            )
-        }]
+    let json: Value = serde_json::from_str(cleaned).unwrap_or_else(|e| {
+        eprintln!("generate_prompt JSON parse error: {e}\nraw={}", cleaned);
+        Value::Null
     });
 
-    let response = client
-        .post("https://api.anthropic.com/v1/messages")
-        .header("x-api-key", api_key)
-        .header("anthropic-version", "2023-06-01")
-        .json(&request_body)
-        .send()
-        .await
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
-
-    let data: serde_json::Value = response
-        .json()
-        .await
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
-
-    let template = data["content"][0]["text"]
-        .as_str()
+    let template = json
+        .get("template")
+        .and_then(|v| v.as_str())
         .map(str::trim)
         .filter(|s| !s.is_empty())
-        .ok_or(StatusCode::INTERNAL_SERVER_ERROR)?;
+        .unwrap_or("")
+        .to_string();
 
-    Ok(template.to_string())
+    if template.is_empty() {
+        // Graceful fallback — never return an error for generation failures.
+        let fallback = format!(
+            "You are a helpful assistant.\n\
+             Context: {{{{CONTEXT}}}}\n\
+             User question: {{{{QUESTION}}}}\n\
+             Task: {}",
+            description
+        );
+        let variables = extract_variables(&fallback);
+        return Ok(Json(GeneratePromptResponse {
+            template: fallback,
+            variables,
+            domain: "general".to_string(),
+            rubric: default_rubric(),
+            expected_output_format: "Clear, accurate, and helpful response.".to_string(),
+        }));
+    }
+
+    // Use variables extracted from the template text as ground truth
+    // (template is authoritative over the declared list).
+    let variables = extract_variables(&template);
+
+    let rubric: Vec<RubricCriterion> = json
+        .get("rubric")
+        .and_then(|v| serde_json::from_value(v.clone()).ok())
+        .filter(|r: &Vec<RubricCriterion>| !r.is_empty())
+        .unwrap_or_else(default_rubric);
+
+    let domain = json
+        .get("domain")
+        .and_then(|v| v.as_str())
+        .filter(|s| !s.is_empty())
+        .unwrap_or("general")
+        .to_string();
+
+    let expected_output_format = json
+        .get("expected_output_format")
+        .and_then(|v| v.as_str())
+        .filter(|s| !s.is_empty())
+        .unwrap_or("Clear, accurate, and helpful response.")
+        .to_string();
+
+    println!(
+        "✅ Generated prompt: domain={} rubric_criteria={} variables={:?}",
+        domain,
+        rubric.len(),
+        variables
+    );
+
+    Ok(Json(GeneratePromptResponse {
+        template,
+        variables,
+        domain,
+        rubric,
+        expected_output_format,
+    }))
 }

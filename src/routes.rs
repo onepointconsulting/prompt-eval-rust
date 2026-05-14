@@ -1,11 +1,11 @@
+use crate::app_state::AppState;
 use crate::handlers;
 use axum::{
     routing::{get, post},
     Router,
 };
-use sqlx::PgPool;
 
-pub fn create_router(pool: PgPool) -> Router {
+pub fn create_router(state: AppState) -> Router {
     Router::new()
         // Evaluations
         .route("/api/evaluate", post(handlers::evaluations::run_evaluation))
@@ -17,10 +17,13 @@ pub fn create_router(pool: PgPool) -> Router {
             "/api/evaluations/:id",
             get(handlers::evaluations::get_evaluation),
         )
-        // Prompts - now with database
+        // Prompts
         .route("/api/prompts", get(handlers::prompts::list))
         .route("/api/prompts", post(handlers::prompts::create))
-        .route("/api/prompts/generate", post(handlers::prompts::generate_prompt))
+        .route(
+            "/api/prompts/generate",
+            post(handlers::prompts::generate_prompt),
+        )
         .route(
             "/api/prompts/:id",
             get(handlers::prompts::get)
@@ -39,7 +42,9 @@ pub fn create_router(pool: PgPool) -> Router {
         .route("/api/datasets/upload", post(handlers::datasets::upload))
         .route(
             "/api/datasets/:id",
-            get(handlers::datasets::get).delete(handlers::datasets::delete),
+            get(handlers::datasets::get)
+                .put(handlers::datasets::update)
+                .delete(handlers::datasets::delete),
         )
         .route(
             "/api/datasets/:id/questions",
@@ -47,5 +52,5 @@ pub fn create_router(pool: PgPool) -> Router {
         )
         // Stats
         .route("/api/stats", get(handlers::stats::get))
-        .with_state(pool) // Pass database pool to all routes
+        .with_state(state)
 }

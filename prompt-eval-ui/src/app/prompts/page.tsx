@@ -87,6 +87,9 @@ export default function PromptsPage() {
                     name: `${source.name} (copy)`,
                     content: source.content,
                     variables: source.variables ?? [],
+                    domain: source.domain,
+                    rubric: source.rubric,
+                    expectedOutputFormat: source.expectedOutputFormat,
                   })
                 );
                 router.push("/prompts/generate");

@@ -1,15 +1,20 @@
 use crate::models::{
     CreateDatasetRequest, Dataset, DatasetUploadRequest, DatasetWithQuestions, DeleteResponse,
-    Question, QuestionInput,
+    Question, QuestionInput, UpdateDatasetRequest,
 };
 use axum::{
     extract::{Path, State},
     http::StatusCode,
     Json,
 };
-use serde_json::Value;
 use serde_json::json;
+use serde_json::Value;
 use sqlx::PgPool;
+
+// Every query that returns Question must SELECT these columns in this order:
+//   id, dataset_id, question_text, expected_answer, question_order,
+//   variable_values, tags, difficulty, case_type
+// The Question struct derives FromRow — all fields must be present in the result.
 
 // GET /api/datasets
 pub async fn list(State(pool): State<PgPool>) -> Result<Json<Vec<Dataset>>, StatusCode> {
@@ -17,14 +22,8 @@ pub async fn list(State(pool): State<PgPool>) -> Result<Json<Vec<Dataset>>, Stat
 
     let datasets = sqlx::query_as::<_, Dataset>(
         r#"
-        SELECT
-            id,
-            name,
-            question_count,
-            avg_score,
-            evaluations,
-            NULL::text as last_used,
-            created_at::text as created_at
+        SELECT id, name, question_count, avg_score, evaluations,
+               NULL::text as last_used, created_at::text as created_at
         FROM datasets
         ORDER BY created_at DESC
         "#,
@@ -63,14 +62,8 @@ pub async fn create(
         r#"
         INSERT INTO datasets (id, name, question_count, avg_score, evaluations, created_at)
         VALUES ($1, $2, $3, NULL, 0, NOW())
-        RETURNING
-            id,
-            name,
-            question_count,
-            avg_score,
-            evaluations,
-            NULL::text as last_used,
-            created_at::text as created_at
+        RETURNING id, name, question_count, avg_score, evaluations,
+                  NULL::text as last_used, created_at::text as created_at
         "#,
     )
     .bind(id)
@@ -104,16 +97,9 @@ pub async fn get(
 
     let dataset = sqlx::query_as::<_, Dataset>(
         r#"
-        SELECT
-            id,
-            name,
-            question_count,
-            avg_score,
-            evaluations,
-            NULL::text as last_used,
-            created_at::text as created_at
-        FROM datasets
-        WHERE id = $1
+        SELECT id, name, question_count, avg_score, evaluations,
+               NULL::text as last_used, created_at::text as created_at
+        FROM datasets WHERE id = $1
         "#,
     )
     .bind(id)
@@ -134,14 +120,9 @@ pub async fn get_questions(
 
     let questions = sqlx::query_as::<_, Question>(
         r#"
-        SELECT
-            id,
-            dataset_id,
-            question_text,
-            expected_answer,
-            COALESCE(question_order, 0) as question_order,
-            variable_values,
-            tags
+        SELECT id, dataset_id, question_text, expected_answer,
+               COALESCE(question_order, 0) as question_order,
+               variable_values, tags, difficulty, case_type
         FROM questions
         WHERE dataset_id = $1
         ORDER BY question_order
@@ -166,7 +147,6 @@ pub async fn add_question(
 ) -> Result<(StatusCode, Json<Question>), StatusCode> {
     println!("➕ Adding question to dataset: {}", dataset_id);
 
-    // Ensure dataset exists
     let exists: Option<String> = sqlx::query_scalar("SELECT id FROM datasets WHERE id = $1")
         .bind(&dataset_id)
         .fetch_optional(&pool)
@@ -176,7 +156,6 @@ pub async fn add_question(
         return Err(StatusCode::NOT_FOUND);
     }
 
-    // Append ordering at end
     let next_order: i32 = sqlx::query_scalar(
         "SELECT COALESCE(MAX(question_order), -1) + 1 FROM questions WHERE dataset_id = $1",
     )
@@ -187,29 +166,26 @@ pub async fn add_question(
 
     let created = sqlx::query_as::<_, Question>(
         r#"
-        INSERT INTO questions (dataset_id, question_text, expected_answer, question_order, variable_values, tags)
-        VALUES ($1, $2, $3, $4, $5, $6)
-        RETURNING
-            id,
-            dataset_id,
-            question_text,
-            expected_answer,
-            question_order,
-            variable_values,
-            tags
+        INSERT INTO questions
+            (dataset_id, question_text, expected_answer, question_order,
+             variable_values, tags, difficulty, case_type)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        RETURNING id, dataset_id, question_text, expected_answer, question_order,
+                  variable_values, tags, difficulty, case_type
         "#,
     )
     .bind(&dataset_id)
-    .bind(payload.question)
-    .bind(payload.answer)
+    .bind(&payload.question)
+    .bind(&payload.answer)
     .bind(next_order)
-    .bind(payload.variable_values)
-    .bind(payload.tags)
+    .bind(&payload.variable_values)
+    .bind(&payload.tags)
+    .bind(&payload.difficulty)
+    .bind(&payload.case_type)
     .fetch_one(&pool)
     .await
     .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
-    // Keep datasets.question_count in sync
     sqlx::query("UPDATE datasets SET question_count = question_count + 1 WHERE id = $1")
         .bind(&dataset_id)
         .execute(&pool)
@@ -217,6 +193,33 @@ pub async fn add_question(
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
     Ok((StatusCode::CREATED, Json(created)))
+}
+
+// PUT /api/datasets/:id
+pub async fn update(
+    State(pool): State<PgPool>,
+    Path(id): Path<String>,
+    Json(payload): Json<UpdateDatasetRequest>,
+) -> Result<Json<Dataset>, StatusCode> {
+    println!("✏️  Updating dataset: {}", id);
+
+    let dataset = sqlx::query_as::<_, Dataset>(
+        r#"
+        UPDATE datasets
+        SET name = COALESCE($2, name)
+        WHERE id = $1
+        RETURNING id, name, question_count, avg_score, evaluations,
+                  NULL::text as last_used, created_at::text as created_at
+        "#,
+    )
+    .bind(&id)
+    .bind(&payload.name)
+    .fetch_optional(&pool)
+    .await
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
+    .ok_or(StatusCode::NOT_FOUND)?;
+
+    Ok(Json(dataset))
 }
 
 // DELETE /api/datasets/:id
@@ -260,41 +263,32 @@ async fn create_dataset_with_questions(
         r#"
         INSERT INTO datasets (id, name, description, question_count, avg_score, evaluations, created_at)
         VALUES ($1, $2, $3, $4, NULL, 0, NOW())
-        RETURNING
-            id,
-            name,
-            question_count,
-            avg_score,
-            evaluations,
-            NULL::text as last_used,
-            created_at::text as created_at
-        "#
+        RETURNING id, name, question_count, avg_score, evaluations,
+                  NULL::text as last_used, created_at::text as created_at
+        "#,
     )
-    .bind(dataset_id)
-    .bind(payload.name)
-    .bind(payload.description)
+    .bind(&dataset_id)
+    .bind(&payload.name)
+    .bind(&payload.description)
     .bind(question_count)
     .fetch_one(&mut *tx)
     .await
     .map_err(|e| {
-        eprintln!("Database error: {}", e);
+        eprintln!("Database error creating dataset: {}", e);
         StatusCode::INTERNAL_SERVER_ERROR
     })?;
 
     let mut created_questions: Vec<Question> = Vec::new();
+
     for (idx, q) in payload.questions.iter().enumerate() {
         let question = sqlx::query_as::<_, Question>(
             r#"
-            INSERT INTO questions (dataset_id, question_text, expected_answer, question_order, variable_values, tags)
-            VALUES ($1, $2, $3, $4, $5, $6)
-            RETURNING
-                id,
-                dataset_id,
-                question_text,
-                expected_answer,
-                question_order,
-                variable_values,
-                tags
+            INSERT INTO questions
+                (dataset_id, question_text, expected_answer, question_order,
+                 variable_values, tags, difficulty, case_type)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            RETURNING id, dataset_id, question_text, expected_answer, question_order,
+                      variable_values, tags, difficulty, case_type
             "#,
         )
         .bind(&dataset.id)
@@ -303,9 +297,15 @@ async fn create_dataset_with_questions(
         .bind(idx as i32)
         .bind(&q.variable_values)
         .bind(&q.tags)
+        .bind(&q.difficulty)
+        .bind(&q.case_type)
         .fetch_one(&mut *tx)
         .await
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+        .map_err(|e| {
+            eprintln!("Database error inserting question {}: {}", idx, e);
+            StatusCode::INTERNAL_SERVER_ERROR
+        })?;
+
         created_questions.push(question);
     }
 
@@ -313,7 +313,8 @@ async fn create_dataset_with_questions(
         .await
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
-    println!("✅ Uploaded {} questions", question_count);
+    println!("✅ Uploaded {} questions to dataset {}", question_count, dataset_id);
+
     Ok(DatasetWithQuestions {
         dataset,
         questions: created_questions,

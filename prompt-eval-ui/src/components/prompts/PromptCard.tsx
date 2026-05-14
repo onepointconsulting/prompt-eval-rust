@@ -21,7 +21,21 @@ export function PromptCard({
   return (
     <Card className="space-y-3">
       <div className="flex items-start justify-between gap-3">
-        <h3 className="text-base font-semibold text-slate-900">{prompt.name}</h3>
+        <div className="flex flex-col gap-1">
+          <h3 className="text-base font-semibold text-slate-900">{prompt.name}</h3>
+          <div className="flex flex-wrap items-center gap-1.5">
+            {prompt.domain && (
+              <span className="rounded-full bg-violet-100 px-2 py-0.5 text-xs font-medium text-violet-700">
+                {prompt.domain}
+              </span>
+            )}
+            {prompt.rubric && prompt.rubric.length > 0 && (
+              <span className="rounded-full bg-blue-50 px-2 py-0.5 text-xs text-blue-600">
+                {prompt.rubric.length} rubric criteria
+              </span>
+            )}
+          </div>
+        </div>
         <Badge
           variant={
             prompt.status === "active"

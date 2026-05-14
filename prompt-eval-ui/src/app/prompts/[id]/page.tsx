@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { api } from "@/lib/api";
+import type { RubricCriterion } from "@/lib/types";
 import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -18,6 +19,10 @@ export default function PromptDetailPage() {
   const [name, setName] = useState("");
   const [status, setStatus] = useState<"active" | "draft" | "archived">("draft");
   const [template, setTemplate] = useState("");
+  const [domain, setDomain] = useState("");
+  const [rubric, setRubric] = useState<RubricCriterion[]>([]);
+  const [expectedOutputFormat, setExpectedOutputFormat] = useState("");
+  const [variables, setVariables] = useState<string[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -35,6 +40,10 @@ export default function PromptDetailPage() {
       setName(p.name);
       setStatus(p.status);
       setTemplate(p.content);
+      setDomain(p.domain ?? "");
+      setRubric(p.rubric ?? []);
+      setExpectedOutputFormat(p.expectedOutputFormat ?? "");
+      setVariables(p.variables ?? []);
     } catch (e) {
       setLoadError(e instanceof Error ? e.message : "Failed to load prompt.");
     } finally {
@@ -43,29 +52,24 @@ export default function PromptDetailPage() {
   }, [id]);
 
   useEffect(() => {
-    const t = window.setTimeout(() => {
-      void load();
-    }, 0);
+    const t = window.setTimeout(() => { void load(); }, 0);
     return () => window.clearTimeout(t);
   }, [load]);
 
   const onSave = async () => {
     const trimmedName = name.trim();
     const trimmedTemplate = template.trim();
-    if (!trimmedName) {
-      toast.error("Name is required.");
-      return;
-    }
-    if (!trimmedTemplate) {
-      toast.error("Template is required.");
-      return;
-    }
+    if (!trimmedName) { toast.error("Name is required."); return; }
+    if (!trimmedTemplate) { toast.error("Template is required."); return; }
     try {
       setSaving(true);
       await api.updatePrompt(id, {
         name: trimmedName,
         template: trimmedTemplate,
         status,
+        domain: domain.trim() || undefined,
+        rubric: rubric.length > 0 ? rubric : undefined,
+        expected_output_format: expectedOutputFormat.trim() || undefined,
       });
       toast.success("Prompt saved.");
       router.push("/prompts");
@@ -94,6 +98,7 @@ export default function PromptDetailPage() {
         </div>
       ) : (
         <div className="space-y-4">
+          {/* Name + Status */}
           <div className="grid gap-3 rounded-xl border bg-white p-4 sm:grid-cols-[1fr_200px]">
             <Input
               placeholder="Prompt name"
@@ -109,6 +114,8 @@ export default function PromptDetailPage() {
               <option value="archived">Archived</option>
             </Select>
           </div>
+
+          {/* Template editor */}
           <PromptEditor
             value={template}
             onChange={setTemplate}
@@ -116,6 +123,73 @@ export default function PromptDetailPage() {
             onCancel={() => router.push("/prompts")}
             isSaving={saving}
           />
+
+          {/* Variables (read-only display) */}
+          {variables.length > 0 && (
+            <div className="rounded-xl border bg-white p-4">
+              <p className="mb-2 text-sm font-semibold text-slate-900">Template variables</p>
+              <div className="flex flex-wrap gap-2">
+                {variables.map((v) => (
+                  <span
+                    key={v}
+                    className="rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs text-blue-700"
+                  >
+                    {`{{${v}}}`}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Domain + Expected output */}
+          <div className="grid gap-3 rounded-xl border bg-white p-4 sm:grid-cols-2">
+            <div>
+              <label className="mb-1 block text-xs font-semibold text-slate-600">
+                Domain (snake_case, optional)
+              </label>
+              <Input
+                placeholder="e.g. educational_assistant"
+                value={domain}
+                onChange={(e) => setDomain(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-semibold text-slate-600">
+                Expected output format (optional)
+              </label>
+              <Input
+                placeholder="e.g. One guiding question, 1-2 sentences"
+                value={expectedOutputFormat}
+                onChange={(e) => setExpectedOutputFormat(e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* Rubric (read-only view with total weight) */}
+          {rubric.length > 0 && (
+            <div className="rounded-xl border bg-white p-4">
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-sm font-semibold text-slate-900">Evaluation rubric</p>
+                <span className="text-xs text-slate-500">
+                  Total weight: {(rubric.reduce((s, r) => s + r.weight, 0) * 100).toFixed(0)}%
+                </span>
+              </div>
+              <div className="space-y-2">
+                {rubric.map((r, i) => (
+                  <div key={i} className="rounded-lg border border-slate-100 bg-slate-50 px-3 py-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold text-slate-800">{r.name}</span>
+                      <span className="text-xs text-slate-500">{(r.weight * 100).toFixed(0)}%</span>
+                    </div>
+                    <p className="mt-0.5 text-xs text-slate-600">{r.description}</p>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-3 text-xs text-slate-400">
+                To update the rubric, re-generate the prompt or use the API directly.
+              </p>
+            </div>
+          )}
         </div>
       )}
     </PageContainer>

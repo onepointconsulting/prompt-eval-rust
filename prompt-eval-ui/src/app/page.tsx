@@ -70,7 +70,8 @@ export default function Home() {
         />
         <StatCard
           title="Success Rate"
-          value={`${stats.data?.successRate ?? 0}%`}
+          value={`${(stats.data?.successRate ?? 0).toFixed(1)}%`}
+          hint="Evals with avg score ≥ 7.0"
           icon={RocketLaunchIcon}
         />
       </div>

@@ -1,0 +1,86 @@
+[
+  {
+    "variable_values": {
+      "AVAILABLE_PRODUCTS": "1. Nike Air Zoom Running Shoes $140, 2. Wireless Bluetooth Headphones $80, 3. Yoga Mat Premium $60, 4. Pre-Workout Supplement $40, 5. Kitchen Blender $150",
+      "CONTEXT": "Customer frequently shops for fitness-related items and has shown consistent spending on athletic gear over the past 4 months.",
+      "CUSTOMER_PROFILE": "Age: 28, Gender: Male, Income: $75k, Interests: Fitness, Running, Health supplements",
+      "TRANSACTION_HISTORY": "2023-01-15: Nike Running Shoes $120, 2023-02-03: Adidas Athletic Shorts $45, 2023-02-20: Protein Powder $35, 2023-03-10: Fitness Tracker $200, 2023-03-25: Gym Water Bottle $25, 2023-04-12: Workout Gloves $30"
+    },
+    "expected_answer": "Must recommend one specific product with clear product details, provide reasoning based on the customer's consistent fitness purchasing pattern, explain alignment with their demonstrated preferences for athletic gear and supplements, include confidence level, and follow the structured format requirements.",
+    "difficulty": "easy",
+    "case_type": "happy_path",
+    "tags": [
+      "dimension_tested:relevance",
+      "dimension_tested:completeness",
+      "difficulty:easy"
+    ],
+    "reasoning": "Tests straightforward pattern recognition with clear customer preferences and matching product options."
+  },
+  {
+    "variable_values": {
+      "AVAILABLE_PRODUCTS": "1. Premium Coffee Beans Subscription $35/month, 2. Advanced Cookbook Collection $80, 3. Outdoor Camping Tent $250, 4. Essential Oils Diffuser $55, 5. Smart Home Security System $300",
+      "CUSTOMER_PROFILE": "Recently moved to a new home and exploring new hobbies. Shows seasonal purchasing variations and interest in experiential purchases like classes.",
+      "TRANSACTION_HISTORY": "2023-01-10: Romance Novel $12, 2023-01-25: Coffee Maker $85, 2023-02-14: Chocolate Gift Box $30, 2023-03-05: Scented Candles $25, 2023-03-20: Cooking Class $120, 2023-04-02: Wine Subscription $60, 2023-04-18: Garden Tools $45, 2023-05-01: Hiking Boots $110"
+    },
+    "expected_answer": "Must recommend one primary product with justification, analyze the diverse purchasing patterns showing home comfort and outdoor interests, explain how the recommendation balances multiple demonstrated preferences, provide confidence level with alternative options, and address the complexity of varied interests in the reasoning.",
+    "difficulty": "medium",
+    "case_type": "multi_faceted",
+    "tags": [
+      "dimension_tested:accuracy",
+      "dimension_tested:clarity",
+      "difficulty:medium"
+    ],
+    "reasoning": "Tests ability to analyze diverse purchasing patterns and make coherent recommendations when customer shows multiple distinct interest areas."
+  },
+  {
+    "variable_values": {
+      "AVAILABLE_PRODUCTS": "1. Luxury Watch $500, 2. Toddler Learning Tablet $90, 3. Professional Camera $800, 4. Organic Baby Food Maker $150, 5. Gaming Console $400",
+      "CONTEXT": "New parent with consistent baby-related purchases showing progression from newborn to toddler items. Purchase amounts have been decreasing over time.",
+      "CUSTOMER_PROFILE": "Age: 32, Gender: Female, Income: $85k, Interests: Photography, Technology, Child development",
+      "TRANSACTION_HISTORY": "2022-12-01: Baby Stroller $350, 2023-01-15: Infant Car Seat $200, 2023-02-10: Baby Monitor $120, 2023-02-28: Diaper Bag $75, 2023-03-15: High Chair $180, 2023-04-20: Baby Toys $40, 2023-05-05: Toddler Shoes $35"
+    },
+    "expected_answer": "Must identify one suitable product based on the clear progression of baby/toddler purchases, justify the recommendation by analyzing the temporal pattern and decreasing spend amounts, explain alignment with parenting needs and child development stage, provide confidence assessment, and acknowledge how current life stage influences purchasing behavior.",
+    "difficulty": "medium",
+    "case_type": "temporal_pattern",
+    "tags": [
+      "dimension_tested:accuracy",
+      "dimension_tested:completeness",
+      "difficulty:medium"
+    ],
+    "reasoning": "Tests analysis of temporal purchasing patterns and life stage transitions with spending behavior changes over time."
+  },
+  {
+    "variable_values": {
+      "AVAILABLE_PRODUCTS": "1. Mid-range Jewelry $180, 2. Budget Fitness Equipment $45, 3. Luxury Spa Package $400, 4. Basic Kitchen Appliance $60, 5. Premium Electronics $900",
+      "CONTEXT": "Customer shows contradictory spending patterns with high-end luxury purchases immediately followed by budget/discount purchases. Credit score recently declined.",
+      "CUSTOMER_PROFILE": "Age: 29, Gender: Female, Income: $45k, Interests: Fashion, Beauty, Dining",
+      "TRANSACTION_HISTORY": "2023-01-20: Luxury Handbag $800, 2023-01-22: Fast Food $8, 2023-02-01: Designer Sunglasses $300, 2023-02-02: Generic Groceries $25, 2023-02-15: High-end Restaurant $150, 2023-02-16: Discount Store Items $12, 2023-03-10: Premium Skincare $200, 2023-03-11: Thrift Store Purchase $6"
+    },
+    "expected_answer": "Must acknowledge the contradictory spending patterns in the analysis, provide a recommendation that addresses the apparent financial inconsistency, explain the reasoning behind navigating between luxury preferences and budget constraints, include lower confidence level due to unpredictable patterns, and suggest how the recommendation balances aspirational desires with practical considerations.",
+    "difficulty": "hard",
+    "case_type": "contradictory_behavior",
+    "tags": [
+      "dimension_tested:accuracy",
+      "dimension_tested:clarity",
+      "difficulty:hard"
+    ],
+    "reasoning": "Tests ability to handle contradictory purchasing behaviors that don't align with stated income and interests."
+  },
+  {
+    "variable_values": {
+      "AVAILABLE_PRODUCTS": "1. Premium Product A $500, 2. Budget Alternative to Product A $50, 3. Completely Unrelated Item X $100, 4. Completely Unrelated Item Y $200, 5. Completely Unrelated Item Z $300",
+      "CONTEXT": "Limited customer data available. Transaction pattern shows exact repetition.",
+      "CUSTOMER_PROFILE": "Age: Unknown, Gender: Unknown, Income: Unknown, Interests: Unknown",
+      "TRANSACTION_HISTORY": "2023-01-01: Premium Product A $500, 2023-02-01: Premium Product A $500, 2023-03-01: Premium Product A $500, 2023-04-01: Premium Product A $500, 2023-05-01: Premium Product A $500"
+    },
+    "expected_answer": "Must acknowledge the artificial/limited nature of the data, explain that the perfect repetition pattern is unrealistic for typical customer behavior, still provide a structured recommendation based on available information, note very low confidence due to insufficient profile data, and explain limitations in making accurate predictions with such constrained information.",
+    "difficulty": "adversarial",
+    "case_type": "minimal_data",
+    "tags": [
+      "dimension_tested:completeness",
+      "dimension_tested:clarity",
+      "difficulty:adversarial"
+    ],
+    "reasoning": "Tests response quality when given artificially perfect data and minimal customer profile information that challenges realistic analysis."
+  }
+]
