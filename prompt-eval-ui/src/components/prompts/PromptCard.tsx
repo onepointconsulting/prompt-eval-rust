@@ -48,7 +48,7 @@ export function PromptCard({
           {prompt.status}
         </Badge>
       </div>
-      <pre className="overflow-x-auto rounded-md bg-slate-900 p-3 text-xs text-slate-100">
+      <pre className="overflow-x-auto h-80 rounded-md bg-slate-900 p-3 text-xs text-slate-100">
         {prompt.content}
       </pre>
       <p className="text-sm text-slate-500">

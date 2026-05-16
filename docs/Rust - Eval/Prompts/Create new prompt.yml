@@ -1,0 +1,23 @@
+info:
+  name: Create new prompt
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://127.0.0.1:3001/api/prompts
+  body:
+    type: json
+    data: |
+      {
+        "name": "Basic Python Tutor",
+        "template": "You are a helpful Python tutor.\n\nStudent question: {{QUESTION}}\n\nProvide a clear, beginner-friendly answer.",
+        "status": "active"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,31 @@
+info:
+  name: Evaluate using dataset_path (legacy fallback)
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: http://127.0.0.1:3001/api/evaluate
+  body:
+    type: json
+    data: |-
+      {
+        "dataset_path": "Python Tutor Test Set",
+        "prompt_ids": ["{{prompt_id_basic}}"]
+      }
+  auth: inherit
+
+runtime:
+  variables:
+    - name: dataset_id
+      value: ds_1778697288
+    - name: prompt_id_socratic
+      value: p_1778696812
+    - name: prompt_id_basic
+      value: p_1778696756
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

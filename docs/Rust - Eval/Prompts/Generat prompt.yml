@@ -1,0 +1,21 @@
+info:
+  name: Generat prompt
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: http://127.0.0.1:3001/api/prompts/generate
+  body:
+    type: json
+    data: |-
+      {
+        "description": "A teaching assistant for beginner programmers learning Python. It should guide students with the Socratic method — asking one question at a time — and adapt to their emotional state."
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

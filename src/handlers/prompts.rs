@@ -47,7 +47,8 @@ pub async fn list(State(pool): State<PgPool>) -> Result<Json<Vec<Prompt>>, Statu
     let prompts = sqlx::query_as::<_, Prompt>(
         r#"
         SELECT id, name, template, variables, is_templated, status, runs,
-               updated_at, average_score, domain, rubric, expected_output_format
+               updated_at, average_score, domain, rubric, expected_output_format,
+               use_context, context_project
         FROM prompts
         ORDER BY updated_at DESC
         "#,
@@ -70,7 +71,8 @@ pub async fn get(
     let prompt = sqlx::query_as::<_, Prompt>(
         r#"
         SELECT id, name, template, variables, is_templated, status, runs,
-               updated_at, average_score, domain, rubric, expected_output_format
+               updated_at, average_score, domain, rubric, expected_output_format,
+               use_context, context_project
         FROM prompts WHERE id = $1
         "#,
     )
@@ -102,15 +104,18 @@ pub async fn create(
         .unwrap_or_else(|| extract_variables(&payload.template));
     let is_templated = payload.is_templated.unwrap_or(!variables.is_empty());
     let status = payload.status.unwrap_or_else(|| "draft".to_string());
+    let use_context = payload.use_context.unwrap_or(false);
 
     let prompt = sqlx::query_as::<_, Prompt>(
         r#"
         INSERT INTO prompts
             (id, name, template, variables, is_templated, status, runs,
-             updated_at, average_score, domain, rubric, expected_output_format)
-        VALUES ($1, $2, $3, $4, $5, $6, 0, $7, NULL, $8, $9, $10)
+             updated_at, average_score, domain, rubric, expected_output_format,
+             use_context, context_project)
+        VALUES ($1, $2, $3, $4, $5, $6, 0, $7, NULL, $8, $9, $10, $11, $12)
         RETURNING id, name, template, variables, is_templated, status, runs,
-                  updated_at, average_score, domain, rubric, expected_output_format
+                  updated_at, average_score, domain, rubric, expected_output_format,
+                  use_context, context_project
         "#,
     )
     .bind(&id)
@@ -123,6 +128,8 @@ pub async fn create(
     .bind(&payload.domain)
     .bind(&payload.rubric)
     .bind(&payload.expected_output_format)
+    .bind(use_context)
+    .bind(&payload.context_project)
     .fetch_one(&pool)
     .await
     .map_err(|e| {
@@ -144,7 +151,8 @@ pub async fn update(
     let existing = sqlx::query_as::<_, Prompt>(
         r#"
         SELECT id, name, template, variables, is_templated, status, runs,
-               updated_at, average_score, domain, rubric, expected_output_format
+               updated_at, average_score, domain, rubric, expected_output_format,
+               use_context, context_project
         FROM prompts WHERE id = $1
         "#,
     )
@@ -166,7 +174,11 @@ pub async fn update(
         .unwrap_or(existing.is_templated || !new_variables.is_empty());
     let new_domain = payload.domain.or(existing.domain);
     let new_rubric: Option<Value> = payload.rubric.or(existing.rubric);
-    let new_output_format = payload.expected_output_format.or(existing.expected_output_format);
+    let new_output_format = payload
+        .expected_output_format
+        .or(existing.expected_output_format);
+    let new_use_context = payload.use_context.unwrap_or(existing.use_context);
+    let new_context_project = payload.context_project.or(existing.context_project);
     let now = Utc::now();
 
     let updated = sqlx::query_as::<_, Prompt>(
@@ -174,10 +186,11 @@ pub async fn update(
         UPDATE prompts
         SET name = $1, template = $2, variables = $3, is_templated = $4,
             status = $5, updated_at = $6, domain = $7, rubric = $8,
-            expected_output_format = $9
-        WHERE id = $10
+            expected_output_format = $9, use_context = $10, context_project = $11
+        WHERE id = $12
         RETURNING id, name, template, variables, is_templated, status, runs,
-                  updated_at, average_score, domain, rubric, expected_output_format
+                  updated_at, average_score, domain, rubric, expected_output_format,
+                  use_context, context_project
         "#,
     )
     .bind(new_name)
@@ -189,6 +202,8 @@ pub async fn update(
     .bind(new_domain)
     .bind(new_rubric)
     .bind(new_output_format)
+    .bind(new_use_context)
+    .bind(new_context_project)
     .bind(&id)
     .fetch_one(&pool)
     .await
@@ -229,14 +244,102 @@ pub async fn generate_prompt(
     State(llm): State<AnthropicClient>,
     Json(payload): Json<GeneratePromptRequest>,
 ) -> Result<Json<GeneratePromptResponse>, StatusCode> {
+    let system = "You are an expert prompt engineer. \
+                  Always respond with valid JSON only — no markdown, no prose.";
+
+    // ── Import mode: template is already written — only extract metadata ─────
+    if let Some(existing) = payload.existing_template.filter(|s| !s.trim().is_empty()) {
+        let existing = existing.trim().to_string();
+        let variables = extract_variables(&existing);
+
+        let extract_prompt = format!(
+            r#"Analyse this existing prompt template and extract metadata from it.
+DO NOT rewrite or modify the template in any way.
+
+TEMPLATE:
+{}
+
+Return ONLY valid JSON (no markdown fences, no text before or after):
+{{
+  "domain": "<short snake_case label describing this prompt's task domain, e.g. code_review, educational_assistant, customer_support>",
+  "rubric": [
+    {{"name": "criterion_name", "description": "what to assess", "weight": 0.25}}
+  ],
+  "expected_output_format": "<description of what ideal output looks like for this prompt>"
+}}
+
+Requirements:
+- Rubric weights must sum exactly to 1.0
+- Include 3-5 rubric criteria that directly reflect the goals and constraints stated in the template
+- Do not invent criteria that are not implied by the template
+- CRITICAL: if a rule in the template is conditional (e.g. "avoid X unless Y"), preserve the full
+  condition in the criterion description — do NOT flatten it into an absolute prohibition.
+  A criterion that says "X is prohibited" when the template says "X except in case Y" will cause
+  false positives. Capture the exception: "X is avoided in Z contexts; permitted in Y contexts.""#,
+            existing
+        );
+
+        let text = llm
+            .send_text(llm.model_sonnet(), 1000, &extract_prompt, Some(system))
+            .await
+            .unwrap_or_default();
+
+        let cleaned = text
+            .trim()
+            .trim_start_matches("```json")
+            .trim_start_matches("```")
+            .trim_end_matches("```")
+            .trim();
+
+        let json: Value = serde_json::from_str(cleaned).unwrap_or_else(|e| {
+            eprintln!(
+                "generate_prompt (import) JSON parse error: {e}\nraw={}",
+                cleaned
+            );
+            Value::Null
+        });
+
+        let rubric: Vec<RubricCriterion> = json
+            .get("rubric")
+            .and_then(|v| serde_json::from_value(v.clone()).ok())
+            .filter(|r: &Vec<RubricCriterion>| !r.is_empty())
+            .unwrap_or_else(default_rubric);
+
+        let domain = json
+            .get("domain")
+            .and_then(|v| v.as_str())
+            .filter(|s| !s.is_empty())
+            .unwrap_or("general")
+            .to_string();
+
+        let expected_output_format = json
+            .get("expected_output_format")
+            .and_then(|v| v.as_str())
+            .filter(|s| !s.is_empty())
+            .unwrap_or("Clear, accurate, and helpful response.")
+            .to_string();
+
+        println!(
+            "✅ Imported prompt: domain={} rubric_criteria={} variables={:?}",
+            domain,
+            rubric.len(),
+            variables
+        );
+
+        return Ok(Json(GeneratePromptResponse {
+            template: existing.to_string(),
+            variables,
+            domain,
+            rubric,
+            expected_output_format,
+        }));
+    }
+
+    // ── Generate mode: create a new template from a description ──────────────
     let description = payload.description.trim();
     if description.is_empty() {
         return Err(StatusCode::BAD_REQUEST);
     }
-
-    let system = "You are an expert prompt engineer. \
-                  Generate high-quality, structured prompt templates for LLM evaluation systems. \
-                  Always respond with valid JSON only — no markdown, no prose.";
 
     let user_prompt = format!(
         r#"Design a production-quality reusable prompt template for this task:
@@ -261,7 +364,11 @@ Requirements:
 - Rubric weights must sum exactly to 1.0
 - Include 3-5 rubric criteria specific to this task's goals (not generic)
 - Template must include: role definition, clear task description, variable placeholders, output guidance
-- The variables list must match exactly the {{{{VAR}}}} placeholders in the template"#,
+- The variables list must match exactly the {{{{VAR}}}} placeholders in the template
+- CRITICAL: rubric criterion descriptions must capture the full intent including any conditions or
+  exceptions — do NOT write absolute prohibitions when the rule has exceptions. A criterion like
+  "trailing questions are prohibited" will cause false positives if the template permits questions
+  in some contexts; write "trailing questions are avoided in X; permitted when Y" instead."#,
         description
     );
 

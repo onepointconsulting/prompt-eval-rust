@@ -1,0 +1,27 @@
+info:
+  name: Generate test cases for basic prompt (no rubric)
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: http://127.0.0.1:3001/api/questions/generate
+  body:
+    type: json
+    data: |
+      {
+        "prompt_id": "{{prompt_id_basic}}",
+        "count": 4
+      }
+  auth: inherit
+
+runtime:
+  variables:
+    - name: prompt_id_basic
+      value: p_1778696756
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

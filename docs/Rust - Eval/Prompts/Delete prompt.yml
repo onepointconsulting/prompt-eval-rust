@@ -1,0 +1,22 @@
+info:
+  name: Delete prompt
+  type: http
+  seq: 1
+
+http:
+  method: DELETE
+  url: http://127.0.0.1:3001/api/prompts/p_1777985433
+  body:
+    type: json
+    data: |
+      {
+        "name": "My Custom Prompt Test! Updated",
+        "template": "Answer the following question concisely: {question}"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

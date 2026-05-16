@@ -1,7 +1,41 @@
+"use client";
+
 import { Card } from "@/components/ui/Card";
 import type { QuestionComparison } from "@/lib/types";
-import { StrengthsWeaknessesList } from "./StrengthsWeaknessesList";
+import type { Components } from "react-markdown";
 import ReactMarkdown from "react-markdown";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { StrengthsWeaknessesList } from "./StrengthsWeaknessesList";
+
+const codeComponents: Components = {
+  pre({ children }) {
+    return <>{children}</>;
+  },
+  code({ className, children, ...props }) {
+    const match = /language-(\w+)/.exec(className ?? "");
+    const code = String(children).replace(/\n$/, "");
+
+    if (match) {
+      return (
+        <SyntaxHighlighter
+          language={match[1]}
+          style={oneLight}
+          PreTag="div"
+          customStyle={{ margin: 0, borderRadius: "0.5rem", fontSize: "0.8125rem" }}
+        >
+          {code}
+        </SyntaxHighlighter>
+      );
+    }
+
+    return (
+      <code className={className} {...props}>
+        {children}
+      </code>
+    );
+  },
+};
 
 type PromptResult = NonNullable<QuestionComparison["promptA"]>;
 
@@ -34,19 +68,18 @@ function JudgePanel({ result }: { result: PromptResult }) {
         </p>
         {result.referenceUsed !== undefined && (
           <span
-            className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-              result.referenceUsed
+            className={`rounded-full px-2 py-0.5 text-xs font-medium ${result.referenceUsed
                 ? "bg-green-100 text-green-700"
                 : "bg-slate-100 text-slate-600"
-            }`}
+              }`}
           >
             {result.referenceUsed ? "reference used" : "no reference"}
           </span>
         )}
       </div>
 
-      <div className="prose prose-slate max-w-none text-sm">
-        <ReactMarkdown>{result.response}</ReactMarkdown>
+      <div className="markdown max-w-none text-sm text-slate-700">
+        <ReactMarkdown components={codeComponents}>{result.response}</ReactMarkdown>
       </div>
 
       {result.judgeReasoning && (

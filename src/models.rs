@@ -201,6 +201,10 @@ pub struct Prompt {
     pub rubric: Option<Value>,
     /// Human-readable description of what ideal output looks like.
     pub expected_output_format: Option<String>,
+    /// When true, evaluation fetches KB context from the context engine per question.
+    pub use_context: bool,
+    /// LightRAG project name to query, e.g. "my_project_v1".
+    pub context_project: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -220,6 +224,10 @@ pub struct CreatePromptRequest {
     pub rubric: Option<Value>,
     #[serde(default)]
     pub expected_output_format: Option<String>,
+    #[serde(default)]
+    pub use_context: Option<bool>,
+    #[serde(default)]
+    pub context_project: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -232,11 +240,17 @@ pub struct UpdatePromptRequest {
     pub domain: Option<String>,
     pub rubric: Option<Value>,
     pub expected_output_format: Option<String>,
+    pub use_context: Option<bool>,
+    pub context_project: Option<String>,
 }
 
 #[derive(Deserialize)]
 pub struct GeneratePromptRequest {
     pub description: String,
+    /// When set, skip generation entirely — preserve this text as the template
+    /// and only extract rubric/domain/variables metadata from it.
+    #[serde(default)]
+    pub existing_template: Option<String>,
 }
 
 /// Response from POST /api/prompts/generate.

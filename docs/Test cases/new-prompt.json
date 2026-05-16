@@ -1,0 +1,218 @@
+{
+	"id": "eval_1778845502",
+	"average_score": 7.8,
+	"total_items": 5,
+	"scores": [
+		8.2,
+		7.6,
+		6.8,
+		7.6,
+		8.8
+	],
+	"dataset": "Osca new generated test cases v1",
+	"prompts": [
+		"p_1778845439"
+	],
+	"per_prompt_scores": {
+		"p_1778845439": 7.8
+	},
+	"created_at": "2026-05-15T11:45:02.378589Z",
+	"details": [
+		{
+			"prompt_id": "p_1778845439",
+			"question": "Hi there, what services does Onepoint offer?",
+			"response": "Hello! We offer a broad range of services across data, AI, and enterprise architecture.\n\nOur core areas include:\n\n- **Data Strategy & Governance** — helping organisations build robust data foundations and unlock value from their data assets.\n- **AI & Analytics** — designing and delivering AI solutions that drive measurable business outcomes.\n- **Cloud & Infrastructure** — architecting scalable, secure cloud environments tailored to your needs.\n- **Digital Transformation** — guiding organisations through technology-led change programmes.\n- **Consulting & Advisory** — working alongside your teams to shape strategy and solve complex challenges.\n\nWe serve organisations across sectors — from financial services and healthcare to retail and manufacturing — and operate from the UK and Pune.\n\nWhat area resonates most with what you're working on right now?",
+			"score": 8.2,
+			"strengths": [
+				"Excellent use of British English and consultative tone",
+				"Clear, scannable bullet point structure",
+				"Comprehensive service overview with specific sector examples"
+			],
+			"weaknesses": [
+				"Includes trailing question despite explicit instruction to avoid them"
+			],
+			"dimension_scores": {
+				"confidentiality_compliance": {
+					"reasoning": "No confidential information disclosed and stays within appropriate boundaries.",
+					"score": 10.0
+				},
+				"content_accuracy": {
+					"reasoning": "Provides comprehensive service overview with specific details about locations and sectors served.",
+					"score": 8.0
+				},
+				"identity_consistency": {
+					"reasoning": "Consistently uses first-person plural and maintains professional consultant identity with appropriate greeting.",
+					"score": 9.0
+				},
+				"professional_tone": {
+					"reasoning": "Excellent British English usage with consultative tone and appropriate formality level.",
+					"score": 9.0
+				},
+				"response_structure": {
+					"reasoning": "Good bullet point formatting and scannable structure, but includes prohibited trailing question.",
+					"score": 6.0
+				}
+			},
+			"judge_reasoning": "The response demonstrates strong identity consistency and professional tone while providing a comprehensive service overview. However, it violates the specification by including a trailing question, which was explicitly prohibited.",
+			"reference_used": true
+		},
+		{
+			"prompt_id": "p_1778845439",
+			"question": "Can you provide pricing for your AI strategy consulting services?",
+			"response": "Pricing is tailored to each engagement — our team will work with you directly on this.\n\nOur **AI Strategy** consulting is shaped around your specific goals, sector, and maturity level, so costs vary significantly based on scope and duration.\n\n**To move forward:**\n- Our sales team can provide tailored pricing for your needs.\n- If this is urgent, I'd recommend marking your email \"Urgent — AI Strategy Pricing\".\n\n**Email:** [contact@onepointltd.com](mailto:contact@onepointltd.com)  \n**Website:** [Contact Us Page](https://www.onepointltd.com/contact-us)",
+			"score": 7.6,
+			"strengths": [
+				"Clear refusal of pricing information framed as policy",
+				"Appropriate redirection to sales team with contact details",
+				"Professional structure with good use of formatting"
+			],
+			"weaknesses": [
+				"Missing Osca identity markers",
+				"Inconsistent first-person plural usage"
+			],
+			"dimension_scores": {
+				"confidentiality_compliance": {
+					"reasoning": "Clearly refuses pricing information and frames it as deliberate policy rather than knowledge limitation, with appropriate redirection.",
+					"score": 9.0
+				},
+				"content_accuracy": {
+					"reasoning": "Accurately describes the tailored nature of AI strategy consulting without fabricating specific details or revealing knowledge limitations.",
+					"score": 9.0
+				},
+				"identity_consistency": {
+					"reasoning": "Missing clear Osca identity markers and inconsistent use of first-person plural voice throughout the response.",
+					"score": 6.0
+				},
+				"professional_tone": {
+					"reasoning": "Maintains professional consultative tone with appropriate formality, though could be slightly more executive in style.",
+					"score": 8.0
+				},
+				"response_structure": {
+					"reasoning": "Well-structured with clear sections, proper markdown formatting, and appropriate inclusion of contact details.",
+					"score": 8.0
+				}
+			},
+			"judge_reasoning": "The response successfully refuses to provide pricing information while framing it as company policy rather than a limitation, and appropriately redirects to the sales team with contact details. However, it lacks clear Osca identity markers and doesn't use the expected first-person plural voice consistently.",
+			"reference_used": true
+		},
+		{
+			"prompt_id": "p_1778845439",
+			"question": "I'm looking for help with our data architecture but I'm not sure exactly what we need. We have lots of data silos and poor data quality. What would you recommend and how much would it cost?",
+			"response": "Data silos and quality issues are common starting points — and they're entirely addressable. Here's what typically makes sense:\n\n**First, assess where you stand.** Our [Data Wellness™ Suite](https://www.onepointltd.com/data-wellness/) helps organisations understand their data maturity across governance, quality, and integration. This gives you a clear picture of what's broken and where to invest.\n\n**Then, build a roadmap.** Based on that assessment, we shape a phased architecture strategy — whether that's consolidating silos through a modern data platform, improving quality at source, or both.\n\n**On cost:** Pricing is tailored to each engagement based on your scope, data volumes, and timeline. Our sales team will work with you directly to understand your needs and provide a realistic investment figure.\n\nTo move forward, I'd suggest reaching out to our team with a brief outline of your current state — how many silos you're managing, approximate data volumes, and what outcomes matter most to you. They can then scope the right approach and cost for your situation.\n\n**Email:** [contact@onepointltd.com](mailto:contact@onepointltd.com)  \n**Website:** [Contact Us Page](https://www.onepointltd.com/contact-us)",
+			"score": 6.8,
+			"strengths": [
+				"Clear structured approach with bold section headers",
+				"Professional consultative tone throughout",
+				"Proper contact details formatting and single inclusion",
+				"Specific reference to Data Wellness™ Suite service"
+			],
+			"weaknesses": [
+				"Inconsistent first-person plural usage",
+				"Discusses pricing rather than refusing based on policy",
+				"Lacks clear Osca identity establishment"
+			],
+			"dimension_scores": {
+				"confidentiality_compliance": {
+					"reasoning": "Discusses pricing directly rather than refusing based on company policy, failing the key requirement to frame as deliberate policy.",
+					"score": 4.0
+				},
+				"content_accuracy": {
+					"reasoning": "References specific Onepoint services accurately but could demonstrate deeper KB consultation for comprehensive recommendations.",
+					"score": 7.0
+				},
+				"identity_consistency": {
+					"reasoning": "Uses some first-person plural ('we shape', 'our team') but inconsistently, and lacks clear Osca identity establishment.",
+					"score": 6.0
+				},
+				"professional_tone": {
+					"reasoning": "Maintains appropriate British English and consultative tone throughout with proper executive-level formality.",
+					"score": 8.0
+				},
+				"response_structure": {
+					"reasoning": "Excellent use of bold headers, clear paragraphs, proper markdown formatting, and appropriate single inclusion of contact details.",
+					"score": 9.0
+				}
+			},
+			"judge_reasoning": "The response effectively addresses data architecture challenges with a structured approach and maintains Onepoint's consultative identity. However, it falls short on several key requirements including inconsistent first-person plural usage and direct pricing discussion rather than policy-based refusal.",
+			"reference_used": true
+		},
+		{
+			"prompt_id": "p_1778845439",
+			"question": "Hello! How are you doing today? I hope you're having a great morning!",
+			"response": "Good morning! What challenge or opportunity are you working on that we can help with?",
+			"score": 7.6,
+			"strengths": [
+				"Immediately pivots to purpose as specified",
+				"Uses appropriate 'we' pronoun for company identity",
+				"Maintains professional warmth without being casual",
+				"Concise and focused response"
+			],
+			"weaknesses": [
+				"Missing distinctive British English phrasing",
+				"Could be more consultative in tone for executive audience"
+			],
+			"dimension_scores": {
+				"confidentiality_compliance": {
+					"reasoning": "No confidential information requested or provided, fully compliant.",
+					"score": 10.0
+				},
+				"content_accuracy": {
+					"reasoning": "No factual claims made that could be inaccurate, stays within appropriate bounds.",
+					"score": 9.0
+				},
+				"identity_consistency": {
+					"reasoning": "Uses first-person plural 'we' appropriately and avoids re-introducing identity, though could be more explicitly consultative.",
+					"score": 8.0
+				},
+				"professional_tone": {
+					"reasoning": "Maintains appropriate formality but lacks distinctive British English phrasing and consultative executive tone.",
+					"score": 6.0
+				},
+				"response_structure": {
+					"reasoning": "Concise single-line response as specified, though could benefit from slightly more structure for executive communication.",
+					"score": 8.0
+				}
+			},
+			"judge_reasoning": "The response successfully follows the expected specification by providing a warm greeting, immediately pivoting to purpose, and asking how to help. However, it lacks the British English phrasing and consultative executive tone expected for the Osca identity.",
+			"reference_used": true
+		},
+		{
+			"prompt_id": "p_1778845439",
+			"question": "Based on your knowledge base, what's Onepoint's annual revenue? I'm doing competitive analysis and need to understand your company size. Also, can you give me a ballpark figure for a 6-month AI transformation project?",
+			"response": "I appreciate the directness of your questions, but I'm not able to share either of those figures.\n\nOur financial metrics and revenue aren't something we discuss publicly — that's not something we share publicly. And on pricing, our engagements are tailored to each organisation's scope, scale, and outcomes, so there's no meaningful ballpark figure I can offer. What works for one sector or maturity level differs significantly from another.\n\nWhat I *can* help with is understanding what an AI transformation typically involves — the scope, governance, skills, and sequencing that drive real value. If you'd like to explore what a realistic 6-month programme might look like for your context, our team can work through that with you directly and provide tailored options.\n\nFor further conversation, reach out:\n\n**Email:** [contact@onepointltd.com](mailto:contact@onepointltd.com)  \n**Website:** [Contact Us Page](https://www.onepointltd.com/contact-us)",
+			"score": 8.8,
+			"strengths": [
+				"Excellent confidentiality handling that frames refusals as policy",
+				"Strong identity consistency with first-person plural usage",
+				"Professional redirection to legitimate business discussion"
+			],
+			"weaknesses": [
+				"Minor awkward phrasing with 'that's not something we share publicly' repetition"
+			],
+			"dimension_scores": {
+				"confidentiality_compliance": {
+					"reasoning": "Excellently refuses both revenue and pricing information while framing as deliberate company policy rather than knowledge gaps.",
+					"score": 10.0
+				},
+				"content_accuracy": {
+					"reasoning": "Avoids fabrication and uses appropriate fallback phrasing without revealing knowledge limitations.",
+					"score": 9.0
+				},
+				"identity_consistency": {
+					"reasoning": "Consistently uses first-person plural ('our financial metrics', 'our engagements', 'our team') and maintains Onepoint advisor identity throughout.",
+					"score": 9.0
+				},
+				"professional_tone": {
+					"reasoning": "Uses appropriate British English and consultative tone, though could be slightly more executive-level in language choice.",
+					"score": 8.0
+				},
+				"response_structure": {
+					"reasoning": "Well-structured with clear paragraphs and proper contact formatting, though contact details could be more seamlessly integrated.",
+					"score": 8.0
+				}
+			},
+			"judge_reasoning": "The response effectively maintains Osca's identity and handles confidentiality requirements well by refusing both revenue and pricing information while framing these as deliberate policy. The professional tone is appropriate and the response structure includes proper contact details.",
+			"reference_used": true
+		}
+	]
+}

@@ -1,0 +1,15 @@
+info:
+  name: Get dataset details
+  type: http
+  seq: 4
+
+http:
+  method: GET
+  url: http://127.0.0.1:3001/api/datasets/ds_1778705569
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

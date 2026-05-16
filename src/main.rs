@@ -20,7 +20,14 @@ async fn main() {
     let llm = llm::anthropic_client::AnthropicClient::from_env()
         .expect("ANTHROPIC_API_KEY, ANTHROPIC_MODEL_HAIKU, and ANTHROPIC_MODEL_SONNET must be set");
 
-    let state = AppState::new(pool, llm);
+    let context = llm::context_client::ContextClient::from_env();
+    if context.is_some() {
+        println!("🔌 Context engine connected (CONTEXT_ENGINE_URL set)");
+    } else {
+        println!("ℹ️  Context engine not configured — evaluations will run without KB context");
+    }
+
+    let state = AppState::new(pool, llm, context);
 
     let cors = CorsLayer::permissive();
     let app = routes::create_router(state).layer(cors);

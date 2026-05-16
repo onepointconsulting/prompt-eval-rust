@@ -1,0 +1,1560 @@
+Context API response: {
+	entities_context: [],
+	relations_context: [
+		{
+		src_id: 'Onepoint',
+		tgt_id: 'Woven By Onepoint',
+		description: 'Onepoint uses the term "Woven by Onepoint" to describe its advisory focus for 2026.<SEP>Onepoint uses the Woven by Onepoint method to advise leaders on technical innovations.<SEP>Woven by Onepoint is the primary AI consulting and delivery proposition offered by the organization Onepoint.',
+		keywords: 'advisory,advisory service,delivery,offering,strategy',
+		weight: 3,
+		source_id: 'chunk-64668653e1cae40782c78b62637704f9<SEP>chunk-e9ab6fff1c3be843e5f5bdf69d8077bf<SEP>chunk-2556948bd542d3b01f9f010b1ab66f7a',
+		file_path: '/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/CEO_-_Year-end_greetings.txt<SEP>/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Onepoint_s_20-year.txt<SEP>/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Messaging_&_positioning_refresh.txt',
+		created_at: 1776169969
+		},
+		{
+		src_id: 'Onepoint AI Workflows',
+		tgt_id: 'Personally Identifiable Information',
+		description: 'Onepoint AI Workflows are capable of detecting Personally Identifiable Information within data sets.',
+		keywords: 'data security,task automation',
+		weight: 1,
+		source_id: 'chunk-67066af30ed48a1b90757278f2d39650',
+		file_path: '/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Onepoint_AI_Ecosystem_for_Boomi_&_Boomi_World_Press_Releases_—_May_2025.txt',
+		created_at: 1776169932
+		},
+		{
+		src_id: 'Chris Wray',
+		tgt_id: 'Onepoint',
+		description: "Chris Wray is a speaker representing Onepoint's approach to AI and business value.<SEP>Chris Wray is a featured speaker representing Onepoint's AI offerings and technical strategy.<SEP>Chris Wray presents Onepoint's AI strategy and conducts live demos of their technological offerings.",
+		keywords: 'employment,expertise,professional representation,representation,strategy',
+		weight: 3,
+		source_id: 'chunk-57166883e4141217fca72cadac8fb9ff<SEP>chunk-8eae06f82d20f8d1cabcf7ae4cfc9625',
+		file_path: '/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Hiveminds_-_Friday_Talk_(Social_media).txt<SEP>/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Hiveminds_-_Session_transcript.txt',
+		created_at: 1776169907
+		},
+		{
+		src_id: 'Expert Profiles',
+		tgt_id: 'Onepoint Consulting',
+		description: 'Onepoint Consulting ingests expert profiles to create structured knowledge assets and internal matching solutions.',
+		keywords: 'knowledge acquisition,profiling',
+		weight: 1,
+		source_id: 'chunk-7c721789294343cb84b65c58b9d18ee9',
+		file_path: '/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/AI_overview_video.txt',
+		created_at: 1776169756
+		},
+		{
+		src_id: 'Boomi',
+		tgt_id: 'Onepoint',
+		description: 'Onepoint and Boomi collaborated to deliver a webinar and a specialized AI ecosystem for the Boomi platform.<SEP>Onepoint is the Boomi EMEA Teaming Systems Integrator Partner of the Year 2023 and uses Boomi as a key platform for AI-driven automation.<SEP>Onepoint is an award-winning implementation partner of Boomi and builds its AI Ecosystem on the Boomi platform.<SEP>Onepoint is an award-winning implementation partner of Boomi AI.',
+		keywords: 'Integration,Partnership,collaboration,implementation,partnership,technology integration',
+		weight: 4,
+		source_id: 'chunk-7a3c9ff89d85284fe0f56d0f7a042b83<SEP>chunk-ee3b6986d54112c55d80f62a284fae2b<SEP>chunk-67066af30ed48a1b90757278f2d39650<SEP>chunk-d864a7f2f335d4a024b24e6aa42e72f8',
+		file_path: '/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Boomi_Webinar_-_Sep_16_-_Promotion_content.txt<SEP>/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Onepoint_-_Tailored_Capability_Statement_for_MSDUK_v0.32.txt<SEP>/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Onepoint_AI_Ecosystem_for_Boomi_&_Boomi_World_Press_Releases_—_May_2025.txt',
+		created_at: 1776169930
+		},
+		{
+		src_id: 'Expert Matcher',
+		tgt_id: 'Expert Profiles',
+		description: 'The Expert Matcher uses a knowledge graph built from expert profiles to identify the right internal individuals for specific challenges.',
+		keywords: 'data ingestion,search capability',
+		weight: 1,
+		source_id: 'chunk-7c721789294343cb84b65c58b9d18ee9',
+		file_path: '/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/AI_overview_video.txt',
+		created_at: 1776169755
+		},
+		{
+		src_id: 'Expert Matcher',
+		tgt_id: 'Onepoint',
+		description: 'Onepoint showcased Expert Matcher as one of its in-house smart advisor tools.<SEP>Expert Matcher is an in-house smart advisor tool built by Onepoint to solve specific industry challenges.',
+		keywords: 'industry solution,product ownership',
+		weight: 2,
+		source_id: 'chunk-57166883e4141217fca72cadac8fb9ff',
+		file_path: '/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Hiveminds_-_Friday_Talk_(Social_media).txt',
+		created_at: 1776169793
+		},
+		{
+		src_id: 'Ian Minto',
+		tgt_id: 'Onepoint',
+		description: "Ian Minto notes his impression of Onepoint's technical delivery and conduct.<SEP>Ian Minto praises the conduct of Onepoint's staff.",
+		keywords: 'Client Interaction,Endorsement,Professional Review,Testimonial',
+		weight: 2,
+		source_id: 'chunk-ee3b6986d54112c55d80f62a284fae2b<SEP>chunk-2a11b11e6d8a8816c57de52731234fa5',
+		file_path: '/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Onepoint_-_Tailored_Capability_Statement_for_MSDUK_v0.32.txt',
+		created_at: 1776169812
+		},
+		{
+		src_id: 'Onepoint',
+		tgt_id: 'Shashin Shah',
+		description: "Shashin Shah is the Founder and CEO of Onepoint.<SEP>Shashin Shah is the Founder & CEO of Onepoint and represents the company in public sessions.<SEP>Shashin Shah is the Founder and CEO of Onepoint.<SEP>Shashin Shah is the Founder and CEO of Onepoint.<SEP>Shashin Shah is the Founder and CEO of Onepoint.<SEP>Shashin Shah works for Onepoint and presents the company's AI strategies.<SEP>Shashin Shah presents Onepoint's internal and client-facing AI applications and learnings.",
+		keywords: 'Founder,Leadership,employment,expertise,founder,leadership,professional representation,representation',
+		weight: 7,
+		source_id: 'chunk-d3a245589162373fa0dd3b05239a9234<SEP>chunk-57166883e4141217fca72cadac8fb9ff<SEP>chunk-2a11b11e6d8a8816c57de52731234fa5<SEP>chunk-f29fcc3d3f8bc2de135820f42455779c<SEP>chunk-bc1b4d8f925d44f8b385db341e1aea1e<SEP>chunk-8eae06f82d20f8d1cabcf7ae4cfc9625',
+		file_path: '/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Hiveminds_-_Friday_Talk_(Social_media).txt<SEP>/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Onepoint_-_Tailored_Capability_Statement_for_MSDUK_v0.32.txt<SEP>/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Onepoint_s_20-year_-_LinkedIn_article.txt<SEP>/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/EB100_National_Awards_2026_-_PR.txt<SEP>/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Hiveminds_-_Session_transcript.txt',
+		created_at: 1776169906
+		},
+		{
+		src_id: 'Expert Matcher',
+		tgt_id: 'LinkedIn',
+		description: 'The Expert Matcher tool utilizes extracted LinkedIn profiles to match consultants to specific client requirements.',
+		keywords: 'data sourcing,profile extraction',
+		weight: 1,
+		source_id: 'chunk-57aabbc8c1107f7d6c242ab192332d75',
+		file_path: '/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Hiveminds_-_Session_transcript.txt',
+		created_at: 1776169907
+		},
+		{
+		src_id: 'Onepoint',
+		tgt_id: 'Woven by Onepoint',
+		description: 'Onepoint branded its technology advisory services for 2026 as Woven by Onepoint.<SEP>Onepoint uses "Woven by Onepoint" as a primary narrative for its AI consulting and delivery services.<SEP>Woven by Onepoint is the specific AI consulting and delivery proposition offered by Onepoint.',
+		keywords: 'advisory services,delivery framework,marketing narrative,service offering,strategy',
+		weight: 3,
+		source_id: 'chunk-121cf409cb41f87446c009fad680dad8<SEP>chunk-842f468293e62cf44e4f2d260656a2ee<SEP>chunk-80e426af382e6d300aec43acf79e73af',
+		file_path: '/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Year-end_greetings__ActiveCampaign_Email.txt<SEP>/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Messaging_&_positioning_refresh.txt<SEP>/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Onepoint_-Standard_Description.txt',
+		created_at: 1776169985
+		}
+	],
+	text_units_context: [
+		{
+		reference_id: '2',
+		content: 'Shah, Founder & CEO of Onepoint, in partnership with the Hivemind Network, as part of their Friday First talks series. In this conversation, Shashin will share real-world insights on how AI is driving meaningful business transformation at scale.\n' +
+		  '\n' +
+		  '\n' +
+		  'Title: Making AI work for you: How Onepoint does it\n' +
+		  '\n' +
+		  'Date: Friday,
+			01 August 2025\n' +
+		  '\n' +
+		  'Time: 10: 00 UK | 11: 00 CEST\n' +
+		  '\n' +
+		  'What you will learn:\n' +
+		  '\n' +
+		  'In this session, Shashin will give a live walkthrough of Onepoint’s AI-powered ecosystem, demonstrating real-world tools and frameworks that help global enterprises move from legacy ways of working to AI-ready architectures, solutions, and ecosystems.',
+		file_path: '/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Hiveminds_-_Friday_Talk_(Social_media).txt',
+		chunk_id: 'chunk-d3a245589162373fa0dd3b05239a9234',
+		links: [],
+		image: 'original_input/01_New Content/Hiveminds - Friday Talk (Social media).png',
+		last_modified: '2026-04-14T12: 33: 48+00: 00'
+		},
+		{
+		reference_id: '1',
+		content: 'Title: Making AI work for you: How Onepoint does it\n' +
+		  '\n' +
+		  'Summary:\n' +
+		  'AI is transforming the way enterprises operate. But are you harnessing its full potential? In this session, Shashin Shah and Chris Wray give a glimpse into how Onepoint applies AI for business use cases to create value for our clients and ourselves.\n' +
+		  '\n' +
+		  "What you'll learn\n" +
+		  '\n' +
+		  "- Making AI work: While most AI conversations dwell on possibilities, this session dives into practical outcomes. Learn how AI can streamline operations, reducing costs and enhancing efficiency. We unpack Onepoint's proven approach to applying AI with a sharp focus on business value, not just the tech.\n" +
+		  '\n' +
+		  '- AI offerings to turn ideas into reality: Discover how Onepoint’s AI Expert services and AI Co-Lab turn ideas into scalable solutions. Witness how our pre-built series of AI Apps and the engine that underpins them help clients to adopt AI faster without starting from scratch.\n' +
+		  '\n' +
+		  '- Real-world applications: Explore how AI can be applied to diverse domains through practical use cases. Get an inside look at how our Data Wellness tool (Onepoint D-Well™) uses AI to assess and improve enterprise data management and the Responsible AI tool (Onepoint Res-AI™), curated with expert knowledge.\n' +
+		  '\n' +
+		  '- Future implications: Learn how to move confidently from legacy ways of working to AI-ready frameworks. Walk away with practical insights on implementing AI responsibly and how to prepare your organisation for the next wave of AI innovation.\n' +
+		  '\n' +
+		  'Featured speakers\n' +
+		  '- Shashin Shah\n' +
+		  '\n' +
+		  '- Chris Wray\n' +
+		  '\n' +
+		  'Who is this for\n' +
+		  '\n' +
+		  'This session is ideal for business leaders, non-technical staff, AI and data specialists, and technology leaders looking to maximise the potential of AI and unlock real value. Business leaders and decision-makers will also benefit from the discussion on driving innovation with AI.\n' +
+		  '\n' +
+		  'Session transcript:\n' +
+		  '\n' +
+		  'Si Sultan\n' +
+		  '\n' +
+		  "We've got a little bit of a new platform to contend with; hopefully, fingers crossed. The technology will be with us today and working with us. If not, then please indulge us. Give us some leeway on that. If everybody can mute what they’re saying while Shashin and Chris are talking this morning, we’ll have it. We’ll have time for a Q&A session at the end. And I would ask, please, that you hold your questions, because there’s a lot of material to cover, and I don’t want to steal their thunder. So I will hand over to Shashin now and put myself on mute. Shashin.\n" +
+		  '\n' +
+		  'Shashin Shah\n' +
+		  '\n' +
+		  'Thank you, Si. Good morning, everybody, and thank you for giving us this opportunity to share some of our learnings and experiences in applying AI, both internally within the organisation and also for some of our clients. So this morning, basically, it’s Chris Wray who will actually be doing a joint presentation with me. So what is it that we want to cover? At a very high level, I’ll explain in detail exactly what we’re covering today. We’ll introduce brief information on the company. We’ll then talk a little bit about AI in terms of what we’ve been doing and also sort of present our strategy and explanation of some of our services. But the majority of the time, frankly, is going to be spent on trying to show demos, which brings out the learnings from AI and artificial intelligence to some real-life problems. So we’ll spend the bulk of the time on that. We’ll then talk a little bit about some of our offerings and how we’re taking those to the market for some of our clients, and then, of course, a question and answer session towards the end. So in terms of what we are covering today, really, Chris and I will give you an overview of how we are applying AI for business use cases to create real value for our clients and ourselves. We’ll walk through and demo a series of examples. We want to avoid death by PowerPoint. So we’ll jump into some live demos. And I hope the demos will cooperate. They always have a tendency to do their own thing during live demos. And these are some of the things we actually want to try and present. In a sense, it’s based on some real-world tools, architectures, and frameworks we’re using. We’re actually looking at how to apply AI to solve legacy issues and, of course, have architectures that can deliver\n' +
+		  '\n' +
+		  'Cannot convert  \n' +
+		  'The image quality is insufficient for accurate text extraction.Here’s the extracted text in markdown format:\n' +
+		  '\n' +
+		  '\n' +
+		  "Second is we've developed an ontology or knowledge framework, which are the eight boxes to summarize the major issues involved in each in Data Management. Those two things together. Plus we have a confidence calculator, which is this little indicator on the right. So we continue using the tool until we get sufficient information and context to know that we can give a good answer. So for those familiar with all the challenges of prompt engineering and LLMs, that's making sure we've got a really good, sophisticated prompt before we run the query. So in this scenario, we're going to imagine that the client has come on here. They want to work broadly what they need to do about their data ecosystem, and their biggest concern is poor data quality. So Shashin will click poor data quality as the option in this scenario, the inquiry logic at the top, which goes through specific aspects and generates the questions. That's all generated by the LLM tool. But critically, in this situation, all the data and knowledge which drives this tool is proprietary to Onepoint. We do not go out on the web, and the tool is designed to have proprietary data sources in it. So, having understood that data quality is the issue, the next question is, what specific aspects? So let's imagine we're struggling with the accuracy of data and also completeness of those first two so Shashin will go to the next level. You'll see at this point we also have the option if we wish to not only choose from the suggested options, but also put in",
+		file_path: '/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Hiveminds_-_Session_transcript.txt',
+		chunk_id: 'chunk-8eae06f82d20f8d1cabcf7ae4cfc9625',
+		links: [],
+		image: 'original_input/01_New Content/Hiveminds - Session transcript.png',
+		last_modified: '2026-04-14T12: 33: 48+00: 00'
+		},
+		{
+		reference_id: '2',
+		content: 'Cannot convert  \n' +
+		  'Reason: The image contains only a blank space with some minimal text that does not provide any substantive content for conversion.\n' +
+		  'Making AI work for you: How Onepoint does it\n' +
+		  '\n' +
+		  'AI is transforming the way enterprises operate. But are you harnessing its full potential? In this session, Shashin Shah and Chris Wray give a glimpse into how Onepoint applies AI for business use cases to create value for our clients and ourselves.\n' +
+		  '\n' +
+		  "What you'll learn\n" +
+		  '\n' +
+		  '- **Making AI work:** While most AI conversations dwell on possibilities, this session dives into practical outcomes. Learn how AI can streamline operations, reducing costs and enhancing efficiency. We unpack Onepoint’s proven approach to applying AI with a sharp focus on business value, not just the tech.\n' +
+		  '\n' +
+		  '- **AI offerings to turn ideas into reality:** Discover how Onepoint’s AI Expert services and AI Co-Lab turn ideas into scalable solutions. Witness how our pre-built series of AI Apps and the engine that underpins them help clients to adopt AI faster without starting from scratch.\n' +
+		  '\n' +
+		  '- **Real-world applications:** Explore how AI can be applied to diverse domains through practical use cases. Get an inside look at how our Data Wellness tool (OnepointD-Well™) uses AI to assess and improve enterprise data management and the Responsible AI tool (OnepointRes-ATM) curated with expert knowledge, helps you to work through the various implications of using AI in business solutions.\n' +
+		  '\n' +
+		  '- **Future implications:** Learn how to move confidently from legacy ways of working to AI-ready frameworks. Walk away with the practical insights on implementing AI responsibly and how to prepare your organization for the next wave of AI innovation.\n' +
+		  '\n' +
+		  'Featured speakers\n' +
+		  '\n' +
+		  'Shashin Shah  \n' +
+		  'Chris Wray\n' +
+		  '\n' +
+		  'Who is this for\n' +
+		  '\n' +
+		  'This session is ideal for business leaders, non-technical staff, AI and data specialists, and technology leaders looking to maximize the potential of AI and unlock real value. Business leaders and decision-makers will also benefit from the discussion in driving innovation with AI.\n' +
+		  '\n' +
+		  'Evaluation Warning: The document was created with Spire.Doc for Python.\n' +
+		  '\n' +
+		  'Subject:\n' +
+		  "- AI tools, use cases, & impact - Watch Onepoint's approach in action\n" +
+		  '\n' +
+		  'We had an engaging (and we hope insightful) session recently in partnership with the HiveMind Network as part of their First Friday Talks series.\n' +
+		  '\n' +
+		  'A key focus of the discussion was exploring how to build AI-powered, domain-specific ‘smart assistants’ that organisations can immediately put to use and drive real business value from.\n' +
+		  '\n' +
+		  'We also showcased some of our in-house smart advisor tools, including D-Well, Res-AI, and Expert Matcher, built to solve specific challenges across industries.\n' +
+		  '\n' +
+		  'These smart tools are:\n' +
+		  '- Purpose-built to address real-world business needs\n' +
+		  '- Designed to operate within secure enterprise environments\n' +
+		  '- Scalable and adaptable to your data and workflows\n' +
+		  '\n' +
+		  'The feedback spoke for itself. Here’s what attendees had to say during the session:\n' +
+		  '“Love the clarity and consistency of your approach; it makes it easy to engage and get started with confidence!”\n' +
+		  '\n' +
+		  '“I absolutely LOVED the demos this morning. So impressed by what you’ve built (and I know how much work must have gone into the design and implementation!)”\n' +
+		  '\n' +
+		  'In case you missed the session or wish to revisit it, catch the full recording here: [Onepoint Tech Talk
+			](https: //www.onepointltd.com/techtalk/making-ai-work-for-you-how-onepoint-does-it/)\n' +
+		  '\n' +
+		  'Making AI work for you: How Onepoint does it\n' +
+		  '\n' +
+		  'Want to explore the tools we showcased in the session or start your AI journey with Onepoint? Just hit reply to set up a discussion with our experts.\n' +
+		  '\n' +
+		  'We would love to connect and show you how our AI ecosystem helps teams adopt AI faster, with real impact.\n' +
+		  '\n' +
+		  'Discover more at [onepointltd.com/innovate-with-ai-more
+			](http: //onepointltd.com/innovate-with-ai-more)\n' +
+		  '\n' +
+		  'Until next time,\n' +
+		  '[Suresh’s sign-off block, used in previous TechTalk campaigns within ActiveCampaign
+			]\n' +
+		  '\n' +
+		  'Cannot convert\n' +
+		  'Reason: The image contains text that is not suitable for extraction due to visual quality or format.\n' +
+		  '\n' +
+		  'LinkedIn caption\n' +
+		  '\n' +
+		  'A big thank you to everyone who joined us for the HiveMinds session with Shashin Shah and Chris Wray!\n' +
+		  '\n' +
+		  'Your time, questions, and enthusiasm made it a truly impactful conversation.\n' +
+		  '\n' +
+		  'We explored what it really takes to make AI work, beyond the buzzwords. The discussion was all about turning potential into performance.\n' +
+		  '\n' +
+		  'We hope you walked away with fresh perspectives and practical insights on how to move beyond AI hype and architect solutions that truly drive business impact.\n' +
+		  '\n' +
+		  'Want to dive deeper?\n' +
+		  '\n' +
+		  'If you are looking to accelerate your AI journey or simply have more questions, we would love to connect.\n' +
+		  '\n' +
+		  'Missed the session or want to revisit it?\n' +
+		  '\n' +
+		  'Catch the full recording here: https: //www.onepointltd.com/techtalk/making-ai-work-for-you-how-deep-does-it-?\n' +
+		  '\n' +
+		  'For more insights, visit onepointltd.com/innovate-with-ai-more\n' +
+		  '\n' +
+		  '#EnterpriseAI #DigitalTransformation #Webinar #AIReady\n' +
+		  '\n' +
+		  '#OnepointTechTalk #OnepointConsulting\n' +
+		  '\n' +
+		  'Evaluation Warning: The document was created with Spire.Doc for Python.\n' +
+		  '\n' +
+		  '## Hiveminds Talk - Active Campaign\n' +
+		  '\n' +
+		  '**Subject:**\n' +
+		  "- You are invited: Inside Onepoint's AI Journey — live webinar with Shashin Shah\n" +
+		  '\n' +
+		  '**Body:**\n' +
+		  'AI is transforming the way enterprises operate.\n' +
+		  '\n' +
+		  'But are you harnessing its full potential?\n' +
+		  '\n' +
+		  'Join us for an exclusive session with Shashin Shah, Founder & CEO of Onepoint, in partnership with the Hivemind Network, as part of their Friday First talks series. In this conversation, Shashin will share real-world insights on how AI is driving meaningful business transformation at scale.\n' +
+		  '\n' +
+		  '\n' +
+		  'Title: Making AI work for you: How Onepoint does it\n' +
+		  '\n' +
+		  'Date: Friday,
+			01 August 2025\n' +
+		  '\n' +
+		  'Time: 10: 00 UK | 11: 00 CEST\n' +
+		  '\n' +
+		  'What you will learn:\n' +
+		  '\n' +
+		  'In this session, Sh',
+		file_path: '/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Hiveminds_-_Friday_Talk_(Social_media).txt',
+		chunk_id: 'chunk-57166883e4141217fca72cadac8fb9ff',
+		links: [],
+		image: 'original_input/01_New Content/Hiveminds - Friday Talk (Social media).png',
+		last_modified: '2026-04-14T12: 33: 48+00: 00'
+		},
+		{
+		reference_id: '3',
+		content: 'but the way they conducted themselves.\n' +
+		  '>\n' +
+		  '> — Ian Minto, Digital Delivery Leader, Parker Meggitt\n' +
+		  '\n' +
+		  '> Onepoint has got great people with integrity, in addition to their great skill set. It’s a combination that is really valued.\n' +
+		  '>\n' +
+		  '> — Peter Wardle, Launch Director, UK Broadband\n' +
+		  '\n' +
+		  '## Enterprise-grade, yet boutique\n' +
+		  '\n' +
+		  "Finding smaller, agile suppliers that can effectively operate within a large enterprise context, bring innovative ideas, and maintain a steadfast focus on delivering digital business outcomes can be challenging. Many large organisations default to the 'usual suspects', potentially missing out on the nimbleness and high-value engagement a specialist partner like Onepoint can provide.\n" +
+		  '\n' +
+		  'As an award-winning, values-driven boutique technology consultancy, Onepoint specialises in enabling digital transformations powered by architecture, data, and AI. We partner with global clients who are seeking high-impact, enterprise-grade advice and IT services to realise their most critical digital transformation priorities. Our expertise in the strategic direction of Generative AI, Applied AI, Cloud Computing, and Robotic Process Automation (RPA) makes us well-equipped to deliver on complex technology initiatives.\n' +
+		  '\n' +
+		  '### What this means for our clients\n' +
+		  '\n' +
+		  "Clients, like the ones shown below, who are looking beyond the 'usual suspects' confidently consider Onepoint as a low-risk, high-value option for their most critical digital, data, and advanced technology initiatives. As a smaller, specialist supplier, we bring fast response times and nimbleness to innovation and delivery.\n" +
+		  '\n' +
+		  '![Client Logos
+			](Client_Logos_Image_Here)\n' +
+		  '\n' +
+		  '- Flight Centre\n' +
+		  '- Network Rail\n' +
+		  '- Landsec\n' +
+		  '- Parker\n' +
+		  '- Moto\n' +
+		  '- Lightsource bp\n' +
+		  '- Meggitt\n' +
+		  '- TUI GROUP\n' +
+		  '- VisionExpress\n' +
+		  '\n' +
+		  '\n' +
+		  `(Note: The text for "Client Logos" is a placeholder; without seeing the actual logos, I can't convert that part.)\n` +
+		  '## Our accelerators\n' +
+		  '\n' +
+		  '### Start with what works\n' +
+		  '\n' +
+		  'Embarking on a new technology initiative often means starting from a blank page, a process that introduces significant risk, cost, and uncertainty. Custom builds can be slow, expensive, and frequently fail to incorporate the lessons learned from years of industry best practice, forcing organisations to reinvent the wheel for foundational capabilities.\n' +
+		  '\n' +
+		  'Our approach to delivery is a key differentiator that mitigates these risks. We leverage a powerful ecosystem of our own pre-built and proven accelerators — including proprietary tooling, frameworks, and methods. We call this Accelerated by Onepoint.\n' +
+		  '\n' +
+		  '---\n' +
+		  '\n' +
+		  '### What this means for our clients\n' +
+		  '\n' +
+		  'This provides a powerful dual advantage: the speed and consistency of our proprietary accelerators where they are the right fit, combined with the assurance of independent, unbiased advice on the best overall technology choices for your specific challenge. You can be confident that the proposed solution is the most effective one for you.\n' +
+		  '\n' +
+		  '## A disciplined path to value\n' +
+		  '\n' +
+		  'The most common reason technology initiatives fail is not a lack of vision, but the absence of a clear, disciplined path to value. Without a structured way of working, projects can lack clarity and governance, failing to translate ambitious goals into tangible, delivered solutions that create a meaningful business impact.\n' +
+		  '\n' +
+		  'Our credibility is built not just on our technical expertise, but on our proven methods for delivering value.\n' +
+		  '\n' +
+		  '**Onepoint Valuepath™** is our proprietary method for rapidly validating initiatives, designed to deliver a tangible Proof of Value prototype within 2 to 6 weeks.\n' +
+		  '\n' +
+		  'For larger-scale builds, the **Onepoint Rapid Value Method™** is our premier, end-to-end delivery framework for building and scaling business-critical enterprise solutions.\n' +
+		  '\n' +
+		  '### What this means for our clients\n' +
+		  '\n' +
+		  'Our disciplined methods provide predictability, transparency, and confidence. Clients can de-risk major investments by first validating concepts with our Onepoint Valuepath™ approach, and then scale those initiatives with a clear, structured, and enterprise-grade delivery framework that ensures a successful outcome.\n' +
+		  '\n' +
+		  '03\n' +
+		  '\n' +
+		  'Proposed first step\n' +
+		  '\n' +
+		  'Your journey starts here\n' +
+		  '\n' +
+		  'Embarking on a major transformation initiative can feel daunting, and this challenge is often amplified when considering a new delivery partner. The question becomes how to start without committing to a large, high-risk project, while also building the trust and confidence that you have selected the right partner for the journey. This is why it is essential to build evidence – not just for the proposed solution, but for the new partnership itself.\n' +
+		  '\n' +
+		  'To quickly validate your concepts and demonstrate tangible business value, we recommend starting with our Onepoint Valuepath™ approach. This method is specifically designed to kickstart digital initiatives with minimal cost, effort, and risk, delivering a tangible Proof of Value prototype in just 2 to 6 weeks.\n' +
+		  '\n' +
+		  'What this means for our clients\n' +
+		  '\n' +
+		  'The Onepoint Valuepath™ approach provides a low-risk, high-impact way to begin your transformation journey. It delivers a tangible, evidence-based foundation for making larger investment decisions and builds the confidence needed to move forward with both the solution and the partnership. We would be delighted to schedule a Discovery Call to discuss your challenges and opportunities in more detail.\n' +
+		  '\n' +
+		  '\n' +
+		  'Thank you\n' +
+		  '\n' +
+		  'We would be delighted to set up a Discovery Call to understand your challenges and opportunities\n' +
+		  '\n' +
+		  'Shashin Shah  \n' +
+		  'Founder & CEO  \n' +
+		  'shashin.shah@onepointltd.com  \n' +
+		  '+44 7801 495 737\n' +
+		  '\n' +
+		  '# ONEPOINT\n' +
+		  'Your trusted companions for the digital journey™\n' +
+		  '\n' +
+		  'Onepoint is an award-winning, architecture-led boutique technology consultancy.\n' +
+		  '\n' +
+		  'We craft and manage impactful AI-powered, data-driven, enterprise-grade solutions for global clients. For over 20 years, we have been values-driven and committed to delivering enduring social and business value.\n' +
+		  '\n' +
+		  'London | Manchester | Pune\n' +
+		  '\n' +
+		  'onepointltd.ai  \n' +
+		  'hello@onepointltd.com',
+		file_path: '/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Onepoint_-_Tailored_Capability_Statement_for_MSDUK_v0.32.txt',
+		chunk_id: 'chunk-2a11b11e6d8a8816c57de52731234fa5',
+		links: [],
+		image: 'original_input/01_New Content/Onepoint - Tailored Capability Statement for MSDUK v0.32.png',
+		last_modified: '2025-10-13T14: 29: 25+00: 00'
+		},
+		{
+		reference_id: '6',
+		content: "# Onepoint recognised as one of the UK's Top 40 SMEs\n" +
+		  '\n' +
+		  "LONDON, UNITED KINGDOM- 21, March 2026 – Onepoint, the award-winning AI and technology consultancy, has been named as one of the UK's leading small and medium-sized enterprises.\n" +
+		  '\n' +
+		  "The Elite Business Top 100 SMEs (EB100) National Awards, hosted by Elite Business Magazine, celebrate the UK's most exceptional SME businesses. The award recognises organisations that demonstrate strategic leadership, innovation, resilience, and long-term impact. Among hundreds of entries across diverse sectors, Onepoint was ranked 37th.\n" +
+		  '\n' +
+		  "> Being named among the UK's top 40 SMEs is a proud moment for the entire Onepoint team.\n" +
+		  '> \n' +
+		  '> **Shashin Shah, Founder & CEO.**\n' +
+		  '> \n' +
+		  '> **ONEPOINT**\n' +
+		  '>\n' +
+		  '> This sensational achievement reflects the principles that have shaped Onepoint for over two decades — continuous innovation, measurable impact for clients, and a sustained commitment to community.\n' +
+		  '>\n' +
+		  '> Innovation is a central component of the EB100 assessment and is one of the main reasons why Onepoint was selected.\n' +
+		  '>\n' +
+		  '> **From friction to smart workflow – an example of Onepoint’s innovation**\n' +
+		  '>\n' +
+		  '> Aerospace and Defence organisations operate under some of the most demanding compliance requirements. Legacy in infrastructure, fragmented data silos, large volumes of unstructured content, and manual compliance processes often limit the ability of organisations to act quickly. In addition, the urgency of modern conflict has drastically increased the need to reduce the time it takes to go from ‘the lab to theatre’.\n' +
+		  '>\n' +
+		  '> Onepoint saw the standards compliance problem differently. This led to the development of Onepoint ConvertWise™, an intelligent workflow accelerator that automates the compliance content preparation, conversion, and validation process, governed by humans.\n' +
+		  '>\n' +
+		  '> Onepoint ConvertWise™ delivers monumental efficiency gains for organisations under immense pressure to innovate and deliver faster.\n' +
+		  '>\n' +
+		  '> **SME innovation at scale**\n' +
+		  '>\n' +
+		  "> Onepoint partnered with Pennant International Group PLC to embed Onepoint ConvertWise™ into the services Pennant offers to the aerospace, defence and heavy industry sectors. The collaboration demonstrates Onepoint's capabilities and how an\n" +
+		  '\n' +
+		  '\n' +
+		  "SME can contribute fresh thinking and acceleration to one of the world's most established sectors.\n" +
+		  '\n' +
+		  '## Technology with purpose\n' +
+		  '\n' +
+		  "Beyond growth and innovation, Onepoint continues to prioritise its mission to add value to society. The balance between commercial delivery and social contribution has been part of Onepoint's philosophy since its founding.\n" +
+		  '\n' +
+		  'The commitment has continued through sustained support for charitable organisations, programmes that create employment opportunities for the underprivileged, and investment in apprentices and interns entering the technology industry.\n' +
+		  '\n' +
+		  '**Shashin Shah, Founder & CEO of Onepoint**, commented, “Being named among the UK’s top 40 SMEs is a proud moment for the entire Onepoint team.\n' +
+		  '\n' +
+		  'It reflects a belief that has guided us from the beginning: that the true value of technology lies in bridging the gap between ambition and measurable outcomes.”\n' +
+		  '\n' +
+		  '## About Onepoint\n' +
+		  '\n' +
+		  'Onepoint is an award-winning, architecture-led technology consultancy, headquartered in London. For over 20 years, we have been values-driven and committed to delivering enduring social and business value. We craft and manage impactful AI-powered, data-driven, enterprise-grade solutions for global clients. Find out more at [onepointltd.ai
+			](http: //onepointltd.ai).\n' +
+		  '\n' +
+		  '## About Onepoint ConvertWise™\n' +
+		  '\n' +
+		  'Onepoint ConvertWise™ simplifies the complex and resource-intensive process of converting legacy technical documentation. A smart workbench, ConvertWise automates the conversion into S1000D-compliant modular formats, significantly reducing time, cost, and complexity for industries like aerospace and defence. Find out more at [onepointltd.com/convertwise
+			](http: //onepointltd.com/convertwise).\n' +
+		  '\n' +
+		  '## Contact\n' +
+		  '\n' +
+		  '**Suresh Sharma,**  \n' +
+		  'Chief Customer Officer\n' +
+		  '\n' +
+		  'Email: suresh@onepointltd.com  \n' +
+		  'Mobile: +44 7947 947 905  \n' +
+		  '\n' +
+		  'Evaluation Warning: The document was created with Spire.Doc for Python.',
+		file_path: '/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/EB100_National_Awards_2026_-_PR.txt',
+		chunk_id: 'chunk-bc1b4d8f925d44f8b385db341e1aea1e',
+		links: [],
+		image: 'original_input/01_New Content/EB100 National Awards 2026 - PR.png',
+		last_modified: '2026-04-14T12: 33: 48+00: 00'
+		},
+		{
+		reference_id: '1',
+		content: "used exactly for that constraint that you've indicated. It's surprising what's the word? Really? See the number of people who don't realise how their content is being ingested into the tools. In fact, those who have mains may have seen in the last few days, people have realised that if you share your conversations on ChatGPT, which some people have done because they think they're opting out, those conversations are now cached by Google, and they may well come up in another AI overview from somebody else. So you need to be very, very careful with your bounded LLM usage.\n" +
+		  '\n' +
+		  'Si Sultan\n' +
+		  '\n' +
+		  "Agreed completely and along the same lines of the buzzwords that are out there to scare the pants off the normal user, how are you dealing with hallucinations in whatever is created from the client, let's say, stepping through the assessments and putting their information in?\n" +
+		  '\n' +
+		  'Chris Wray\n' +
+		  '\n' +
+		  "Well, there's two things we do, some restrictions on some of the questions that can go in if people go off scope, so you don't want to be asking the wrong question of the wrong tool. So it's important for us to filter the prompts, and that's partly due to that confidence indicator on the right that what we're doing there is making sure that the quality of the prompt and the context that's being provided is really reducing down to a very low level, the hallucination. Also, remember, we're not trying here to navigate through all the sea of information that's sat in an LLM, where what you're interacting with is a curated body of knowledge which only covers the domain. So whilst I might want to go into the Responsible AI tool and ask who will win the Premier League next year, it won't give me an answer because it does not know about football, so it only knows about Responsible AI, so the risk of hallucination for those two factors, one is the confidence calculation. And second is the bounded knowledge. And this is really exciting, I think, for consultants. I mean.\n" +
+		  '\n' +
+		  "I've spent a lifetime in consultancy, and the fact that you can curate your own body of knowledge and become an expert in a field and then use the AI and LLM tools to improve the interface with that knowledge is really exceptional. So I mean, it's a wider topic, probably for another day, but you cannot create audio files from the content that you have. And I think what we're really showcasing with the smart advisor tools here is what could be a future approach for consultants generally, because as a self-employed or as a small consultancy firm, you can now have the footprint of a very large consultancy organization. And if your expertise is good and curated and deep and detailed, you can create real value for clients incredibly quickly. And you could choose that in a to do that in an online way, or, as we've described here, as diagnostic tools.\n" +
+		  '\n' +
+		  'Si Sultan\n' +
+		  '\n' +
+		  "Agreed. And there are lots of people who talk about football who don't have the first scooby about it. So that's not necessarily, that's not a unique thing. Last question, I promise. And then I will shut up and open the floor to other people actually asking questions when you so what I’ve found in my experience, is that people say, Well, you just press a button, and then the magic happens, right? So when they fill in the assessments and they get their key finding report, do they then have sticker shock that the implementation is going to take three to six months, and it's going to require some of their time, and it's going to require their staff to be trained on things like that. Is that how we have it? You both have been finding that?\n" +
+		  '\n' +
+		  'Chris Wray\n' +
+		  '\n' +
+		  "Well, we've, we've sort of, we found this gives us the starter pack. We don't think we're trying to take away all the consulting activities and make them totally automated. This is a context creating and scope defining. So a really ideal scenario would be we would use one or more of these tools at the beginning of an engagement. They might then feed into a workshop, and then we might get into some of the actual deep work on consulting decision making. But I think what Shashin and I have both found in improving our own personal AI tool, AI capabilities, we can then spin back into AI by using it for planning purposes and to create roadmaps and communication material once we've done the heavy thinking. I don't know, Shashin, would you have a view on how that works for you?\n" +
+		  '\n' +
+		  'Shashin Shah\n' +
+		  '\n' +
+		  "Yeah. I mean, I think what we found really is that it allows potential clients and users to try and understand the focus they need to have for their transformation programs. Because right now you could spend a lot of time, purely from a consulting point of view, talking about my network, for example. So you could spend a lot of time trying to discover what actually is the client’s problem. And this way, at least in the data management space of responsible AI, you would actually get good input as to what their concerns are and what are the challenges they're facing. And that then fits quite nicely into a personal face to face type discovery workshop, because you've got the groundwork already done, and we find that process just speeds it up really. So it says the consultant's time. It allows the client to understand and experiment without sort of having to deal with consultants up front. And then if both parties find value in it, then they actually progress to",
+		file_path: '/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Hiveminds_-_Session_transcript.txt',
+		chunk_id: 'chunk-96f4d3401aba04c29a35bcd5b7a345b3',
+		links: [],
+		image: 'original_input/01_New Content/Hiveminds - Session transcript.png',
+		last_modified: '2026-04-14T12: 33: 48+00: 00'
+		},
+		{
+		reference_id: '1',
+		content: 'third-party consultant, Tuli Twaas, who’s an expert lawyer on data, PI and ethics, with SITA, a large technology infrastructure provider to the travel industry. And this tool has been created from curating the knowledge that’s available on responsible AI and creating our own ontology framework the eight boxes. What we’re able to do now having built this tool is we’ve underpinned it with an AI engine so we can create a version of this tool for any domain or content. We can flex it for the number of boxes that might be shown. We can vary the confidence level on the inquiry happy face, and we can add different features and functions and map it to different consultants. So this could be quite interesting as an example for either what Hive mind itself might choose to have for diagnostics on high design or high change or high tech, or potentially individually, as consultants, there might be merit in having a version of this for your particular area of expertise. So that’s something we’re able to do incredibly quickly now, with the power of the AI engine.\n' +
+		  '\n' +
+		  'What I’ll now move to is the next demo, which is our Expert Matcher. So this is a more sophisticated version of the consulting matching tool that we saw before. This is actually an alpha version that’s being built for a major law firm for Tansey, which has about 250 consultants. And the difficulty often is finding the right consultant for the right piece of specialist work that can be internally in the organisation, or potentially could be externally with a client accessing the website and looking through CVs and trying to find out who’s relevant. This tool, very interestingly, uses the LinkedIn profiles extracted and then uses a matching approach, similar to the data wellness and responsible AI tools, to get to a good conclusion as to who the best consultant might be. So\n' +
+		  '\n' +
+		  "we'll walk through this with an example. So let's imagine I'm looking for a lawyer to help with a major M&A corporate transaction in financial services. So I'm going to go on here, which industry am I seeking expertise in? Well, I'm seeking expertise in financial services, which says there's 77 consultants in that. It's then taking me through the question as to where do I want those consultants based from? So I'm going to choose London. But what I like to stress here is this is not a defined database structure. These choices have emerged from all the information that's in the data set. There's nothing else other than these offices, because that's all that exists. I'm then going to decide, because it's a major corporate transaction, I want a pretty large scale, maybe a 200 to 500 employee experience. But actually, I don't mind the 51 to 200 as well, but it's got to be larger than 50. So please click those two. Shashin, that's great. So at this point, I've now understood that the location, depth of expertise, I do want someone who's pretty experienced for such a transaction, so I'm going to go with the 10 plus year option of six consultants, please. There we go, and on to the next option, and then, in terms of the type of job title, I want somebody who's pretty senior, so I'm going to go for a legal director, and also the partner option as well, please. Thank you. What's happening now is having gone through matching the tool now flips to being a ranking and criteria tool where it's looking at the datasets that exist within those consultants, and it's actually drawing out the queries from that set of consultants that we've chosen. So this screen looks very different every time you run it. So what are aoles for legal practice do I want? Well, I definitely want corporate law, and I’d like some employment law, because there’s a lot of people involved. I definitely want real estate services, because there’s some organisation there’s some buildings involved, and I would like those that are ranked in the legal 500 so I’m going to click on Alistair, Keith and Claire Holland. I do want international transactions, and I do want mergers and acquisitions, as I've said, which is the yes to that question on the next one down, Shashin, that's it. So at this point, what you can see now, if we scroll down is Alistair Keith clearly comes up as winning the ranking game, as opposed to his colleagues Claire and Ken. What’s on here, as well as the actual link to their LinkedIn profile is a customised CV which is tailored from the content to the requirements of the client, as opposed to a static CV. So some very interesting ways in which AI and LLMs can drive far more value here in the B2B world, right? That's great. We've concluded on ExpertMatcher.\n" +
+		  '\n' +
+		  "We're now going to explain a little bit of the work we do in our Boomi services. So as well as the agents that we provide internally, we also working alongside a major partner, which is Boomi, which some of you may have heard of on the tech technology background. They're the top quadrant Gartner provider of essentially data management software, particularly focused on collaboration and connectivity. So their biggest challenge is trying to get their platform to work with lots of other ERP and other vendors and cloud environments. And what we’ve developed for them recently is 40 agents and connectors, which is Shashin, scrolling through this list, you’ll see these are all efficiency oriented around data management. There’s a lot of things around scheduling and data quality. Further down, there’s more business orriented areas around hotel matches. These are good examples now as to what is available in the marketplace agents and connectors, and the Boomi environmental marketplace is a great one to go and look for in terms of ideas and guidance as to what may be possible. We’ll now move to the last type of one. We’re going to do our explanation, which will be covering our work",
+		file_path: '/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Hiveminds_-_Session_transcript.txt',
+		chunk_id: 'chunk-57aabbc8c1107f7d6c242ab192332d75',
+		links: [],
+		image: 'original_input/01_New Content/Hiveminds - Session transcript.png',
+		last_modified: '2026-04-14T12: 33: 48+00: 00'
+		},
+		{
+		reference_id: '7',
+		content: 'Subject:\n' +
+		  '- A message of gratitude and reflection\n' +
+		  '\n' +
+		  'Dear [Name
+			],\n' +
+		  '\n' +
+		  'As we come to the close of 2025, I want to take a moment to share a message of gratitude and reflection.\n' +
+		  '\n' +
+		  'This year marked a noteworthy landmark for Onepoint: 20 years of delivering real business value through technology, AI, and data-driven solutions to our clients around the world.\n' +
+		  '\n' +
+		  'Onepoint started with a simple belief: a values-driven collection of technologists can help solve real pain points for stakeholders by bringing architecture-led innovation and unwavering focus on business outcomes. Two decades later, that philosophy remains unchanged, but the tools, opportunities, and challenges have certainly evolved.\n' +
+		  '\n' +
+		  'Our year-long celebrations included a Gratitude Weekend at the serene Global Retreat Centre in Oxfordshire, England. The weekend was dedicated to reflecting on our journey, appreciating our community, and envisioning what’s ahead. You can read more about this and view the highlight video here: [LinkedIn link
+			]\n' +
+		  '\n' +
+		  'Onepoint at 20: Reflecting, celebrating, and looking ahead\n' +
+		  '\n' +
+		  'Reflections from 2025\n' +
+		  '\n' +
+		  'Looking ahead to 2026\n' +
+		  '\n' +
+		  "As we carry these reflections forward, I am also excited to share how our learning over the last 20 years has shaped Onepoint's next chapter.\n" +
+		  '\n' +
+		  'In 2026, our focus remains clear:\n' +
+		  '- To craft AI, data, and automation solutions and tools that amplify human judgement, not replace it. (We call this Accelerated by Onepoint)\n' +
+		  '- To advise business and technology leaders on how to get the most out of technical innovations to drive real business value. (We call this Woven by Onepoint)\n' +
+		  '\n' +
+		  'Thank you for being on the journey with us. Your trust and partnership have helped shape who we are today and who we continue to become.\n' +
+		  '\n' +
+		  '(GIF)\n' +
+		  '\n' +
+		  'Wishing you a reflective and regenerative close to 2025 and a hopeful, purposeful, and peaceful New Year.\n' +
+		  '\n' +
+		  'With warmest wishes,\n' +
+		  'Shashin and the Onepoint family',
+		file_path: '/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Onepoint_s_20-year.txt',
+		chunk_id: 'chunk-e9ab6fff1c3be843e5f5bdf69d8077bf',
+		links: [],
+		last_modified: '2026-04-14T12: 33: 48+00: 00'
+		},
+		{
+		reference_id: '8',
+		content: 'Onepoint at 20: Reflecting, celebrating, and looking ahead\n' +
+		  '\n' +
+		  "In 2025, Onepoint marked a noteworthy landmark: 20 years of delivering real business value through technology, AI, and data-driven solutions. Our year-long celebrations included a Gratitude Weekend at a serene venue, the Global Retreat Centre in Oxfordshire, England. The weekend was dedicated to reflecting on our journey, appreciating our community, and envisioning what's ahead.\n" +
+		  '\n' +
+		  'A journey built on trust\n' +
+		  '\n' +
+		  'Our journey over the past two decades has been possible thanks to the trust and support of our clients, partners, colleagues, friends, and well-wishers. Every project, partnership, and innovation has been a step toward building Onepoint into what it is today.\n' +
+		  '\n' +
+		  "The Gratitude Weekend wasn't a typical corporate event. It was a time to pause, reflect, and reconnect with what truly matters. Members of the Onepoint family, long-time partners, and illustrious speakers came together to share a collective reflection on gratitude, resilience, and the evolving connection between humans and technology.\n" +
+		  '\n' +
+		  'Opening reflections: The power of gratitude\n' +
+		  '\n' +
+		  "The event began on a deeply personal note, led by Onepoint's Founder and CEO, Shashin Shah. Speaking from personal experience, he reflected on his lifelong search for depth and meaning beyond roles or achievements and what led to the founding of Onepoint.\n" +
+		  '\n' +
+		  "Invited participants shared reflections that elevated the room's collective energy. Shashin spoke of how the team at Onepoint practices “Traffic Control”, pausing for a minute every hour to reflect, reset, and send positive thoughts into the world.\n" +
+		  '\n' +
+		  '# Year End Reflections\n' +
+		  '\n' +
+		  '**Gratitude transforms**  \n' +
+		  '**perspective and elevates**  \n' +
+		  '**collective energy**\n' +
+		  '\n' +
+		  '---\n' +
+		  '\n' +
+		  '## Navigating stress in the modern world\n' +
+		  '\n' +
+		  'One of the sessions of the Gratitude Weekend on “Stress in the modern world: A guide to spiritual resilience and wellbeing” was led by eminent spiritualist Sister Jayanti. In an age of constant pressure and information overload, she shared how meditation and mindfulness builds resilience and balance.\n' +
+		  '\n' +
+		  'The conversation highlighted how unchecked stress can escalate to burnout, strained relationships, and even depression, underlining the urgency of developing inner resilience. The session concluded with a simple yet profound practice: taking a mindful pause before reacting.\n' +
+		  '\n' +
+		  '## Joy, laughter, and human connection\n' +
+		  '\n' +
+		  'Between the reflective sessions, we had a fun and engaging bonding experience led by Marneta Viegas, who brought creative energy to the room. Dressed humorously as a “virus,” Marneta kept the session light-hearted and interactive with games, jokes, and plenty of good spirit. Her session was a reminder that a little fun goes a long way in building stronger teams in the business world.\n' +
+		  '\n' +
+		  '## Understanding the essence of intelligence\n' +
+		  '\n' +
+		  'Another session, “The essence of intelligence”, was led by Mike George, a seasoned trainer, coach, and Raja Yoga meditation teacher. In his session, Mike explored the different levels of human intelligence and how they shape our decision-making and awareness.\n' +
+		  '\n' +
+		  'Through humor and relatable examples, Mike encouraged participants to recognise and cultivate intuition as an essential form of intelligence that connects intellect with inner wisdom.\n' +
+		  '\n' +
+		  '## AI and humanity: Staying human in the age of machines\n' +
+		  '\n' +
+		  'The final session, “AI and humanity”, explored one of today’s most pressing questions: How can we remain deeply human in an age of intelligent machines?\n' +
+		  '\n' +
+		  'Facilitated by Phillipa Blackham through a mix of quick-fire questions and open dialogue, participants first reflected on their own relationship with AI, how many had used Gen AI, paid-for premium tools, or turned to AI for emotional support. The room’s varied responses revealed a collective curiosity tempered by concern.\n' +
+		  '\n' +
+		  'The discussion evolved into an engaging dialogue between Hugo Pickford-Wardle, an AI optimist and founder of Sherpa; Chris Wray, a consultant helping businesses integrate AI; and Sister Manda, a spiritual guide helping individuals navigate change.\n' +
+		  '\n' +
+		  'Together, they offered contrasting yet complementary perspectives on technology, business, and spirituality, converging on a single theme: how to remain human in the age of intelligent machines. The consensus was clear: the future belongs not to artificial intelligence but to authentic intelligence, the ability to act with awareness, compassion, and wisdom. (We will be exploring this topic in greater depth in an upcoming article. Look out for a dedicated article on AI and humanity coming soon.)\n' +
+		  '\n' +
+		  'Moments of stillness\n' +
+		  '\n' +
+		  "The Gratitude Weekend wasn't all structured sessions and deep dialogue. Between conversations, participants had time to breathe, wander along the peaceful lake, simply pause to appreciate the natural beauty surrounding them, and reconnect with themselves. These moments of personal reflection offered space to process insights, recharge, and reconnect.\n" +
+		  '\n' +
+		  'Looking ahead\n' +
+		  '\n' +
+		  'Our series of year-long gratitude events were a heartfelt thank you to everyone who has supported Onepoint over the last 20 years. Your trust, collaboration, and encouragement have shaped our journey, and we look forward to many more years of shared success.\n' +
+		  '\n' +
+		  "As Shashin beautifully concluded, “When we operate from peace, love, and purpose, whether in business or in life, we don't just build companies; we build consciousness.”\n" +
+		  '\n' +
+		  'As we look ahead to the next decade, Onepoint will continue to combine technology with thoughtfulness, using AI, data, and automation not just to power progress but to elevate people. The future lies in conscious innovation, where human values guide intelligent systems and where gratitude, awareness, and compassion remain our true competitive advantage.\n' +
+		  '\n' +
+		  '#OnepointAt20 #AYearOfGratitude #CompanyAnniversary #Celebration #GratitudeWeekend #AI #Innovation #AlandHumanity #OnepointConsulting',
+		file_path: '/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Onepoint_s_20-year_-_LinkedIn_article.txt',
+		chunk_id: 'chunk-f29fcc3d3f8bc2de135820f42455779c',
+		links: [],
+		last_modified: '2026-04-14T12: 33: 48+00: 00'
+		},
+		{
+		reference_id: '9',
+		content: 'Subject:\n' +
+		  '- A message of gratitude and reflection\n' +
+		  '\n' +
+		  'Dear [Name
+			],\n' +
+		  '\n' +
+		  'As we approach the end of 2025, I would like to share a message of gratitude and reflection.\n' +
+		  '\n' +
+		  'This year marked a notable milestone for Onepoint: 20 years of delivering real business value through technology, AI, and data-driven solutions to our clients worldwide. And we are proud to have continued our unrelenting commitment to supporting charities, refugees, interns, and apprentices as part of our mission to add value to society.\n' +
+		  '\n' +
+		  'Onepoint started with a simple belief: A values-driven collection of technologists can help solve real pain points for stakeholders by bringing architecture-led innovation and unwavering focus on business outcomes. Two decades later, that philosophy remains unchanged, but the tools, opportunities, and challenges have certainly evolved.\n' +
+		  '\n' +
+		  "Our year-long celebrations included a Gratitude Weekend at the serene Global Retreat Centre in Oxfordshire, England. The weekend was dedicated to reflecting on our journey, appreciating our community, and envisioning what's ahead. You can read more about this and watch the short highlight video here.\n" +
+		  '\n' +
+		  '# Onepoint at 20: Reflecting, celebrating, and looking ahead\n' +
+		  '\n' +
+		  '## Reflections from 2025\n' +
+		  '\n' +
+		  'This milestone year was, in many ways, one which represents the 20 that are behind us.\n' +
+		  '\n' +
+		  '- **Staying creative and innovative:**\n' +
+		  '  - Launched a series of free tools and a collection of accelerators that help clients to explore, apply, and get value from Gen AI faster. (We call this The Onepoint AI Ecosystem.)\n' +
+		  '  - Introduced an AI-powered solution for Aerospace and Defence organisations in a strategic partnership with Pennant International Group plc (More on this in the Press Release.)\n' +
+		  '  - Refreshed our brand identity to reflect the excitement we feel about our next 20 years. We are rolling out the new brand in a phased way.\n' +
+		  '  - Got recognition for initiatives, including as a finalist for Excellence in Customer Service at the Signature Awards and a nominee for Skills and Talent Champion at the GMCC Excellence Awards 2025.\n' +
+		  '\n' +
+		  '- **Adding value to clients:**\n' +
+		  '\n' +
+		  '\n' +
+		  '- Applied AI at an automotive client to speed up and de-risk migration to a modern integration (IPaaS) platform that connects with SAP and Snowflake to deliver better financial and operational intelligence.\n' +
+		  '- Automated manual, paper-based workflows for a global bank, covering end-to-end customer onboarding and HR new joiner processes.\n' +
+		  '- Crafted an agentic AI solution for a brand marketing sector agency to smartly automate bid and sales workflows.\n' +
+		  '- Retained and grew clients across energy, retail, hospitality, travel, automotive, and finance sectors, deploying a broad range of services covering architecture, AI & automation, data & analytics, software development, managed services, and DevOps.\n' +
+		  '\n' +
+		  'Adding value to society:\n' +
+		  '- Delivered multiple charity initiatives covering websites, mobile apps, intranets, telephone systems, event management, emergency radio comms, venue management systems, and statistics.\n' +
+		  '- Provided opportunities for marginalised and refugee communities by enabling skills development and compensated involvement in internal and charity-related technical initiatives.\n' +
+		  '\n' +
+		  'Evaluation Warning: The document was created with Spire.Doc for Python.\n' +
+		  '\n' +
+		  'Looking ahead to 2026\n' +
+		  '\n' +
+		  "As we carry these reflections forward, I am also excited to share how our learning over the last 20 years has shaped Onepoint's next chapter.\n" +
+		  '\n' +
+		  'In 2026, our focus remains clear:\n' +
+		  '- To craft AI, data, and automation solutions and tools that amplify human judgement, not replace it. (We call this Accelerated by Onepoint)\n' +
+		  '- To advise business and technology leaders on how to get the most out of technical innovations to drive real business value. (We call this Woven by Onepoint)\n' +
+		  '\n' +
+		  'Thank you for being on the journey with us. Your trust and partnership have helped shape who we are today and who we continue to become.\n' +
+		  '\n' +
+		  'Gratitude transforms  \n' +
+		  '**perspective** and **elevates**  \n' +
+		  '**collective energy**\n' +
+		  '\n' +
+		  'Wishing you a reflective and regenerative close to 2025 and a hopeful, purposeful, and peaceful New Year.\n' +
+		  '\n' +
+		  'with warmest wishes,  \n' +
+		  'Shashin and the Onepoint family',
+		file_path: '/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Year-end_greetings__ActiveCampaign_Email.txt',
+		chunk_id: 'chunk-121cf409cb41f87446c009fad680dad8',
+		links: [],
+		last_modified: '2026-04-14T12: 33: 47+00: 00'
+		},
+		{
+		reference_id: '1',
+		content: "proprietary to Onepoint. We do not go out on the web, and the tool is designed to have proprietary data sources in it. So, having understood that data quality is the issue, the next question is, what specific aspects? So let's imagine we're struggling with the accuracy of data and also completeness of those first two so Shashin will go to the next level. You'll see at this point we also have the option if we wish to not only choose from the suggested options, but also put in free text for the purpose of today, we won't do that, but that is an option. You can go straight in if you're an expert IT user. So in this scenario, we're driving into the root causes of data quality, and we're going to say that we're only on manual checks. And the third one, Shashin, please. We're not actively involved in addressing these issues at the moment, because we've got resources, a common problem. So at this stage, you'll see the smiley face on the right has started to become a bit happier. It's not quite got to the point where it can produce the report, but it's getting there. So having understood the nature of the issue, we're now getting into what are the main challenges you face on manual checks and user feedbacks. So the manual checks are time-consuming. Yes, definitely the first one and the second one, and user feedbacks inconsistent. So what's happening here is the LLM tool is creating a unique question, and it's also populating the answers uniquely as well. This is not predetermined. This is not linear. This is totally emergent in its inquiry approach and in the data and content it's using. So now we're getting to how do we prioritize data quality issues? Well, the next well, we think we do prioritize, not based on business operations. That will be the first answer end users, because they tell them those two I think would be a good scenario. So we're getting into the last stage of the question in terms of, what do we do today to manage and improve data quality? So we're going to suggest, in this scenario, that we probably use spreadsheet number one, and I think we use number three. We use some scripts, but we're pretty limited on our technical skills. So at this point, you'll see that we're getting pretty much into the details, and the confidence indicator has now generated the fact that it's smiling, and we can actually generate a report. So at this point we will generate a report. So in literally less than I started at 10 past, in less than two to three minutes, we've gone from a very unknown understanding about the client's data issues and what they're doing to a very refined clarification on the issue. Some topics are out of scope, some are in and we've begun to understand what the clients themselves do with regards to actions. So what we now have is a high-level diagnostic report. So we have suggested courses of action which have been generated from the exercise. So guidance on a data quality management tool, prioritization framework and quality training. For example, those of you familiar with data management will recognize a lot of these actions. The report also then highlights what to avoid, which are critical risk issues, and also highlights the...\n" +
+		  '\n' +
+		  '\n' +
+		  'Let me know if you need any further assistance!\n' +
+		  'benefits that can be achieved. Now, for the purposes of this exercise, the other one I want to highlight is the confidence degree. So the report also explains the rationale and logic for why it’s come to this conclusion. And interestingly, in the second half of this description, it says, okay, whilst the customer is using spreadsheet tools and scripts indicating some background on technology, there’s limited information about the data, governance strategies and their prioritisation processes, informal and resource constrained. So it’s giving you really good insight into what next to go into in terms of the approach to take. So overall, at this point, one can see a knowledge graph, one can send a report, and one can also download a PDF. Interestingly, also you’ll know I’m going to ask Shashin to suggest a consultant. This is a bit of an intro, intro to the demo we’re going to do later. But this now takes the context of the problem and the data issues, and it maps them using AI against the inventory of consultants that we have within Onepoint, and it will generate not just an indication of who’s the best consultant to solve that issue, but it will also create a custom explanation as to why in this scenario, Gil Fernandes has come up as very suitable because he has the software engineering skills to do, to deal with the custom scripts. He’s very used to Talend and Java based projects. So it’s done the thinking for us. It’s not a classic Google point search. It’s a semantic search driven by AI and LLMs. So that is the Data Wellness tool.\n' +
+		  '\n' +
+		  'Now what I’d like to do now is move to the Responsible AI tool. This is a similar user interface, exactly the same design to the tool, but a different domain. This is to help someone understand the client’s responsible AI issues. Now we’re not going to go through the tool as I did the previous one because I think we would all probably understand what’s happening. But I want to draw out the fact that this tool is different. With this tool, we curated the content from outside Onepoint, working with a third-party consultant, Tuli Twaas, who’s an expert lawyer on data, PI and ethics, with SITA, a large technology infrastructure provider to the travel industry. And this tool has been created from curating the knowledge that’s available on responsible AI and creating our own ontology framework the eight boxes. What we’re able to do now having built this tool is we’ve underpinned it with an AI engine so we can create a version of this tool for any domain or content.',
+		file_path: '/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Hiveminds_-_Session_transcript.txt',
+		chunk_id: 'chunk-41a61e76de0e1e98cf9ac049053352a4',
+		links: [],
+		image: 'original_input/01_New Content/Hiveminds - Session transcript.png',
+		last_modified: '2026-04-14T12: 33: 48+00: 00'
+		},
+		{
+		reference_id: '10',
+		content: '- A message of gratitude and reflection\n' +
+		  '\n' +
+		  'Dear [Name
+			],\n' +
+		  '\n' +
+		  'As we approach the end of 2025, I would like to share a message of gratitude and reflection.\n' +
+		  '\n' +
+		  'This year marked a notable milestone for Onepoint: 20 years of delivering real business value through technology, AI, and data-driven solutions to our clients worldwide. And we are proud to have continued our unrelenting commitment to supporting charities, refugees, interns, and apprentices as part of our mission to add value to society.\n' +
+		  '\n' +
+		  'Onepoint started with a simple belief: A values-driven collection of technologists can help solve real pain points for stakeholders by bringing architecture-led innovation and unwavering focus on business outcomes. Two decades later, that philosophy remains unchanged, but the tools, opportunities, and challenges have certainly evolved.\n' +
+		  '\n' +
+		  "Our year-long celebrations included a Gratitude Weekend at the serene Global Retreat Centre in Oxfordshire, England. The weekend was dedicated to reflecting on our journey, appreciating our community, and envisioning what's ahead. You can read more about this and watch the short highlight video here: [LinkedIn link]\n" +
+		  '\n' +
+		  'Onepoint at 20: Reflecting, celebrating, and looking ahead\n' +
+		  '\n' +
+		  'Reflections from 2025\n' +
+		  '\n' +
+		  'This milestone year was, in many ways, one which represents the 20 that are behind us.\n' +
+		  '\n' +
+		  '- Staying creative and innovative:\n' +
+		  '  - Launched a series of free tools and a collection of accelerators that help clients to explore, apply, and get value from Gen AI faster. (We call this The Onepoint AI Ecosystem.)\n' +
+		  '  - Introduced an AI-powered solution for Aerospace and Defence organisations in a strategic partnership with Pennant International Group plc (More on this in the Press Release.)\n' +
+		  '  - Refreshed our brand identity to reflect the excitement we feel about our next 20 years. We are rolling out the new brand in a phased way.\n' +
+		  '  - Got recognition for initiatives, including as a finalist for Excellence in Customer Service at the Signature Awards and a nominee for Skills and Talent Champion at the GMCC Excellence Awards 2025.\n' +
+		  '\n' +
+		  '- Adding value to clients:\n' +
+		  '  - Applied AI at an automotive client to speed up and de-risk migration to a modern integration (IPaaS) platform that connects with SAP and Snowflake to deliver better financial and operational intelligence.\n' +
+		  '  - Automated manual, paper-based workflows for a global bank, covering end-to-end customer onboarding and HR new joiner processes.\n' +
+		  '  - Crafted an agentic AI solution for a brand marketing sector agency to smartly automate bid and sales workflows.\n' +
+		  '  - Retained and grew clients across energy, retail, hospitality, travel, automotive, and finance sectors, deploying a broad range of services covering architecture, AI & automation, data & analytics, software development, managed services, and DevOps.\n' +
+		  '\n' +
+		  '- Adding value to society:\n' +
+		  '  - Delivered multiple charity initiatives covering websites, mobile apps, intranets, telephone systems, event management, emergency radio comms, venue management systems, and statistics.\n' +
+		  '  - Provided opportunities for marginalised and refugee communities by enabling skills development and compensated involvement in internal and charity-related technical initiatives.\n' +
+		  '\n' +
+		  'Evaluation Warning: The document was created with Spire.Doc for Python.\n' +
+		  '\n' +
+		  'Looking ahead to 2026\n' +
+		  '\n' +
+		  "As we carry these reflections forward, I am also excited to share how our learning over the last 20 years has shaped Onepoint's next chapter.\n" +
+		  '\n' +
+		  'In 2026, our focus remains clear:\n' +
+		  '- To craft AI, data, and automation solutions and tools that amplify human judgement, not replace it. (We call this Accelerated by Onepoint)\n' +
+		  '- To advise business and technology leaders on how to get the most out of technical innovations to drive real business value. (We call this Woven by Onepoint)\n' +
+		  '\n' +
+		  'Thank you for being on the journey with us. Your trust and partnership have helped shape who we are today and who we continue to become.\n' +
+		  '\n' +
+		  'Gratitude transforms  \n' +
+		  'perspective and elevates  \n' +
+		  'collective energy  \n' +
+		  '\n' +
+		  'Wishing you a reflective and regenerative close to 2025 and a hopeful, purposeful, and peaceful New Year.  \n' +
+		  '\n' +
+		  'with warmest wishes,  \n' +
+		  'Shashihan and the Onepoint family',
+		file_path: '/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/CEO_-_Year-end_greetings.txt',
+		chunk_id: 'chunk-64668653e1cae40782c78b62637704f9',
+		links: [],
+		image: 'original_input/01_New Content/CEO - Year-end greetings.png',
+		last_modified: '2026-04-14T12: 33: 48+00: 00'
+		},
+		{
+		reference_id: '11',
+		content: 'Cannot convert  \n' +
+		  'Reason: The image does not contain any text that can be extracted.\n' +
+		  'A big thank you to everyone who joined us for our webinar with Boomi on Accelerate your business with AI agents: Live webinar with Onepoint x Boomi\n' +
+		  '\n' +
+		  'Your participation, questions, and engagement made it a truly impactful session.\n' +
+		  '\n' +
+		  "We explored how a simple AI agent can significantly reduce manual effort and improve everyday workflows. We further presented how Onepoint's layered AI ecosystem is designed to automate complex, cross-functional tasks, streamline enterprise interactions, and deliver real-time insights with minimal human intervention.\n" +
+		  '\n' +
+		  'The discussion focused on discovering how real-life business outcomes are enhanced by applying the right AI solutions in the right places.\n' +
+		  '\n' +
+		  'We hope you walked away with fresh perspectives and practical insights on how to build intelligent workflows or seek scalable automation.\n' +
+		  '\n' +
+		  'Want to dive deeper?\n' +
+		  'If you are looking to accelerate your automation journey or simply have more questions, we would love to connect.\n' +
+		  '\n' +
+		  'Catch the full recording here:\n' +
+		  '\n' +
+		  'For more insights, visit [Onepoint Boomi
+			](https: //www.onepointltd.com/boomi/)\n' +
+		  '\n' +
+		  '#AI #AgenticAI #OnepointConsulting #Boomi #Automation #Webinar #AIReady #OnepointTechTalk\n' +
+		  '\n' +
+		  '@miguel @rafiq @boomi people like Linda, gabby\n' +
+		  '\n' +
+		  'Subject:\n' +
+		  '- AI agents in action: Onepoint’s AI Ecosystem for Boomi webinar\n' +
+		  '\n' +
+		  'Body:\n' +
+		  "We had an engaging and insightful webinar on how to accelerate business outcomes with AI agents and Onepoint's AI ecosystem for Boomi this week.\n" +
+		  '\n' +
+		  'A key focus was on exploring how agentic AI is transforming enterprise automation, integration, and innovation.\n' +
+		  '\n' +
+		  'We showcased real-world examples of how businesses are using AI agents to:\n' +
+		  '- Automate complex, cross-functional tasks\n' +
+		  '- Streamline enterprise interactions\n' +
+		  '- Deliver real-time insights with minimal human intervention\n' +
+		  '\n' +
+		  'The feedback spoke for itself. Here’s what attendees had to say during the session:\n' +
+		  '(feedback from the webinar)\n' +
+		  '\n' +
+		  'In case you missed the session or wish to revisit the discussion, catch the full recording here: (link)\n' +
+		  '\n' +
+		  'Want to explore ways to harness the power of agentic AI effectively within your organisation? Just hit reply to set up a discussion with our experts.\n' +
+		  '\n' +
+		  'We would love to connect and show you how to apply AI agents in your business that deliver real impact.\n' +
+		  '\n' +
+		  'Discover more at https: //www.onepointltd.com/boomi/\n' +
+		  '\n' +
+		  'Until next time,\n' +
+		  'Shashin\n' +
+		  '\n' +
+		  'ActiveCampaign\n' +
+		  '\n' +
+		  'Evaluation Warning: The document was created with Spire.Doc for Python.\n' +
+		  '\n' +
+		  'Subject:\n' +
+		  '- Accelerate your business with AI agents: Live webinar with Onepoint x Boomi\n' +
+		  '\n' +
+		  'Body:\n' +
+		  'The rise of agentic AI is revolutionising business automation, integration, and innovation.\n' +
+		  '\n' +
+		  "Join us for an exclusive session with Rafiq Rajabally and Miguel Vale. In this session, our speakers will give a live walkthrough of Onepoint's AI Ecosystem for Boomi.\n" +
+		  '\n' +
+		  'We will demonstrate how the ecosystem is designed to automate complex tasks, streamline interactions, and deliver real-time insights with minimal human intervention.\n' +
+		  '\n' +
+		  'Accelerate business outcomes with AI agents and Onepoint’s AI Ecosystem for Boomi\n' +
+		  '\n' +
+		  'Tuesday,
+			16 September 2025 | 18: 00 UK | 19: 00 CEST\n' +
+		  '\n' +
+		  'Our awesome speakers\n' +
+		  '- Rafiq Rajabally\n' +
+		  '  Business Development\n' +
+		  '- Miguel Vale\n' +
+		  '  Principal Solution Architect & AI Ecosystem Futurist\n' +
+		  '- Linda Lam\n' +
+		  '  Partner Program Director, Boomi Marketplace and Technology Alliances\n' +
+		  '\n' +
+		  'Whether you are building intelligent workflows or seeking scalable automation, the webinar will offer actionable strategies to harness the power of AI agents effectively within your organisation with the Boomi platform.\n' +
+		  '\n' +
+		  'What you will learn:\n' +
+		  '- How simple AI integrations can significantly reduce manual effort and improve everyday workflows.\n' +
+		  '- How Onepoint’s layered AI ecosystem is designed to automate complex, cross-functional tasks, streamline enterprise interactions, and deliver real-time insights with minimal human intervention.\n' +
+		  '- How real-life business outcomes are enhanced by applying the right AI solutions in the right places.\n' +
+		  '\n' +
+		  'Reserve your spot now!\n' +
+		  '\n' +
+		  'Subject:\n' +
+		  "- AI agents in action: Watch Onepoint's AI Ecosystem for Boomi\n" +
+		  '\n' +
+		  'Body:\n' +
+		  'We had an engaging and insightful webinar on how to "Accelerate Business Outcomes with AI Agents and Onepoint’s AI Ecosystem for Boomi."\n' +
+		  '\n' +
+		  'A key focus of the discussion was on exploring how agentic AI is transforming enterprise automation, integration, and innovation.\n' +
+		  '\n' +
+		  'We showcased real-world examples of how businesses are using AI agents to:\n' +
+		  '- Automate complex, cross-functional tasks\n' +
+		  '- Streamline enterprise interactions\n' +
+		  '- Deliver real-time insights with minimal human intervention\n' +
+		  '\n' +
+		  'Our speakers also walked through the Onepoint AI Ecosystem for Boomi, a layered approach to integrating AI agents into business workflows, using Boomi AgentStudio.\n' +
+		  '\n' +
+		  'The feedback spoke for itself. Here’s what attendees had to say during the session:\n' +
+		  '(feedback from the webinar)\n' +
+		  '\n' +
+		  'In case you missed the session or wish to revisit the discussion, catch the full recording here.\n' +
+		  '\n' +
+		  'Want to explore how to incorporate our layered AI ecosystem into your business workflows? \n' +
+		  'or\n' +
+		  'Want to explore ways to harness the power of agentic AI effectively within your organization?\n' +
+		  'Just hit reply to set up a discussion with our experts.\n' +
+		  '\n' +
+		  'We would love to connect and show you how to apply AI agents in your business that delivers real impact.\n' +
+		  '\n' +
+		  'Discover more at https: //www.onepointltd.com/boomi/\n' +
+		  '\n' +
+		  'Until next time,\n' +
+		  '\n' +
+		  'Shashin Shah\n' +
+		  '\n' +
+		  'Evaluation Warning: The document was created with Spire.Doc for Python.\n' +
+		  '\n' +
+		  'LinkedIn post\n' +
+		  '\n' +
+		  'Evaluation Warning: The document was created with Spire.Doc for Python.\n' +
+		  '\n' +
+		  'Agentic AI is reshaping how businesses automate, integrate, and innovate.\n' +
+		  '\n' +
+		  'Join us for an insightful webinar:\n' +
+		  '\n' +
+		  '**Accelerate business outcomes with AI agents and Onepoint’s AI Ecosystem for Boomi**\n' +
+		  '\n' +
+		  '**Date:** 16 September 2025  \n' +
+		  '**Time:** 18: 00 UK | 19: 00 CEST\n' +
+		  '\n' +
+		  'Our experts will walk you through:\n' +
+		  '- Onepoint’s AI Ecosystem for Boomi and explore',
+		file_path: '/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Boomi_Webinar_-_Sep_16_-_Promotion_content.txt',
+		chunk_id: 'chunk-7a3c9ff89d85284fe0f56d0f7a042b83',
+		links: [],
+		image: 'original_input/01_New Content/Boomi Webinar - Sep 16 - Promotion content.png',
+		last_modified: '2026-04-14T12: 33: 48+00: 00'
+		},
+		{
+		reference_id: '12',
+		content: 'Evaluation Warning: The document was created with Spire.Doc for Python.\n' +
+		  '\n' +
+		  "Hi, I'm Chris Wray, a Senior Adviser with Onepoint Consulting. To most clients that we speak with, AI isn't just a buzzword, it's an essential driver of real-world value, and they grapple with several crucial questions. How do you move from ambition to actual impact? How do you weave this powerful technology into the very fabric of your organisation in a way that's scalable, secure, and delivers measurable outcomes?\n" +
+		  '\n' +
+		  'At Onepoint, we believe the answer lies in a smarter approach. For over two decades, our enterprise heritage has helped leaders turn strategy into reality. We apply that same discipline to AI.\n' +
+		  '\n' +
+		  `Our "Woven by Onepoint" proposition is our comprehensive consulting and delivery service. We work with you across the entire AI lifecycle from defining your strategy and architecture to building and scaling solutions that are designed for your unique constraints and goals. We help you weave AI into your organisation's DNA, creating measurable outcomes, not just feel-good experiments.\n` +
+		  '\n' +
+		  `But what if you need to get to value faster? That's where "Accelerated by Onepoint" comes in. We believe in borrowing what works, then tailoring it to fit your business. Our ecosystem of pre-built platforms, toolkits, frameworks, and methods are proven accelerators. They compress delivery time, reduce risk, and allow your teams to focus on differentiation, not reinvention. It's about getting from idea to impact (faster), (cheaper), and safer. To do this, we leverage what large language models truly excel at, moving far beyond generic chatbots.\n` +
+		  '\n' +
+		  'First, we use AI to build proprietary knowledge graphs from your trusted content, ingesting content types from technical documents to expert profiles. This creates a structured, interconnected knowledge asset, what we call a "Book of Knowledge" that understands the key concepts and relationships related to your specific use case.\n' +
+		  '\n' +
+		  "Then we deploy the most appropriate user interface. This can include a reverse chatbot experience. Instead of you asking all the questions, our AI advisors act like a senior consultant, asking you targeted diagnostic questions. This is our AI-driven inquiry logic at work, a guided conversation that uncovers your specific needs with precision. It's an...\n" +
+		  '\n' +
+		  'approach that extracts deep knowledge, matches complex patterns, and delivers personalised, high-impact solutions in a completely secure environment.\n' +
+		  '\n' +
+		  `This all comes to life through the Onepoint AI Engine™, our foundational toolkit for custom AI solutions. For example, our D-Well smart advisor uses this engine to ask you questions about your data ecosystem and provides practical guidance on everything from governance to quality. Another, our "Expert Matcher," uses a knowledge graph built from investment delivers value again and individuals' profiles to help you find the right internal expert for a specific challenge in minutes.\n` +
+		  '\n' +
+		  'To build these solutions rapidly, we use our toolkits. These are ready-to-use building blocks like our library of AI connectors for the Boomi platform or the core components of our AI engine. These toolkits provide the essential plumbing, allowing us to construct and deploy sophisticated AI agents and workflows without starting from scratch every time.\n' +
+		  '\n' +
+		  'Our work is guided by our frameworks. These are our curated bodies of Analytics Body of Knowledge, codifying decades of expert insights into a single comprehensive guide. These frameworks ensure our solutions are grounded in proven industry best practices for consistency and scalability. We build custom bodies of knowledge for our clients in their domain, from specifications that ship to hundreds of articles and videos on innovation.\n' +
+		  '\n' +
+		  'And we deliver this value through our proven methods. If you need to validate an idea quickly, our Value Path method delivers a proof of value with measurable outcomes in just four to six weeks. For large-scale business-critical projects, our End-to-End Rapid Value method provides the disciplined framework to turn an ambitious vision into enterprise-grade reality.\n' +
+		  '\n' +
+		  'The real power of our approach is that the solutions we build are not single-purpose. They are archetypes. The same design that powers our RES AI smart advisor for responsible AI guidance could be adapted to create a legal triage assistant. A solution built to find the right expert in a law firm can be reconfigured to help customers find the right expert.\n' +
+		  '\n' +
+		  'right product in a complex portfolio. This adaptability means your aim across multiple parts of your business.\n' +
+		  '\n' +
+		  "Stop experimenting with AI and start embedding it with confidence. Whether you're ready to define your strategy or want to prove the value of a specific use case, the first step is a conversation.\n" +
+		  '\n' +
+		  "Let's build what's next together. Book a discovery call with one of our experts today. Thank you for listening.",
+		file_path: '/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/AI_overview_video.txt',
+		chunk_id: 'chunk-7c721789294343cb84b65c58b9d18ee9',
+		links: [],
+		image: 'original_input/01_New Content/AI overview video.png',
+		last_modified: '2026-04-14T12: 33: 48+00: 00'
+		},
+		{
+		reference_id: '4',
+		content: 'launch a comprehensive suite of circa 40 AI Connectors, Workflows, and Agents designed to help enterprises build AI-driven automation and agentic workflows on the Boomi AI Platform — faster, smarter, and with reduced technical debt.\n' +
+		  '\n' +
+		  'From conversational provisioning of AWS infrastructure to intelligent incident handling and low-stock recommendations in SAP, this ecosystem is built to deliver real business value by introducing smart automations to key business processes.\n' +
+		  '\n' +
+		  'Discover how Onepoint is accelerating enterprise automation with AI on the Boomi platform.\n' +
+		  'Onepoint AI Ecosystem for Boomi\n' +
+		  '\n' +
+		  '#AgenticAI #AgenticWorkflow #AI #AIAgents #Boomi #BoomiWorld #BoomiWorld2025 #CIOTrends #DigitalArchitecture #DigitalTransformation #EnterpriseAutomation #EnterpriseIntegration #IntelligentAutomation #OnepointConsulting\n' +
+		  '\n' +
+		  'LI article 2\n' +
+		  '\n' +
+		  'Evaluation Warning: The document was created with Spire.Doc for Python.\n' +
+		  '\n' +
+		  'Onepoint demonstrates AI-driven enterprise innovation at Boomi World 2025, Dallas\n' +
+		  '\n' +
+		  'London, United Kingdom—xx May 2025—Onepoint, an award-winning, architecture-led boutique technology consultancy, announced its AI ecosystem for the Boomi platform at Boomi World 2025, held in Dallas. The company showcased how its pre-made connectors, workflows, and agents are helping global enterprises automate business processes, enable hyper productivity, and deliver measurable business impact.\n' +
+		  '\n' +
+		  'During a session titled "Discovering Boomi Partner AI Agents", Onepoint demonstrated how its AI Ecosystem for Boomi is being used across industries to drive automation, enhance data quality, and improve operational agility. The solution suite currently consists of circa 40 components for the Boomi platform.\n' +
+		  '\n' +
+		  '“Our AI-powered connectors, workflows, and agents extend the capabilities of Boomi’s platform, enabling enterprises to increase innovation and reduce time-to-value while maintaining architectural integrity,” said Rafiq Rajabally, Business Developer at Onepoint.\n' +
+		  '\n' +
+		  'The presentation demonstrated real-world scenarios including:\n' +
+		  '\n' +
+		  '- **Customer service transformation**: Resolving high call centre traffic and social media escalations through AI-driven intelligent triage and escalation workflows.\n' +
+		  '  \n' +
+		  '- **Operational data integration**: Seamlessly merging multi-source travel booking data to deliver standardised reporting and risk insights.\n' +
+		  '  \n' +
+		  '- **Supply chain automation**: Proactively forecasting and resolving inventory risks.\n' +
+		  '\n' +
+		  'Each scenario demonstrated how Onepoint’s bespoke agents leverage Boomi’s platform to deliver rapid, repeatable, and secure agentic AI solutions — now available via the Boomi Marketplace.\n' +
+		  '\n' +
+		  '**Presentation material:**\n' +
+		  '\n' +
+		  'The presentation slides and photographs from the event are available on Onepoint’s website at [www.onepointltd.com/onepoint-at-boomi-world-2025-assets
+			].\n' +
+		  '\n' +
+		  '# Onepoint demonstrates AI-driven enterprise innovation at Boomi World 2025 Dallas\n' +
+		  '\n' +
+		  '## About Onepoint:\n' +
+		  'Onepoint is an architecture-led boutique technology consultancy based in London, with offices in Manchester and Pune. Onepoint partners with clients from the FTSE 100 / Fortune 500 / global 1000 range, providing AI-driven solutions across diverse sectors from banking to energy and retail to telecoms. Onepoint is an award-winning implementation partner of Boomi. For over 20 years, Onepoint has been values-driven and committed to delivering enduring social and business value.\n' +
+		  '\n' +
+		  '## Contact:\n' +
+		  '- Miguel Vale — Principal Solution Architect & AI Ecosystem Futurist, Onepoint\n' +
+		  '- Rafiq Rajabally — Business Development, Onepoint\n' +
+		  '\n' +
+		  'boomi@onepointltd.com  \n' +
+		  '+44 (0) 203 198 6699  \n' +
+		  '\n' +
+		  '#Tags\n' +
+		  '#AgenticAI #AgenticWorkflow #AI #AIAgents #Boomi #BoomiWorld #BoomiWorld2025 #CIOTrends #DigitalArchitecture #DigitalTransformation #EnterpriseAutomation #EnterpriseIntegration #IntelligentAutomation #OnepointConsulting\n' +
+		  '\n' +
+		  'Evaluation Warning: The document was created with Spire.Doc for Python.',
+		file_path: '/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Onepoint_AI_Ecosystem_for_Boomi_&_Boomi_World_Press_Releases_—_May_2025.txt',
+		chunk_id: 'chunk-d864a7f2f335d4a024b24e6aa42e72f8',
+		links: [],
+		image: 'original_input/01_New Content/Onepoint AI Ecosystem for Boomi & Boomi World Press Releases — May 2025.png',
+		last_modified: '2026-04-14T12: 33: 48+00: 00'
+		},
+		{
+		reference_id: '4',
+		content: 'Cannot convert\n' +
+		  'The image contains no text content.\n' +
+		  '\n' +
+		  'Onepoint launches a comprehensive AI Ecosystem for the Boomi platform to accelerate enterprise automation and value creation with AI\n' +
+		  '\n' +
+		  'London, United Kingdom - 13 May 2025 - Onepoint, an award winning technology consultancy specialising in enterprise-grade solutions, today announced the launch of Onepoint AI Ecosystem for Boomi, its Artificial Intelligence (AI) Ecosystem built on the Boomi platform. This collection of components, comprising Onepoint AI Connectors, Onepoint AI Workflows, and Onepoint AI Agents, is designed to help businesses build and run AI-driven automation and agent workflows faster and with reduced technical debt.\n' +
+		  '\n' +
+		  '“The rise of agentic AI presents significant opportunities for automation and efficiency. The components of the Onepoint AI Ecosystem for Boomi are designed to automate complex tasks, simplify interactions with enterprise systems, provide valuable insights, and ultimately save time and reduce manual effort and errors across different business functions”, said Miguel Vale, Principal Solution Architect & AI Ecosystem Futurist at Onepoint. “As of today, Onepoint has developed circa 40 AI agents and other components for the Boomi platform, making Onepoint a leading partner of Boomi AI implementations.”\n' +
+		  '\n' +
+		  'The Onepoint AI Ecosystem for Boomi provides a layered approach to incorporating agentic AI into enterprise workflows. At the foundational level are the Onepoint AI Connectors, described as the "nuts and bolts". These are Boomi-friendly integrations that enable secure communication between AI agents and databases, systems, or tools. Key connectors built by Onepoint include the OP Intelligence Connector, which allows switching between Large Language Models (LLMs), and supports external tools and actions such as updating CRMs or triggering workflows and creating embeddings. The OP Database Connector facilitates the building of RAG-based (Retrieval-Augmented Generation) systems, adding support to vector stores and similarity searches, direct connections to structured data, supporting relational databases, and enabling agents to read schemas, generate rules, and execute SQL in real-time.\n' +
+		  '\n' +
+		  'Built on these connectors are the Onepoint AI Workflows. These are reusable "smart blocks" designed to make decisions and perform tasks typically requiring human effort, such as interpreting data, detecting Personally Identifiable Information (PII), and generating SQL.\n' +
+		  '\n' +
+		  'The top layer consists of Onepoint AI Agents. These production-ready solutions are usually created by combining Onepoint AI Workflows into functional, extensible flows.\n' +
+		  '\n' +
+		  'Examples of the growing list of AI agents demonstrate their usefulness for diverse business use cases:\n' +
+		  '\n' +
+		  '- The AWS Resource Spinner agent automates the design and deployment of scalable Amazon Web Services infrastructure, spinning up resources like EC2, RDS, S3, Load Balancers, and even Boomi atoms. It enables instant provisioning based on user specifications through conversational interaction.\n' +
+		  '- The ServiceNow Incident Management agent streamlines incident handling through natural language allowing users to create, update, list, and summarize incidents easily. It supports filtering, adding comments, and retrieving details—enabling faster, more intuitive support and enhancing the customer experience.\n' +
+		  '- The Hotel Matcher agent uses OP Intelligence and OP Database connectors to enable dynamic RAG-based hotel matching through AI and vector similarity search. It identifies hotel names from text, handles misspellings and finds the best matching vector embeddings and cosine similarity. The final decision comes from the LLM—without relying on SQL or fuzzy logic.\n' +
+		  '- The SAP Low Stock Purchase Recommendation agent intelligently detects low stock and suggests purchase orders based on sales trends, vendor lead times, and safety stock levels. It retrieves key details like material and vendor IDs by name, recalculates reorder timing, and helps procurement managers automate and optimise replenishment decisions using real-time insights.\n' +
+		  '\n' +
+		  'Evaluation Warning: The document was created with Spire.Doc for Python.\n' +
+		  '\n' +
+		  "Onepoint's experts will demonstrate the Onepoint AI Ecosystem for Boomi at Boomi World 2025, the premier conference for Boomi’s customers and partners, in Dallas, Texas, from 12-15 May 2025.\n" +
+		  '\n' +
+		  'About Onepoint:\n' +
+		  "Onepoint is an award-winning, architecture-led values-driven boutique technology consultancy based in London, with offices in Manchester and Pune. With over 20 years of experience, Onepoint partners with clients from the FTSE 100 / Fortune 500 / Global 1000 to design, build, deploy, and manage innovative enterprise-grade solutions across diverse industries from banking to energy and retail to telecoms. Onepoint's approach blends innovation with strategy, helping businesses drive transformation through impactful digital solutions focused on real business outcomes. Onepoint is an award-winning implementation partner of Boomi.\n" +
+		  '\n' +
+		  'Contact:\n' +
+		  '\n' +
+		  '\n' +
+		  'Miguel Vale — Principal Solution Architect & AI Ecosystem Futurist, Onepoint  \n' +
+		  'Rafiq Rajabally — Business Development, Onepoint  \n' +
+		  'boomi@onepointltd.com  \n' +
+		  '+44 (0) 203 198 6699  \n' +
+		  'onepointltd.com/boomi  \n' +
+		  '\n' +
+		  'We are excited to launch the  \n' +
+		  'Onepoint AI Ecosystem for Boomi  \n' +
+		  'Onepoint x Boomi  \n' +
+		  '\n' +
+		  'Tags for LinkedIn Article –  \n' +
+		  '#AgenticAI #AgenticWorkflow #AI #AIAgents #Boomi #BoomiWorld #BoomiWorld2025  \n' +
+		  '#CIOTrends #DigitalArchitecture #DigitalTransformation #EnterpriseAutomation  \n' +
+		  '#EnterpriseIntegration #IntelligentAutomation #OnepointConsulting  \n' +
+		  '\n' +
+		  'LinkedIn post\n' +
+		  '\n' +
+		  'Evaluation Warning: The document was created with Spire.Doc for Python.\n' +
+		  '\n' +
+		  'Introducing the Onepoint AI Ecosystem for Boomi\n' +
+		  '\n' +
+		  'We’re excited to launch a comprehensive suite of circa 40 AI Connectors, Workflows, and Agents designed to help enterprises build AI-driven automation and agentic workflows on the Boomi AI Platform — faster, smarter, and with reduced technical debt.\n' +
+		  '\n' +
+		  'From conversational provisioning of AWS infrastructure to intelligent incident handling and low-stock recommendations in SAP, this ecosystem is built to deliver real business value by introducing smart automations to key business processes.\n' +
+		  '\n' +
+		  'Discover how Onepoint is accelerating enterprise automation with AI on the Boomi platform.\n' +
+		  'Onepoint',
+		file_path: '/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Onepoint_AI_Ecosystem_for_Boomi_&_Boomi_World_Press_Releases_—_May_2025.txt',
+		chunk_id: 'chunk-67066af30ed48a1b90757278f2d39650',
+		links: [],
+		image: 'original_input/01_New Content/Onepoint AI Ecosystem for Boomi & Boomi World Press Releases — May 2025.png',
+		last_modified: '2026-04-14T12: 33: 48+00: 00'
+		},
+		{
+		reference_id: '3',
+		content: '.\n' +
+		  '\n' +
+		  '01 – 2\n' +
+		  '\n' +
+		  'Capability deep dive\n' +
+		  '\n' +
+		  'Procurement orchestration platforms\n' +
+		  '\n' +
+		  '# Intelligent procurement orchestration\n' +
+		  '\n' +
+		  'Generative AI, cloud, and RPA-enabled solutions to streamline source-to-pay processes, automate document handling, contracts, and supplier analysis.\n' +
+		  '\n' +
+		  'Streamlining source-to-pay processes is a perennial challenge, often hampered by siloed systems, manual document handling, and inconsistent data. While traditional automation can address isolated tasks, it often struggles to orchestrate the complex, end-to-end workflows and handle the unstructured data inherent in contracts and supplier communications.\n' +
+		  '\n' +
+		  'This domain is highly relevant to our core expertise in integration and advanced automation. Our strong partnership with Boomi, combined with our proven experience in RPA and cloud delivery, positions us as a leading partner for procurement transformation.\n' +
+		  '\n' +
+		  "Onepoint's expertise lies in architecting and delivering intelligent orchestration platforms that solve complex challenges. As the Boomi EMEA Teaming Systems Integrator Partner of the Year 2023, our leadership in integration is the foundation for unifying disparate systems.\n" +
+		  '\n' +
+		  'With our client-centric innovation focus, we extended the capabilities of the Boomi platform with our Onepoint AI Ecosystem™ for Boomi, using agentic AI to manage complex workflows.\n' +
+		  '\n' +
+		  'Our proven experience in RPA has delivered 95% digitisation and automation for clients. We leverage our Onepoint AI Engine to build custom Generative AI agents for advanced document and contract analysis.\n' +
+		  '\n' +
+		  'We partner with innovation leaders like Emagia, whose AI-powered platform for Autonomous Finance excels in streamlining order-to-cash and procure-to-pay processes. This combination of our orchestration expertise and ability to integrate specialised automation solutions allows us to deliver a complete solution that fits your exact needs.\n' +
+		  '\n' +
+		  'Three key capabilities of Onepoint that are particularly relevant to generative AI, cloud, and RPA-enabled solutions to streamline source-to-pay processes, automate document handling, contracts, and supplier analysis.\n' +
+		  '\n' +
+		  '## Generative AI and automation\n' +
+		  '\n' +
+		  'Onepoint is at the forefront of leveraging AI for enterprise automation:\n' +
+		  '\n' +
+		  '- **Agentic AI Ecosystem** – We have launched the Onepoint AI Ecosystem for Boomi, which delivers circa 40 agentic components to accelerate enterprise automation. This technology is designed for the design, governance, and orchestration of AI agents at scale, which is key to orchestrating complex source-to-pay workflows and automated analysis.\n' +
+		  '  \n' +
+		  '- **Boomi partnership** – We were recognised as the Boomi EMEA Teaming Systems Integrator Partner of the Year 2023. We are pushing harder on our Boomi relationship and view Boomi as a key platform for AI-driven automation. Our strategic goal is to establish market leadership in agentic AI implementations by leveraging our Boomi expertise.\n' +
+		  '\n' +
+		  '- **Onepoint Smart Enterprise Automation™ (RPA and process automation)** – We are actively involved in RPA and are exploring the full potential of AI in this domain. We have experience in automating critical finance workflows for clients, achieving 95% digitisation and automation of each workflow, and saving over 200 person-hours per month. This work specifically involved minimising human errors by automating repetitive, rule-based tasks such as data entry, invoice processing, and reconciliation. These capabilities are directly applicable to streamlining source-to-pay processes.\n' +
+		  '\n' +
+		  '## Seamless source-to-pay integration and data management\n' +
+		  '\n' +
+		  'Our methodology and platform expertise directly support integrating disparate procurement and finance systems:\n' +
+		  '\n' +
+		  "- **Integration and MDM**: We leverage the Boomi Integration Platform as a Service (iPaaS) for complex integration and Master Data Management (MDM). For one client (anonymised as 'SolarCo'), we set up data → \n" +
+		  '\n' +
+		  'Seamless source-to-pay integration and data management (continued)\n' +
+		  '\n' +
+		  '- foundations that enabled seamless communication across over 20 applications (including SAP S4Hana, Procurement, and Finance) to achieve operational efficiency, enhanced data quality, and scalability. This experience is highly relevant to unifying source-to-pay processes.\n' +
+		  '\n' +
+		  '- Document and contract analysis — Our focus on Generative AI and Natural language processing (NLP) can be leveraged to automate document handling, contract analysis, and supplier analysis—by building custom AI agents on the Onepoint AI Engine.\n' +
+		  '\n' +
+		  'Cloud and architecture foundation\n' +
+		  '\n' +
+		  'Onepoint’s solutions are built on resilient, scalable cloud architectures:\n' +
+		  '\n' +
+		  '- Cloud platform expertise — We have deep expertise in cloud platforms, particularly with Microsoft Azure, which is the leading cloud platform preferred by our customers. We are experienced in architecting and delivering enterprise-grade solutions on Microsoft Azure, AWS, and Google Cloud.\n' +
+		  '\n' +
+		  'Enterprise-grade delivery — As a boutique consultancy that delivers enterprise-grade solutions, we prioritise architecting for outcomes. This ensures that any Procurement Orchestration Platform we design is scalable, secure, and compliant with your corporate requirements.\n' +
+		  '\n' +
+		  'What this means for our clients\n' +
+		  '\n' +
+		  'Clients seeking to transform their procurement function can move beyond simple task automation to true, end-to-end intelligent orchestration. We provide the capability to unify your source-to-pay landscape, automate complex document and contract analysis with Generative AI, and create a resilient, efficient, and data-driven procurement ecosystem.\n' +
+		  '\n' +
+		  '02\n' +
+		  '\n' +
+		  'More about how\n' +
+		  'we can help\n' +
+		  '\n' +
+		  "> The Onepoint team is particularly good if you're on the bleeding edge of technology, or it's a very complex case, or you want to get it done very quickly.\n" +
+		  '>\n' +
+		  '> — Simon Post, Group CIO, Dixons Carphone\n' +
+		  '\n' +
+		  '> I was solidly impressed with the way Onepoint took the work on, not just from the point of view of good technical delivery, but the way they conducted themselves.\n' +
+		  '>\n' +
+		  '> — Ian Minto, Digital Delivery Leader, Parker Meggitt\n' +
+		  '\n' +
+		  '> Onepoint has got great people with integrity, in addition to their great skill set. It’s a combination that is really valued.\n' +
+		  '>\n' +
+		  '> — Peter Wardle, Launch Director, UK Broadband\n' +
+		  '\n' +
+		  '## Enterprise-grade, yet boutique\n' +
+		  '\n' +
+		  'Finding smaller, agile suppliers that can effectively operate within a large enterprise context, bring innovative ideas, and maintain a steadfast focus on delivering digital business outcomes can',
+		file_path: '/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Onepoint_-_Tailored_Capability_Statement_for_MSDUK_v0.32.txt',
+		chunk_id: 'chunk-ee3b6986d54112c55d80f62a284fae2b',
+		links: [],
+		image: 'original_input/01_New Content/Onepoint - Tailored Capability Statement for MSDUK v0.32.png',
+		last_modified: '2025-10-13T14: 29: 25+00: 00'
+		},
+		{
+		reference_id: '13',
+		content: 'Cannot convert  \n' +
+		  'The image does not contain any readable text or is not clear enough for extraction.\n' +
+		  '1. MSDUK event – 28/08/2025\n' +
+		  '2. Standard Description\n' +
+		  '3. Press Release\n' +
+		  '4. EB100 National Awards 2026 Bronze package\n' +
+		  '\n' +
+		  '\n' +
+		  '\n' +
+		  'Cannot convert\n' +
+		  'Reason: The image contains non-text elements or is not a recognizable text format.\n' +
+		  '\n' +
+		  'MSDUK event – 28/08/2025\n' +
+		  '\n' +
+		  'Onepoint is an award-winning, architecture-led technology consultancy headquartered in London. We craft and manage impactful AI-powered, data-driven, enterprise-grade solutions for global clients. For over 20 years, we have been values-driven and committed to delivering enduring business value, including investing in young people’s futures, giving back through great causes, improving workplace wellness, driving climate action, and empowering refugees. We strive to add value in everything we do.\n' +
+		  '\n' +
+		  'Standard Description\n' +
+		  '\n' +
+		  'Onepoint is an award-winning, architecture-led technology consultancy, headquartered in London. For over 20 years, we have been values-driven and committed to delivering enduring social and business value. We craft and manage impactful AI-powered, data-driven, enterprise-grade solutions for global clients. Find out more at onepointltd.com.\n' +
+		  '\n' +
+		  'Evaluation Warning: The document was created with Spire.Doc for Python.\n' +
+		  '\n' +
+		  'Onepoint is an award-winning technology consultancy with a 20-year heritage in enterprise architecture. From early-stage ideas to enterprise-scale adoption, Onepoint helps organisations weave AI and automation into their DNA to create real business value. Find out more at onepointltd.ai.\n' +
+		  '\n' +
+		  'EB100 National Awards 2026 Bronze package\n' +
+		  '\n' +
+		  'Introduction\n' +
+		  '\n' +
+		  'Onepoint is an award-winning, architecture-led technology consultancy that crafts and manages impactful AI-powered, data-driven, enterprise-grade solutions for global clients.\n' +
+		  '\n' +
+		  'Main Copy\n' +
+		  '\n' +
+		  'Onepoint is an award-winning, architecture-led technology consultancy headquartered in London. We craft and manage impactful AI-powered, data-driven, enterprise-grade solutions.\n' +
+		  '\n' +
+		  'solutions for global clients. For over 20 years, we have been values-driven and committed to delivering enduring business value.\n' +
+		  '\n' +
+		  "Onepoint's approach to delivery is a key differentiator, rooted in strong architectural foundations and real-world delivery experience. Through Woven by Onepoint, our AI consulting and delivery proposition, we support organisations from strategy through to scaled, production-ready AI solutions. This ensures AI is embedded into business operations in a way that is sustainable, secure, and aligned to long-term objectives, not limited to isolated pilots.\n" +
+		  '\n' +
+		  'Accelerated by Onepoint combines proven accelerators with tailored implementation, helping organisations move from idea to impact faster while reducing delivery risk. This approach enables quicker time-to-first-value and ensures solutions are adopted by stakeholders and users.\n' +
+		  '\n' +
+		  "Onepoint strives to add value in everything it does. Beyond technology delivery, Onepoint is committed to creating lasting social and business value. We invest in young people's futures, giving back through great causes, improving workplace wellness, driving climate action, and empowering refugees. Find out more at onepointltd.ai",
+		file_path: '/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Onepoint_-Standard_Description.txt',
+		chunk_id: 'chunk-80e426af382e6d300aec43acf79e73af',
+		links: [],
+		image: 'original_input/01_New Content/Onepoint -Standard Description.png',
+		last_modified: '2026-04-14T12: 33: 48+00: 00'
+		},
+		{
+		reference_id: '5',
+		content: 'Messaging & positioning refresh\n' +
+		  '\n' +
+		  "Refining and refreshing Onepoint's offerings messaging to reinforce our immediate-term relationship-based sales efforts – and stand out relatively uniquely\n" +
+		  '\n' +
+		  'Context\n' +
+		  '\n' +
+		  'Story arc 1 – “Woven by Onepoint”\n' +
+		  '- AI Strategy\n' +
+		  '- AI Architecture\n' +
+		  '- AI Proof of Value\n' +
+		  '- AI Build\n' +
+		  '- AI Scaling\n' +
+		  '- AI Managed\n' +
+		  '\n' +
+		  'Story arc 2 – “Accelerated by Onepoint”\n' +
+		  '- The Onepoint AI Ecosystem™\n' +
+		  '- Platforms\n' +
+		  '- The Onepoint Smart Advisors™ Platform\n' +
+		  '- Onepoint Differential™\n' +
+		  '- Onepoint D-Well™\n' +
+		  '- Onepoint Res-AI™\n' +
+		  '- Onepoint ExpertMatcher™\n' +
+		  '- Onepoint Smart Company Advisor™ (Oscha)\n' +
+		  '- The Onepoint Smart Converters™ Platform\n' +
+		  '- Onepoint ConvertWise™ S1000D Edition\n' +
+		  '- The Onepoint Smart Curators™ Platform\n' +
+		  '- Onepoint Curation Studio™\n' +
+		  '- Onepoint Adaptive Discovery™\n' +
+		  '- Toolkits\n' +
+		  '- Onepoint AI Ecosystem for Boomi\n' +
+		  '- Onepoint AI Engine™\n' +
+		  '- Frameworks\n' +
+		  '- Onepoint Data & Analytics Body of Knowledge™\n' +
+		  '\n' +
+		  'OnepointAgentic Architecture Body of Knowledge™ 65  \n' +
+		  'Onepoint Reference Architecture Framework for Data & Analytics™ 67  \n' +
+		  'Methods 70  \n' +
+		  'Onepoint Valuepath™ 71  \n' +
+		  'Onepoint Rapid Value Method™ 73  \n' +
+		  '\n' +
+		  '## Context\n' +
+		  '\n' +
+		  "This section is an intro to this doc. The content in this ('Context') section is NOT for use on the website or to feed the machine!\n" +
+		  '\n' +
+		  "We are doing a huge push to generate revenue (particularly from our AI-related efforts). To support the market-facing conversations, especially your chosen relationship-driven lead generation approach, we need to refine our positioning messaging and marketing assets to incorporate Onepoint's AI strategy, activities, and offerings in a meaningful way for our prospects.\n" +
+		  '\n' +
+		  'We will use two overarching narratives to make our messaging meaningful for our prospects:\n' +
+		  '\n' +
+		  '- The first covers our ability to help deeply incorporate AI into [any part of
+			] the business to create real value. We call this: "Woven by Onepoint".\n' +
+		  `- The second covers how we help organisations to 'quickly get to AI value' by using our platforms, toolkits, frameworks, and methods. We call this: "Accelerated by Onepoint".\n` +
+		  '\n' +
+		  'Story arc 1 — “Woven by Onepoint”\n' +
+		  '\n' +
+		  '**Primary keywords**  \n' +
+		  'AI strategy, AI architecture, AI proof of value, AI scaling, AI managed services, enterprise AI, AI lifecycle, AI consulting, AI delivery, AI governance, Agentic architecture, Agentic AI.\n' +
+		  '\n' +
+		  '**Secondary keywords**  \n' +
+		  'AI integration, AI compliance, explainable AI, scalable AI, AI frameworks, AI toolkits, AI accelerators, AI outcomes.\n' +
+		  '\n' +
+		  '**Page title**  \n' +
+		  'Woven by Onepoint — AI consulting & delivery, from strategy to scale.\n' +
+		  '\n' +
+		  '**Meta description**  \n' +
+		  'From strategy to scale, Onepoint helps you weave AI into your organisation with confidence — delivering measurable outcomes, not just experiments.\n' +
+		  '\n' +
+		  '---\n' +
+		  '\n' +
+		  'From strategy to scale, weave AI into your organisation with confidence.\n' +
+		  '\n' +
+		  "AI is no longer optional — it's essential. But weaving AI into the fabric of your organisation requires more than just tools or pilots. It demands a clear strategy, robust architecture, and a proven approach to scaling solutions that deliver real business value.\n" +
+		  '\n' +
+		  'Woven by Onepoint is our umbrella proposition for AI consulting and delivery. From early-stage ideas to enterprise-grade AI solutions, we help you weave AI into your organisation’s DNA — creating measurable outcomes, not just experiments.\n' +
+		  '\n' +
+		  '---\n' +
+		  '\n' +
+		  '**Built on five key differentiators**\n' +
+		  '\n' +
+		  '1. Our architecture heritage\n' +
+		  '\n' +
+		  'Two decades of enterprise architecture practice results in interoperable, scalable, secure solutions designed for real constraints. Pilots become platforms, not throwaways.\n' +
+		  '\n' +
+		  '1. Trusted advisors to senior leaders  \n' +
+		  'Independent, experience-led counsel from boardroom to backlog, turning strategy into funded roadmaps and keeping delivery accountable—trusted by organisations like Flight Centre, Lightsource bp, Meggitt, and Moto Hospitality.\n' +
+		  '\n' +
+		  '2. Outcome-focused  \n' +
+		  'We prioritise measurable business value over hype. We bring a business consultancy’s mindset of value creation with a technology specialist’s ability to weave technical innovation that realises business opportunities.\n' +
+		  '\n' +
+		  '3. Proven methods and toolkits  \n' +
+		  'Reusable frameworks, playbooks, and accelerators cut time-to-value and leave assets your teams can reuse—speed up delivery, standardise good practice across teams, and create assets you can lift-and-shift to the next project.\n' +
+		  '\n' +
+		  '4. Blend of skills and capabilities  \n' +
+		  'Onshore and offshore cross-functional teams (strategy, product, architecture, data/AI, engineering, DevOps) co-create with you, shipping value while upskilling your people.\n' +
+		  ' \n' +
+		  '\n' +
+		  '\n' +
+		  'Cannot convert\n' +
+		  'Reason: The image content cannot be processed into text format.\n' +
+		  '\n' +
+		  "What's included in Woven by Onepoint\n" +
+		  '\n' +
+		  'Woven by Onepoint ties together all our AI consulting and delivery offerings into a seamless lifecycle approach:\n' +
+		  '\n' +
+		  '- AI Strategy — Define your AI vision, prioritize use cases, and align stakeholders.\n' +
+		  '- AI Architecture — Design scalable, secure, and future-ready AI systems.\n' +
+		  '- AI Proof of Value — Rapidly validate ideas with measurable outcomes in 4–6 weeks.\n' +
+		  '- AI Build — Develop tailored AI solutions that integrate with your business.\n' +
+		  '- AI Scaling — Operationalize and scale AI across teams, regions, and use cases.\n' +
+		  '- AI Managed — Ensure ongoing performance, governance, and continuous improvement.\n' +
+		  '\n' +
+		  'Who it’s for\n' +
+		  '\n' +
+		  '- Business leaders — Looking to align AI initiatives with strategic goals and measurable outcomes.\n' +
+		  '- Technology leaders — Seeking scalable, secure AI architectures that integrate seamlessly with existing systems.\n' +
+		  '- Innovation teams — Needing a proven partner to accelerate proofs-of-value and scale successful pilots.\n' +
+		  '- Regulated industries — Requiring explainable, auditable AI solutions aligned to compliance standards.\n' +
+		  '\n' +
+		  'How we work together\n' +
+		  '\n' +
+		  '1. Discover and prioritize\n' +
+		  '\n' +
+		  '   We start by understanding your business goals, challenges, and opportunities. Together, we identify high-value use cases and create a roadmap for success.\n' +
+		  '\n' +
+		  '2. Prove',
+		file_path: '/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Messaging_&_positioning_refresh.txt',
+		chunk_id: 'chunk-842f468293e62cf44e4f2d260656a2ee',
+		links: [],
+		image: 'original_input/01_New Content/Messaging & positioning refresh.png',
+		last_modified: '2026-04-14T12: 33: 48+00: 00'
+		},
+		{
+		reference_id: '5',
+		content: '.\n' +
+		  '- Technology leaders — Seeking scalable, secure AI architectures that integrate seamlessly with existing systems.\n' +
+		  '- Innovation teams — Needing a proven partner to accelerate proofs-of-value and scale successful pilots.\n' +
+		  '- Regulated industries — Requiring explainable, auditable AI solutions aligned to compliance standards.\n' +
+		  '\n' +
+		  'How we work together\n' +
+		  '\n' +
+		  '1. Discover and prioritize\n' +
+		  '\n' +
+		  '   We start by understanding your business goals, challenges, and opportunities. Together, we identify high-value use cases and create a roadmap for success.\n' +
+		  '\n' +
+		  '2. Prove value quickly\n' +
+		  '\n' +
+		  'Using our proven methods and accelerators, we deliver a working proof-of-value in 4–6 weeks—complete with measurable outcomes and reusable components.\n' +
+		  '\n' +
+		  '3. Build and scale  \n' +
+		  'We develop tailored AI solutions that integrate with your systems and scale across teams, regions, and use cases.\n' +
+		  '\n' +
+		  '4. Manage and optimise  \n' +
+		  'Post-launch, we provide ongoing support to ensure your AI solutions deliver consistent value, remain compliant, and evolve with your business.\n' +
+		  '\n' +
+		  'Why choose Woven by Onepoint?\n' +
+		  '- End-to-end expertise – From strategy to scaling, we cover the entire AI lifecycle.\n' +
+		  '- Outcome-focused – We prioritise measurable business value over hype.\n' +
+		  '- Proven methods – Our frameworks and toolkits accelerate delivery and reduce risk.\n' +
+		  '- Enterprise-grade – Scalable, secure, and compliant solutions built for your business.\n' +
+		  '- Trusted partner – 20 years of experience working with senior leaders at innovative organisations.\n' +
+		  '\n' +
+		  'Example starting points\n' +
+		  '- AI Strategy – Define your AI vision and prioritise use cases with a 10-day opportunity scan.\n' +
+		  '- AI Proof of Value – Validate a high-value use case in 4–6 weeks with measurable outcomes.\n' +
+		  '- AI Scaling – Operationalise a successful pilot across teams and regions with governance built-in.\n' +
+		  '- AI Managed – Ensure ongoing performance and compliance with managed AI services.\n' +
+		  '\n' +
+		  'Frequently asked questions\n' +
+		  '# What is Woven by Onepoint?\n' +
+		  '\n' +
+		  'Woven by Onepoint is our comprehensive AI consulting and delivery proposition. It helps organisations weave AI into their business, from strategy and architecture to proofs-of-value, scaling, and ongoing management. We focus on delivering measurable outcomes by combining our architecture expertise, trusted advisory experience, and proven methods.\n' +
+		  '\n' +
+		  '## What services are included in Woven by Onepoint?\n' +
+		  '\n' +
+		  'Woven by Onepoint covers the entire AI lifecycle:\n' +
+		  '\n' +
+		  '- **AI Strategy** — Define your AI vision, prioritise use cases, and align stakeholders.\n' +
+		  '- **AI Architecture** — Design scalable, secure, and future-ready AI systems.\n' +
+		  '- **AI Proof of Value** — Rapidly validate ideas with measurable outcomes in 4–6 weeks.\n' +
+		  '- **AI Build** — Develop tailored AI solutions that integrate with your business.\n' +
+		  '- **AI Scaling** — Operationalise and scale AI across teams, regions, and use cases.\n' +
+		  '- **AI Managed** — Ensure ongoing performance, governance, and continuous improvement.\n' +
+		  '\n' +
+		  '## How does Woven by Onepoint differentiate from other AI consulting services?\n' +
+		  '\n' +
+		  'Woven by Onepoint stands out because of our:\n' +
+		  '\n' +
+		  '- **Architecture heritage**: 20 years of experience designing enterprise-grade systems.\n' +
+		  '- **Trusted advisory**: Proven track record of working with senior leaders at innovative organisations like FlightCentre, Lightsource bp, Meggitt, and Moto Hospitality.\n' +
+		  '- **Proven methods**: Frameworks, toolkits, and accelerators that reduce risk and accelerate time-to-value.\n' +
+		  '- **Outcome focus**: We prioritise measurable business value over hype.\n' +
+		  '\n' +
+		  '## Can you help us scale AI beyond pilots?\n' +
+		  '\n' +
+		  'Yes. Scaling AI is a core part of Woven by Onepoint. We help you move from isolated proofs-of-value to enterprise-grade AI solutions by:\n' +
+		  '\n' +
+		  '- Designing scalable architectures.\n' +
+		  '- Embedding governance and compliance.\n' +
+		  '- Creating reusable patterns and playbooks.\n' +
+		  '- Supporting adoption across teams and regions.\n' +
+		  'How fast can we see results?\n' +
+		  '\n' +
+		  'With our proven methods and accelerators, we can deliver a working proof-of-value in as little as 4–6 weeks. This includes a technical proof-of-concept and a use case / business proof-of-value, with measurable outcomes, reusable components, and a clear path to scale.\n' +
+		  '\n' +
+		  'What industries does Woven by Onepoint support?\n' +
+		  '\n' +
+		  'We work across a wide range of industries, including:\n' +
+		  '\n' +
+		  '- Financial services\n' +
+		  '- Travel, retail, and hospitality\n' +
+		  '- Energy and utilities\n' +
+		  '- Manufacturing and aerospace\n' +
+		  '- Public sector and regulated industries\n' +
+		  '\n' +
+		  'Our approach is tailored to your industry’s specific challenges, compliance requirements, and opportunities.\n' +
+		  '\n' +
+		  'How do you ensure AI solutions are compliant and explainable?\n' +
+		  '\n' +
+		  'Governance and explainability are built into every stage of our process. We:\n' +
+		  '\n' +
+		  '- Align solutions to your policies, standards, and risk appetite.\n' +
+		  '- Use explainable AI techniques to provide transparent, auditable outputs.\n' +
+		  '- Embed compliance controls for regulated industries.\n' +
+		  '- Provide documentation and training to ensure ongoing accountability.\n' +
+		  '\n' +
+		  'Can you customise your approach to our organisation?\n' +
+		  '\n' +
+		  'Absolutely. While we use proven frameworks and accelerators to speed up delivery, everything we do is tailored to your organisation’s goals, data, policies, and systems. We work closely with your teams to ensure the solution fits your uniqueness.\n' +
+		  '\n' +
+		  'What’s the difference between Woven by Onepoint and Accelerated by Onepoint?\n' +
+		  '\n' +
+		  '- Woven by Onepoint focuses on consulting and delivery—helping you weave AI into your organisation through strategy, architecture, proofs-of-value, scaling, and management.\n' +
+		  '\n' +
+		  '- Accelerated by Onepoint focuses on reusable accelerators—platforms, toolkits, frameworks, and methods that speed up AI innovation and delivery.\n' +
+		  '\n' +
+		  'Together, they provide a complete solution for AI adoption, from strategy to execution.\n' +
+		  '\n' +
+		  "What's the first step to get started?\n" +
+		  '\n' +
+		  'We recommend starting with one of the following:\n' +
+		  '\n' +
+		  '- AI Opportunity Scan – A 10-day engagement to identify and prioritize high-value use cases.\n' +
+		  '- Proof of Value – A 4-6 week project to validate a specific use case with measurable outcomes.\n' +
+		  '- AI Strategy Workshop – A focused session to align stakeholders and define your AI vision.\n' +
+		  '\n' +
+		  'But the first step is to have a conversation with one of our experts.\n' +
+		  '\n' +
+		  '- Book a 60',
+		file_path: '/var/graphrag/tennants/gil_fernandes/lightrag/onepoint_v3/input/01_New Content/Messaging_&_positioning_refresh.txt',
+		chunk_id: 'chunk-2556948bd542d3b01f9f010b1ab66f7a',
+		links: [],
+		image: 'original_input/01_New Content/Messaging & positioning refresh.png',
+		last_modified: '2026-04-14T12: 33: 48+00: 00'
+		}
+	],
+	context_text: '\n' +
+	  'Knowledge Graph Data (Entity):\n' +
+	  '\n' +
+	  '```json\n' +
+	  '\n' +
+	  '```\n' +
+	  '\n' +
+	  'Knowledge Graph Data (Relationship):\n' +
+	  '\n' +
+	  '```json\n' +
+	  '{
+		"entity1": "Onepoint",
+		"entity2": "Woven By Onepoint",
+		"description": "Onepoint uses the term \\"Woven by Onepoint\\" to describe its advisory focus for 2026.<SEP>Onepoint uses the Woven by Onepoint method to advise leaders on technical innovations.<SEP>Woven by Onepoint is the primary AI consulting and delivery proposition offered by the organization Onepoint."
+	}\n' +
+	  '{
+		"entity1": "Onepoint AI Workflows",
+		"entity2": "Personally Identifiable Information",
+		"description": "Onepoint AI Workflows are capable of detecting Personally Identifiable Information within data sets."
+	}\n' +
+	  `{
+		"entity1": "Chris Wray",
+		"entity2": "Onepoint",
+		"description": "Chris Wray is a speaker representing Onepoint's approach to AI and business value.<SEP>Chris Wray is a featured speaker representing Onepoint's AI offerings and technical strategy.<SEP>Chris Wray presents Onepoint's AI strategy and conducts live demos of their technological offerings."
+	}\n` +
+	  '{
+		"entity1": "Expert Profiles",
+		"entity2": "Onepoint Consulting",
+		"description": "Onepoint Consulting ingests expert profiles to create structured knowledge assets and internal matching solutions."
+	}\n' +
+	  '{
+		"entity1": "Boomi",
+		"entity2": "Onepoint",
+		"description": "Onepoint and Boomi collaborated to deliver a webinar and a specialized AI ecosystem for the Boomi platform.<SEP>Onepoint is the Boomi EMEA Teaming Systems Integrator Partner of the Year 2023 and uses Boomi as a key platform for AI-driven automation.<SEP>Onepoint is an award-winning implementation partner of Boomi and builds its AI Ecosystem on the Boomi platform.<SEP>Onepoint is an award-winning implementation partner of Boomi AI."
+	}\n' +
+	  '{
+		"entity1": "Expert Matcher",
+		"entity2": "Expert Profiles",
+		"description": "The Expert Matcher uses a knowledge graph built from expert profiles to identify the right internal individuals for specific challenges."
+	}\n' +
+	  '{
+		"entity1": "Expert Matcher",
+		"entity2": "Onepoint",
+		"description": "Onepoint showcased Expert Matcher as one of its in-house smart advisor tools.<SEP>Expert Matcher is an in-house smart advisor tool built by Onepoint to solve specific industry challenges."
+	}\n' +
+	  `{
+		"entity1": "Ian Minto",
+		"entity2": "Onepoint",
+		"description": "Ian Minto notes his impression of Onepoint's technical delivery and conduct.<SEP>Ian Minto praises the conduct of Onepoint's staff."
+	}\n` +
+	  `{
+		"entity1": "Onepoint",
+		"entity2": "Shashin Shah",
+		"description": "Shashin Shah is the Founder and CEO of Onepoint.<SEP>Shashin Shah is the Founder & CEO of Onepoint and represents the company in public sessions.<SEP>Shashin Shah is the Founder and CEO of Onepoint.<SEP>Shashin Shah is the Founder and CEO of Onepoint.<SEP>Shashin Shah is the Founder and CEO of Onepoint.<SEP>Shashin Shah works for Onepoint and presents the company's AI strategies.<SEP>Shashin Shah presents Onepoint's internal and client-facing AI applications and learnings."
+	}\n` +
+	  '{
+		"entity1": "Expert Matcher",
+		"entity2": "LinkedIn",
+		"description": "The Expert Matcher tool utilizes extracted LinkedIn profiles to match consultants to specific client requirements."
+	}\n' +
+	  '{
+		"entity1": "Onepoint",
+		"entity2": "Woven by Onepoint",
+		"description": "Onepoint branded its technology advisory services for 2026 as Woven by Onepoint.<SEP>Onepoint uses \\"Woven by Onepoint\\" as a primary narrative for its AI consulting and delivery services.<SEP>Woven by Onepoint is the specific AI consulting and delivery proposition offered by Onepoint."
+	}\n' +
+	  '```\n' +
+	  '\n' +
+	  'Document Chunks (Each entry has a reference_id refer to the `Reference Document List`):\n' +
+	  '\n' +
+	  '```json\n' +
+	  '{
+		"reference_id": "2",
+		"content": "Shah, Founder & CEO of Onepoint, in partnership with the Hivemind Network, as part of their Friday First talks series. In this conversation, Shashin will share real-world insights on how AI is driving meaningful business transformation at scale.\\n\\n\\nTitle: Making AI work for you: How Onepoint does it\\n\\nDate: Friday, 01 August 2025\\n\\nTime: 10:00 UK | 11:00 CEST\\n\\nWhat you will learn:\\n\\nIn this session, Shashin will give a live walkthrough of Onepoint’s AI-powered ecosystem, demonstrating real-world tools and frameworks that help global enterprises move from legacy ways of working to AI-ready architectures, solutions, and ecosystems."
+	}\n' +
+	  `{
+		"reference_id": "1",
+		"content": "Title: Making AI work for you: How Onepoint does it\\n\\nSummary:\\nAI is transforming the way enterprises operate. But are you harnessing its full potential? In this session, Shashin Shah and Chris Wray give a glimpse into how Onepoint applies AI for business use cases to create value for our clients and ourselves.\\n\\nWhat you'll learn\\n\\n- Making AI work: While most AI conversations dwell on possibilities, this session dives into practical outcomes. Learn how AI can streamline operations, reducing costs and enhancing efficiency. We unpack Onepoint's proven approach to applying AI with a sharp focus on business value, not just the tech.\\n\\n- AI offerings to turn ideas into reality: Discover how Onepoint’s AI Expert services and AI Co-Lab turn ideas into scalable solutions. Witness how our pre-built series of AI Apps and the engine that underpins them help clients to adopt AI faster without starting from scratch.\\n\\n- Real-world applications: Explore how AI can be applied to diverse domains through practical use cases. Get an inside look at how our Data Wellness tool (Onepoint D-Well™) uses AI to assess and improve enterprise data management and the Responsible AI tool (Onepoint Res-AI™), curated with expert knowledge.\\n\\n- Future implications: Learn how to move confidently from legacy ways of working to AI-ready frameworks. Walk away with practical insights on implementing AI responsibly and how to prepare your organisation for the next wave of AI innovation.\\n\\nFeatured speakers\\n- Shashin Shah\\n\\n- Chris Wray\\n\\nWho is this for\\n\\nThis session is ideal for business leaders, non-technical staff, AI and data specialists, and technology leaders looking to maximise the potential of AI and unlock real value. Business leaders and decision-makers will also benefit from the discussion on driving innovation with AI.\\n\\nSession transcript:\\n\\nSi Sultan\\n\\nWe've got a little bit of a new platform to contend with; hopefully, fingers crossed. The technology will be with us today and working with us. If not, then please indulge us. Give us some leeway on that. If everybody can mute what they’re saying while Shashin and Chris are talking this morning, we’ll have it. We’ll have time for a Q&A session at the end. And I would ask, please, that you hold your questions, because there’s a lot of material to cover, and I don’t want to steal their thunder. So I will hand over to Shashin now and put myself on mute. Shashin.\\n\\nShashin Shah\\n\\nThank you, Si. Good morning, everybody, and thank you for giving us this opportunity to share some of our learnings and experiences in applying AI, both internally within the organisation and also for some of our clients. So this morning, basically, it’s Chris Wray who will actually be doing a joint presentation with me. So what is it that we want to cover? At a very high level, I’ll explain in detail exactly what we’re covering today. We’ll introduce brief information on the company. We’ll then talk a little bit about AI in terms of what we’ve been doing and also sort of present our strategy and explanation of some of our services. But the majority of the time, frankly, is going to be spent on trying to show demos, which brings out the learnings from AI and artificial intelligence to some real-life problems. So we’ll spend the bulk of the time on that. We’ll then talk a little bit about some of our offerings and how we’re taking those to the market for some of our clients, and then, of course, a question and answer session towards the end. So in terms of what we are covering today, really, Chris and I will give you an overview of how we are applying AI for business use cases to create real value for our clients and ourselves. We’ll walk through and demo a series of examples. We want to avoid death by PowerPoint. So we’ll jump into some live demos. And I hope the demos will cooperate. They always have a tendency to do their own thing during live demos. And these are some of the things we actually want to try and present. In a sense, it’s based on some real-world tools, architectures, and frameworks we’re using. We’re actually looking at how to apply AI to solve legacy issues and, of course, have architectures that can deliver\\n\\nCannot convert  \\nThe image quality is insufficient for accurate text extraction.Here’s the extracted text in markdown format:\\n\\n\\nSecond is we've developed an ontology or knowledge framework, which are the eight boxes to summarize the major issues involved in each in Data Management. Those two things together. Plus we have a confidence calculator, which is this little indicator on the right. So we continue using the tool until we get sufficient information and context to know that we can give a good answer. So for those familiar with all the challenges of prompt engineering and LLMs, that's making sure we've got a really good, sophisticated prompt before we run the query. So in this scenario, we're going to imagine that the client has come on here. They want to work broadly what they need to do about their data ecosystem, and their biggest concern is poor data quality. So Shashin will click poor data quality as the option in this scenario, the inquiry logic at the top, which goes through specific aspects and generates the questions. That's all generated by the LLM tool. But critically, in this situation, all the data and knowledge which drives this tool is proprietary to Onepoint. We do not go out on the web, and the tool is designed to have proprietary data sources in it. So, having understood that data quality is the issue, the next question is, what specific aspects? So let's imagine we're struggling with the accuracy of data and also completeness of tho`... 95597 more characters
+	}

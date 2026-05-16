@@ -1,0 +1,27 @@
+info:
+  name: Run Evaluations
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: http://127.0.0.1:3001/api/evaluate
+  body:
+    type: json
+    data: |
+      {
+        "dataset_id": "{{dataset_id}}",
+        "prompt_ids": ["p_1778696756"]
+      }
+  auth: inherit
+
+runtime:
+  variables:
+    - name: dataset_id
+      value: ds_1778697288
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

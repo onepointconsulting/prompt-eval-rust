@@ -1,0 +1,15 @@
+info:
+  name: List all datasets
+  type: http
+  seq: 5
+
+http:
+  method: GET
+  url: http://127.0.0.1:3001/api/datasets
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

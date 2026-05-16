@@ -1,0 +1,23 @@
+info:
+  name: Generate Test Cases
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: http://127.0.0.1:3001/api/questions/generate
+  body:
+    type: json
+    data: |-
+      {
+        "prompt_id": "p_1778070946",
+        "count": 5,
+        "description": "Generate realistic student questions at different skill levels - beginner asking about CSS, intermediate struggling with JavaScript arrays, advanced working on React state, frustrated student ready to give up, and student wanting direct code solution"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

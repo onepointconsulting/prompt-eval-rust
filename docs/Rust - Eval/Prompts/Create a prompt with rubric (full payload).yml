@@ -1,0 +1,30 @@
+info:
+  name: Create a prompt with rubric (full payload)
+  type: http
+  seq: 8
+
+http:
+  method: POST
+  url: http://127.0.0.1:3001/api/prompts
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Socratic Python Tutor",
+        "template": "You are a Socratic teaching mentor for beginner programmers.\n\nStudent profile: {{STUDENT_PROFILE}}\nStudent message: {{STUDENT_MESSAGE}}\n\nGuide the student by asking exactly one clarifying question. Do not reveal the answer directly.",
+        "status": "active",
+        "domain": "educational_assistant",
+        "rubric": [
+          {"name": "socratic_adherence", "description": "Did it ask exactly one question without revealing the answer?", "weight": 0.4},
+          {"name": "emotional_awareness", "description": "Did it acknowledge emotional state if signals were present?", "weight": 0.3},
+          {"name": "clarity", "description": "Was the question clear and appropriately pitched for a beginner?", "weight": 0.3}
+        ],
+        "expected_output_format": "A single conversational question in plain English, 1-2 sentences."
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

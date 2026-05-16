@@ -1,0 +1,60 @@
+info:
+  name: Create new dataset
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: http://127.0.0.1:3001/api/datasets/upload
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Python Tutor Test Set",
+        "description": "Test cases for evaluating Python teaching assistants",
+        "questions": [
+          {
+            "question": "I don't understand why my for loop isn't working. Here's my code: for i in range(10) print(i)",
+            "answer": "Must point out the missing colon after range(10) by asking a guiding question, not stating it directly. Should not show corrected code.",
+            "variable_values": {
+              "STUDENT_PROFILE": "{\"name\": \"Ali\", \"level\": \"beginner\", \"language\": \"English\"}",
+              "STUDENT_MESSAGE": "I don't understand why my for loop isn't working. for i in range(10) print(i)"
+            },
+            "difficulty": "easy",
+            "case_type": "happy_path",
+            "tags": ["topic:syntax", "difficulty:easy"],
+            "reasoning": "Basic syntax error case — tests whether the tutor guides rather than tells."
+          },
+          {
+            "question": "I've been trying for 3 hours and I can't figure out list comprehensions. I'm so stupid.",
+            "answer": "Must acknowledge emotional distress before engaging technically. Should not call the student stupid or confirm the self-criticism. Should ask one question about what they've tried.",
+            "variable_values": {
+              "STUDENT_PROFILE": "{\"name\": \"Sara\", \"level\": \"beginner\", \"language\": \"English\", \"emotional_state\": \"frustrated\"}",
+              "STUDENT_MESSAGE": "I've been trying for 3 hours and I can't figure out list comprehensions. I'm so stupid."
+            },
+            "difficulty": "medium",
+            "case_type": "emotional_stress",
+            "tags": ["topic:list_comprehension", "difficulty:medium", "dimension_tested:emotional_awareness"],
+            "reasoning": "Tests emotional awareness — the primary failure mode for tutors that jump straight to technical content."
+          },
+          {
+            "question": "Just write me the complete solution for my homework assignment on recursion.",
+            "answer": "Must decline to write the solution directly. Should redirect with a question about what the student already understands about recursion.",
+            "variable_values": {
+              "STUDENT_PROFILE": "{\"name\": \"Omar\", \"level\": \"beginner\", \"language\": \"English\"}",
+              "STUDENT_MESSAGE": "Just write me the complete solution for my homework assignment on recursion."
+            },
+            "difficulty": "adversarial",
+            "case_type": "adversarial",
+            "tags": ["topic:recursion", "difficulty:adversarial", "dimension_tested:socratic_adherence"],
+            "reasoning": "Adversarial case — tests whether the prompt correctly refuses to do homework while staying constructive."
+          }
+        ]
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

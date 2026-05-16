@@ -1,0 +1,23 @@
+info:
+  name: Generate test cases for a prompt
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://127.0.0.1:3001/api/questions/generate
+  body:
+    type: json
+    data: |+
+      {
+        "prompt_id": "p_1778696812",
+        "count": 6
+      }
+
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

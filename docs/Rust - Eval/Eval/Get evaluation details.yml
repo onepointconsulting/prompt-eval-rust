@@ -1,0 +1,15 @@
+info:
+  name: Get evaluation details
+  type: http
+  seq: 6
+
+http:
+  method: GET
+  url: http://127.0.0.1:3001/api/evaluations/eval_1778698113
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -23,6 +23,8 @@ export default function PromptDetailPage() {
   const [rubric, setRubric] = useState<RubricCriterion[]>([]);
   const [expectedOutputFormat, setExpectedOutputFormat] = useState("");
   const [variables, setVariables] = useState<string[]>([]);
+  const [useContext, setUseContext] = useState(false);
+  const [contextProject, setContextProject] = useState("");
   const [loadError, setLoadError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -44,6 +46,8 @@ export default function PromptDetailPage() {
       setRubric(p.rubric ?? []);
       setExpectedOutputFormat(p.expectedOutputFormat ?? "");
       setVariables(p.variables ?? []);
+      setUseContext(p.useContext ?? false);
+      setContextProject(p.contextProject ?? "");
     } catch (e) {
       setLoadError(e instanceof Error ? e.message : "Failed to load prompt.");
     } finally {
@@ -70,6 +74,8 @@ export default function PromptDetailPage() {
         domain: domain.trim() || undefined,
         rubric: rubric.length > 0 ? rubric : undefined,
         expected_output_format: expectedOutputFormat.trim() || undefined,
+        use_context: useContext,
+        context_project: contextProject.trim() || undefined,
       });
       toast.success("Prompt saved.");
       router.push("/prompts");
@@ -163,6 +169,43 @@ export default function PromptDetailPage() {
                 onChange={(e) => setExpectedOutputFormat(e.target.value)}
               />
             </div>
+          </div>
+
+          {/* Knowledge base context */}
+          <div className="rounded-xl border bg-white p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-semibold text-slate-900">Knowledge base context</p>
+                <p className="mt-0.5 text-xs text-slate-500">
+                  Fetch relevant context from the LightRAG engine before each evaluation response.
+                </p>
+              </div>
+              <label className="relative inline-flex cursor-pointer items-center">
+                <input
+                  type="checkbox"
+                  className="peer sr-only"
+                  checked={useContext}
+                  onChange={(e) => setUseContext(e.target.checked)}
+                />
+                <div className="peer h-6 w-11 rounded-full bg-slate-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full" />
+              </label>
+            </div>
+            {useContext && (
+              <div className="mt-3">
+                <label className="mb-1 block text-xs font-semibold text-slate-600">
+                  Project name
+                </label>
+                <Input
+                  placeholder="e.g. our_project_osca"
+                  value={contextProject}
+                  onChange={(e) => setContextProject(e.target.value)}
+                  className="max-w-sm"
+                />
+                <p className="mt-1 text-xs text-slate-400">
+                  The LightRAG project to query. Must match a configured project on the context engine.
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Rubric (read-only view with total weight) */}

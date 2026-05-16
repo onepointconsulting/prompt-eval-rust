@@ -31,6 +31,9 @@ export default function PromptGeneratePage() {
   const [isSaving, setIsSaving] = useState(false);
   const [isGeneratingCases, setIsGeneratingCases] = useState(false);
   const [isSavingDataset, setIsSavingDataset] = useState(false);
+  const [caseCount, setCaseCount] = useState(5);
+  const [mode, setMode] = useState<"generate" | "import">("generate");
+  const [importText, setImportText] = useState("");
 
   useEffect(() => {
     const t = window.setTimeout(() => {
@@ -65,6 +68,26 @@ export default function PromptGeneratePage() {
   }, []);
 
   const onGeneratePrompt = async () => {
+    if (mode === "import") {
+      const text = importText.trim();
+      if (!text) { toast.error("Paste your existing prompt first."); return; }
+      try {
+        setIsGenerating(true);
+        const generated = await api.generatePrompt("", text);
+        setEditorValue(generated.template);
+        setGeneratedVariables(generated.variables);
+        setGeneratedDomain(generated.domain);
+        setGeneratedRubric(generated.rubric);
+        setGeneratedOutputFormat(generated.expectedOutputFormat);
+        toast.success("Prompt imported. Metadata extracted — review and save.");
+      } catch (e) {
+        toast.error(e instanceof Error ? e.message : "Failed to import prompt.");
+      } finally {
+        setIsGenerating(false);
+      }
+      return;
+    }
+
     const text = description.trim();
     if (!text) {
       toast.error("Enter a description first.");
@@ -127,7 +150,7 @@ export default function PromptGeneratePage() {
       setIsGeneratingCases(true);
       const testCases = await api.generateTestCases({
         prompt_id: lastSavedPromptId,
-        count: 5,
+        count: caseCount,
       });
       setGeneratedCases(testCases);
       toast.success(`Generated ${testCases.length} test cases.`);
@@ -200,21 +223,58 @@ export default function PromptGeneratePage() {
     >
       {/* Step 1 */}
       <div className="grid gap-3 rounded-xl border bg-white p-4">
-        <p className="text-sm font-semibold text-slate-900">
-          Step 1: Generate from description (optional)
-        </p>
-        <p className="text-xs text-slate-500">
-          Or paste / type a template in the editor below without using AI.
-        </p>
-        <textarea
-          placeholder="Describe what this prompt should do..."
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="min-h-60 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-        />
+        <div className="flex items-center justify-between">
+          <p className="text-sm font-semibold text-slate-900">Step 1: Add prompt</p>
+          {/* Mode toggle */}
+          <div className="flex rounded-lg border border-slate-200 text-xs font-medium overflow-hidden">
+            <button
+              type="button"
+              onClick={() => setMode("generate")}
+              className={`px-3 py-1.5 transition-colors ${mode === "generate" ? "bg-blue-600 text-white" : "bg-white text-slate-600 hover:bg-slate-50"}`}
+            >
+              Generate from description
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode("import")}
+              className={`px-3 py-1.5 transition-colors ${mode === "import" ? "bg-blue-600 text-white" : "bg-white text-slate-600 hover:bg-slate-50"}`}
+            >
+              Import existing prompt
+            </button>
+          </div>
+        </div>
+
+        {mode === "generate" ? (
+          <>
+            <p className="text-xs text-slate-500">
+              Describe what this prompt should do and AI will write a template.
+            </p>
+            <textarea
+              placeholder="Describe what this prompt should do..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="min-h-40 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            />
+          </>
+        ) : (
+          <>
+            <p className="text-xs text-slate-500">
+              Paste your existing prompt exactly as written. It will be stored as-is — AI will only extract the rubric and domain metadata from it.
+            </p>
+            <textarea
+              placeholder="Paste your complete prompt template here..."
+              value={importText}
+              onChange={(e) => setImportText(e.target.value)}
+              className="min-h-60 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            />
+          </>
+        )}
+
         <div className="flex justify-end">
           <Button onClick={onGeneratePrompt} disabled={isGenerating} type="button">
-            {isGenerating ? "Generating..." : "Generate with AI"}
+            {isGenerating
+              ? (mode === "import" ? "Extracting..." : "Generating...")
+              : (mode === "import" ? "Import & extract metadata" : "Generate with AI")}
           </Button>
         </div>
       </div>
@@ -311,14 +371,27 @@ export default function PromptGeneratePage() {
       <div className="rounded-xl border bg-white p-4">
         <div className="flex items-center justify-between">
           <p className="text-sm font-semibold text-slate-900">Step 4: Generate test cases</p>
-          <Button
-            variant="secondary"
-            onClick={onGenerateCases}
-            disabled={!lastSavedPromptId || isGeneratingCases}
-            type="button"
-          >
-            {isGeneratingCases ? "Generating..." : "Generate test cases"}
-          </Button>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
+              <label className="text-xs text-slate-500 whitespace-nowrap">Count</label>
+              <input
+                type="number"
+                min={1}
+                max={20}
+                value={caseCount}
+                onChange={(e) => setCaseCount(Math.max(1, Math.min(20, parseInt(e.target.value) || 1)))}
+                className="w-16 rounded-md border border-slate-300 px-2 py-1.5 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              />
+            </div>
+            <Button
+              variant="secondary"
+              onClick={onGenerateCases}
+              disabled={!lastSavedPromptId || isGeneratingCases}
+              type="button"
+            >
+              {isGeneratingCases ? "Generating..." : "Generate test cases"}
+            </Button>
+          </div>
         </div>
         {!lastSavedPromptId && (
           <p className="mt-2 text-sm text-slate-500">

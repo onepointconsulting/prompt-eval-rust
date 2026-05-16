@@ -43,6 +43,8 @@ export type PromptTemplate = {
   domain?: string;
   rubric?: RubricCriterion[];
   expectedOutputFormat?: string;
+  useContext?: boolean;
+  contextProject?: string;
 };
 
 export type GeneratedPrompt = {

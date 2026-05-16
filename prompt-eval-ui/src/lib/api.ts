@@ -67,6 +67,8 @@ type ApiPrompt = {
   domain?: string | null;
   rubric?: ApiRubricCriterion[] | null;
   expected_output_format?: string | null;
+  use_context?: boolean | null;
+  context_project?: string | null;
 };
 
 type ApiDataset = {
@@ -158,6 +160,8 @@ function mapPrompt(p: ApiPrompt): PromptTemplate {
       ? p.rubric.map((r): RubricCriterion => ({ name: r.name, description: r.description, weight: r.weight }))
       : undefined,
     expectedOutputFormat: p.expected_output_format ?? undefined,
+    useContext: p.use_context ?? false,
+    contextProject: p.context_project ?? undefined,
   };
 }
 
@@ -248,6 +252,8 @@ export const api = {
     domain?: string;
     rubric?: RubricCriterion[];
     expected_output_format?: string;
+    use_context?: boolean;
+    context_project?: string;
   }): Promise<PromptTemplate> => {
     const p = await requestWithBody<ApiPrompt>("/prompts", "POST", payload);
     return mapPrompt(p);
@@ -262,6 +268,8 @@ export const api = {
       domain?: string;
       rubric?: RubricCriterion[];
       expected_output_format?: string;
+      use_context?: boolean;
+      context_project?: string;
     }
   ): Promise<PromptTemplate> => {
     const p = await requestWithBody<ApiPrompt>(`/prompts/${id}`, "PUT", payload);
@@ -271,14 +279,17 @@ export const api = {
   deletePrompt: async (id: string): Promise<{ deleted: boolean; id: string }> =>
     requestWithBody(`/prompts/${id}`, "DELETE"),
 
-  generatePrompt: async (description: string): Promise<GeneratedPrompt> => {
+  generatePrompt: async (description: string, existingTemplate?: string): Promise<GeneratedPrompt> => {
+    const body = existingTemplate
+      ? { description, existing_template: existingTemplate }
+      : { description };
     const raw = await requestWithBody<{
       template: string;
       variables: string[];
       domain: string;
       rubric: ApiRubricCriterion[];
       expected_output_format: string;
-    }>("/prompts/generate", "POST", { description });
+    }>("/prompts/generate", "POST", body);
     return {
       template: raw.template,
       variables: raw.variables,

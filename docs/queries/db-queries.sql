@@ -231,3 +231,8 @@ ALTER TABLE evaluation_runs
 CREATE INDEX IF NOT EXISTS idx_questions_difficulty    ON questions(dataset_id, difficulty);
 CREATE INDEX IF NOT EXISTS idx_eval_details_prompt     ON evaluation_details(prompt_id);
 CREATE INDEX IF NOT EXISTS idx_eval_details_run_prompt ON evaluation_details(run_id, prompt_id);
+
+-- prompts: knowledge base context configuration
+ALTER TABLE prompts
+    ADD COLUMN IF NOT EXISTS use_context      BOOLEAN      NOT NULL DEFAULT FALSE,
+    ADD COLUMN IF NOT EXISTS context_project  VARCHAR(100);

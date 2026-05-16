@@ -1,0 +1,15 @@
+info:
+  name: Delete dataset
+  type: http
+  seq: 6
+
+http:
+  method: DELETE
+  url: http://127.0.0.1:3001/api/datasets/ds_1777986333
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
