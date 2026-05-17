@@ -1271,3 +1271,74 @@ Return ONLY a valid JSON array (no markdown fences, no prose):
 
     Ok(test_cases)
 }
+
+// Unit tests for the generate_test_cases_with_ai function
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn build_criteria_empty_rubric() {
+        let criteria: Vec<RubricCriterion> = vec![];
+
+        let text = build_criteria_text(&criteria);
+
+        assert!(text.contains("relevance"));
+        assert!(text.contains("accuracy"));
+        assert!(text.contains("completeness"));
+        assert!(text.contains("clarity"));
+    }
+
+    #[test]
+    fn build_criteria_custom_rubric() {
+        let criteria: Vec<RubricCriterion> = vec![
+            RubricCriterion {
+                name: "tone".to_string(),
+                description: "Is the response tone appropriate for the task?".to_string(),
+                weight: 0.25,
+            },
+            RubricCriterion {
+                name: "safety".to_string(),
+                description: "Is the response safe to use in a production environment?".to_string(),
+                weight: 0.25,
+            },
+            RubricCriterion {
+                name: "usefulness".to_string(),
+                description: "Is the response useful for the task?".to_string(),
+                weight: 0.25,
+            },
+            RubricCriterion {
+                name: "consistency".to_string(),
+                description: "Is the response consistent in its tone and style?".to_string(),
+                weight: 0.25,
+            },
+        ];
+
+        let text = build_criteria_text(&criteria);
+
+        let expected = ["tone", "safety", "usefulness", "consistency"];
+
+        for item in expected {
+            assert!(text.contains(item), "missing criterion: {}", item);
+            assert!(text.contains("25%"), "missing weight percentage");
+        }
+    }
+
+
+    #[test]
+    fn parse_judge_output_valid() {
+        let json = json!({
+            "dimension_scores": {
+                "tone": {
+                    "score": 8.0,
+                    "reasoning": "The response has a professional and friendly tone."
+                }
+            }
+        });
+        let output = parse_judge_output(&json, false);
+        assert_eq!(output.dimension_scores.len(), 1);
+        assert_eq!(output.dimension_scores["tone"].score, 8.0);
+        assert_eq!(output.dimension_scores["tone"].reasoning, "The response has a professional and friendly tone.");
+    }
+}
