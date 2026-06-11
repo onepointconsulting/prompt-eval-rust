@@ -1,4 +1,5 @@
 mod app_state;
+mod bootstrap;
 mod db;
 mod handlers;
 mod llm;
@@ -17,6 +18,10 @@ async fn main() {
         .await
         .expect("Failed to create database pool");
 
+    bootstrap::maybe_run(&pool)
+        .await
+        .expect("Bootstrap script failed");
+
     let llm = llm::anthropic_client::AnthropicClient::from_env()
         .expect("ANTHROPIC_API_KEY, ANTHROPIC_MODEL_HAIKU, and ANTHROPIC_MODEL_SONNET must be set");
 
@@ -32,11 +37,12 @@ async fn main() {
     let cors = CorsLayer::permissive();
     let app = routes::create_router(state).layer(cors);
 
-    let listener = tokio::net::TcpListener::bind("127.0.0.1:3001")
-        .await
-        .unwrap();
+    let host = std::env::var("HOST").unwrap_or_else(|_| "127.0.0.1".into());
+    let port = std::env::var("PORT").unwrap_or_else(|_| "3001".into());
+    let addr = format!("{host}:{port}");
+    let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
 
-    println!("🚀 Rust API server running on http://127.0.0.1:3001");
+    println!("🚀 Rust API server running on http://{addr}");
 
     axum::serve(listener, app).await.unwrap();
 }

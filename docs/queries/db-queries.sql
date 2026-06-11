@@ -12,7 +12,7 @@
 -- question_count is denormalised and kept in sync manually on every
 -- question insert/delete — it avoids a COUNT(*) on hot read paths.
 -- -----------------------------------------------------------------------------
-CREATE TABLE datasets (
+CREATE TABLE IF NOT EXISTS datasets (
     id              VARCHAR(50)  PRIMARY KEY,           -- format: ds_{unix_timestamp}
     name            VARCHAR(255) NOT NULL,
     description     TEXT,
@@ -49,7 +49,7 @@ CREATE TABLE datasets (
 -- reasoning        TEXT: why this test case is useful — which rubric dimension
 --                  it probes and what failure mode it exercises.
 -- -----------------------------------------------------------------------------
-CREATE TABLE questions (
+CREATE TABLE IF NOT EXISTS questions (
     id              SERIAL       PRIMARY KEY,
     dataset_id      VARCHAR(50)  NOT NULL REFERENCES datasets(id) ON DELETE CASCADE,
     question_text   TEXT         NOT NULL,
@@ -98,7 +98,7 @@ CREATE TABLE questions (
 -- total_score_sum  DOUBLE PRECISION: sum of ALL individual question scores ever recorded.
 -- total_score_count INTEGER: count of individual scores, i.e. denominator for the mean.
 -- -----------------------------------------------------------------------------
-CREATE TABLE prompts (
+CREATE TABLE IF NOT EXISTS prompts (
     id                      VARCHAR(50)  PRIMARY KEY,  -- format: p_{unix_timestamp}
     name                    VARCHAR(255) NOT NULL,
     template                TEXT         NOT NULL,
@@ -130,7 +130,7 @@ CREATE TABLE prompts (
 -- status             VARCHAR: pending | running | completed | failed
 --   Currently always written as 'completed'. Reserved for async execution (Step 9).
 -- -----------------------------------------------------------------------------
-CREATE TABLE evaluation_runs (
+CREATE TABLE IF NOT EXISTS evaluation_runs (
     id                  VARCHAR(50)  PRIMARY KEY,      -- format: eval_{unix_timestamp}
     dataset_id          VARCHAR(50)  REFERENCES datasets(id),
     prompt_ids          TEXT[]       NOT NULL,
@@ -163,7 +163,7 @@ CREATE TABLE evaluation_runs (
 -- reference_used     BOOL: true when expected_answer was available and incorporated
 --   into the judge's assessment.
 -- -----------------------------------------------------------------------------
-CREATE TABLE evaluation_details (
+CREATE TABLE IF NOT EXISTS evaluation_details (
     id              SERIAL       PRIMARY KEY,
     run_id          VARCHAR(50)  REFERENCES evaluation_runs(id) ON DELETE CASCADE,
     question_id     INTEGER      REFERENCES questions(id),
@@ -182,14 +182,14 @@ CREATE TABLE evaluation_details (
 -- -----------------------------------------------------------------------------
 -- Indexes
 -- -----------------------------------------------------------------------------
-CREATE INDEX idx_prompts_status        ON prompts(status);
-CREATE INDEX idx_prompts_updated       ON prompts(updated_at DESC);
-CREATE INDEX idx_questions_dataset     ON questions(dataset_id);
-CREATE INDEX idx_questions_difficulty  ON questions(dataset_id, difficulty); -- filter by difficulty tier
-CREATE INDEX idx_eval_runs_dataset     ON evaluation_runs(dataset_id);
-CREATE INDEX idx_eval_details_run      ON evaluation_details(run_id);
-CREATE INDEX idx_eval_details_prompt   ON evaluation_details(prompt_id);
-CREATE INDEX idx_eval_details_run_prompt ON evaluation_details(run_id, prompt_id); -- per-prompt score query
+CREATE INDEX IF NOT EXISTS idx_prompts_status        ON prompts(status);
+CREATE INDEX IF NOT EXISTS idx_prompts_updated       ON prompts(updated_at DESC);
+CREATE INDEX IF NOT EXISTS idx_questions_dataset     ON questions(dataset_id);
+CREATE INDEX IF NOT EXISTS idx_questions_difficulty  ON questions(dataset_id, difficulty); -- filter by difficulty tier
+CREATE INDEX IF NOT EXISTS idx_eval_runs_dataset     ON evaluation_runs(dataset_id);
+CREATE INDEX IF NOT EXISTS idx_eval_details_run      ON evaluation_details(run_id);
+CREATE INDEX IF NOT EXISTS idx_eval_details_prompt   ON evaluation_details(prompt_id);
+CREATE INDEX IF NOT EXISTS idx_eval_details_run_prompt ON evaluation_details(run_id, prompt_id); -- per-prompt score query
 
 
 -- =============================================================================

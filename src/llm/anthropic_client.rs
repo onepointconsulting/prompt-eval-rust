@@ -75,7 +75,7 @@ impl AnthropicClient {
             .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
         if !status.is_success() {
-            eprintln!("anthropic non-2xx status={} body={}", status, body_text);
+            eprintln!("anthropic non-2xx status={} body={} key={}", status, body_text, self.api_key);
             return Err(StatusCode::BAD_GATEWAY);
         }
 
