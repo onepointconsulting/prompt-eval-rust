@@ -7,7 +7,6 @@ services:
       POSTGRES_DB: prompt_eval
     volumes:
       - postgres_data:/var/lib/postgresql
-      # - ./docs/queries/db-queries.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d prompt_eval"]
       interval: 5s
@@ -36,8 +35,8 @@ services:
 
   ui:
     build:
-      context: ./prompt-eval-ui
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: prompt-eval-ui/Dockerfile
       args:
         NEXT_PUBLIC_API_BASE_URL: http://localhost:3001/api
     ports:

@@ -81,7 +81,7 @@ jobs:
             -f prompt-eval-ui/Dockerfile \
             --build-arg NEXT_PUBLIC_API_BASE_URL=${{ env.NEXT_PUBLIC_API_BASE_URL }} \
             -t ${{ env.IMAGE_NAME_FRONTEND }}:deploy-${{ github.run_number }} \
-            prompt-eval-ui
+            .
 
       - name: Tag image for ECR
         run: |

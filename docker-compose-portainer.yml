@@ -46,8 +46,8 @@ services:
   ui:
     restart: unless-stopped
     build:
-      context: ./prompt-eval-ui
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: prompt-eval-ui/Dockerfile
       args:
         NEXT_PUBLIC_API_BASE_URL: http://localhost:3001/api
     ports:
