@@ -1,20 +1,25 @@
+name: prompt_eval
+
 services:
   postgres:
     image: postgres:18
+    restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: prompt_eval
     volumes:
-      - postgres_data:/var/lib/postgresql
-      # - ./docs/queries/db-queries.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - prompt_eval_postgres_data:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d prompt_eval"]
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - prompt_eval_network
 
   api:
+    restart: unless-stopped
     build:
       context: .
       dockerfile: Dockerfile
@@ -23,7 +28,7 @@ services:
     environment:
       HOST: 0.0.0.0
       PORT: 3001
-      DATABASE_URL: postgresql://postgres:password@postgres:5432/prompt_eval
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/prompt_eval
       BOOTSTRAP_SCRIPT: /var/sql/db-queries.sql
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
       ANTHROPIC_MODEL_HAIKU: ${ANTHROPIC_MODEL_HAIKU}
@@ -33,8 +38,13 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    networks:
+      prompt_eval_network:
+      macvlan_network:
+        ipv4_address: 192.168.108.220
 
   ui:
+    restart: unless-stopped
     build:
       context: ./prompt-eval-ui
       dockerfile: Dockerfile
@@ -46,9 +56,11 @@ services:
       - api
 
 volumes:
-  postgres_data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: C:/var/docker/prompt_eval/postgres-data
+  prompt_eval_postgres_data:
+
+networks:
+  prompt_eval_network:
+    driver: bridge
+  macvlan_network:
+    external: true
+    name: "MacVlan Server 192.168.108.0/22"
