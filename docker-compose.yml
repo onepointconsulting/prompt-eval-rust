@@ -38,11 +38,21 @@ services:
       context: .
       dockerfile: prompt-eval-ui/Dockerfile
       args:
-        NEXT_PUBLIC_API_BASE_URL: http://localhost:3001/api
+        NEXT_PUBLIC_API_BASE_URL: /rust-api
     ports:
       - "3000:3000"
     depends_on:
       - api
+
+  nginx:
+    build:
+      context: .
+      dockerfile: docker/nginx/Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+      - ui
 
 volumes:
   postgres_data:

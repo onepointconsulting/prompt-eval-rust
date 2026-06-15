@@ -20,9 +20,7 @@ services:
 
   api:
     restart: unless-stopped
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: 303872128380.dkr.ecr.eu-west-2.amazonaws.com/prompt-eval/prompt-eval-rust
     env_file:
       - .env
     environment:
@@ -33,27 +31,37 @@ services:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
       ANTHROPIC_MODEL_HAIKU: ${ANTHROPIC_MODEL_HAIKU}
       ANTHROPIC_MODEL_SONNET: ${ANTHROPIC_MODEL_SONNET}
-    ports:
-      - "3001:3001"
     depends_on:
       postgres:
         condition: service_healthy
     networks:
       prompt_eval_network:
-      macvlan_network:
-        ipv4_address: 192.168.108.220
 
   ui:
     restart: unless-stopped
-    build:
-      context: .
-      dockerfile: prompt-eval-ui/Dockerfile
-      args:
-        NEXT_PUBLIC_API_BASE_URL: http://localhost:3001/api
-    ports:
-      - "3000:3000"
+    image: 303872128380.dkr.ecr.eu-west-2.amazonaws.com/prompt-eval/prompt-eval-ui
     depends_on:
       - api
+    networks:
+      prompt_eval_network:
+
+  nginx:
+    restart: unless-stopped
+    image: 303872128380.dkr.ecr.eu-west-2.amazonaws.com/prompt-eval/prompt-eval-nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+      - ui
+    environment:
+      FRPC_LOCAL_PORT: 80
+      FRPC_PROXY_NAME: prompt-eval
+      FRPC_REMOTE_PORT: 4446
+      FRPC_SERVER_ADDR: ${FRPC_SERVER_ADDR}
+      FRPC_SERVER_PORT: ${FRPC_SERVER_PORT}
+      FRPC_TOKEN: ${FRPC_TOKEN}
+    networks:
+      prompt_eval_network:
 
 volumes:
   prompt_eval_postgres_data:
