@@ -21,8 +21,6 @@ services:
   api:
     restart: unless-stopped
     image: 303872128380.dkr.ecr.eu-west-2.amazonaws.com/prompt-eval/prompt-eval-rust
-    env_file:
-      - .env
     environment:
       HOST: 0.0.0.0
       PORT: 3001
