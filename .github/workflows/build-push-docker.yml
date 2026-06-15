@@ -1,4 +1,4 @@
-name: Build and push Docker images for Prompt Eval. It builds two Docker images.
+name: Build and push Docker images for Prompt Eval. It builds two Docker images
 
 on:
   push:
