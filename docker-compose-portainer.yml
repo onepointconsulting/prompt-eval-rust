@@ -67,6 +67,3 @@ volumes:
 networks:
   prompt_eval_network:
     driver: bridge
-  macvlan_network:
-    external: true
-    name: "MacVlan Server 192.168.108.0/22"
