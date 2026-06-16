@@ -229,15 +229,55 @@ pub async fn delete(
 ) -> Result<Json<DeleteResponse>, StatusCode> {
     println!("🗑️  Deleting dataset: {}", id);
 
+    let mut tx = pool.begin().await.map_err(|e| {
+        eprintln!("Database error (begin tx) deleting dataset {}: {}", id, e);
+        StatusCode::INTERNAL_SERVER_ERROR
+    })?;
+
+    sqlx::query(
+        r#"
+        DELETE FROM evaluation_details
+        WHERE question_id IN (SELECT id FROM questions WHERE dataset_id = $1)
+           OR run_id      IN (SELECT id FROM evaluation_runs WHERE dataset_id = $1)
+        "#,
+    )
+    .bind(&id)
+    .execute(&mut *tx)
+    .await
+    .map_err(|e| {
+        eprintln!(
+            "Database error deleting evaluation_details for {}: {}",
+            id, e
+        );
+        StatusCode::INTERNAL_SERVER_ERROR
+    })?;
+
+    sqlx::query("DELETE FROM evaluation_runs WHERE dataset_id = $1")
+        .bind(&id)
+        .execute(&mut *tx)
+        .await
+        .map_err(|e| {
+            eprintln!("Database error deleting evaluation_runs for {}: {}", id, e);
+            StatusCode::INTERNAL_SERVER_ERROR
+        })?;
+
     let result = sqlx::query("DELETE FROM datasets WHERE id = $1")
         .bind(&id)
-        .execute(&pool)
+        .execute(&mut *tx)
         .await
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+        .map_err(|e| {
+            eprintln!("Database error deleting dataset {}: {}", id, e);
+            StatusCode::INTERNAL_SERVER_ERROR
+        })?;
 
     if result.rows_affected() == 0 {
         return Err(StatusCode::NOT_FOUND);
     }
+
+    tx.commit().await.map_err(|e| {
+        eprintln!("Database error (commit) deleting dataset {}: {}", id, e);
+        StatusCode::INTERNAL_SERVER_ERROR
+    })?;
 
     Ok(Json(DeleteResponse { deleted: true, id }))
 }
@@ -313,7 +353,10 @@ async fn create_dataset_with_questions(
         .await
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
-    println!("✅ Uploaded {} questions to dataset {}", question_count, dataset_id);
+    println!(
+        "✅ Uploaded {} questions to dataset {}",
+        question_count, dataset_id
+    );
 
     Ok(DatasetWithQuestions {
         dataset,

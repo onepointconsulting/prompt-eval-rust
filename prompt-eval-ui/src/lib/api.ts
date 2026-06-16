@@ -116,6 +116,7 @@ type ApiDimensionScore = {
 
 type ApiEvaluation = {
   id: string;
+  status: string;
   average_score: number;
   dataset: string;
   prompts: string[];
@@ -367,6 +368,29 @@ export const api = {
     dataset_path?: string;
     prompt_ids: string[];
   }): Promise<ApiEvaluation> => requestWithBody("/evaluate", "POST", payload),
+
+  // POST /evaluate now returns immediately with status "running" and kicks the work
+  // off in a background task. Poll GET /evaluations/:id until it reaches a terminal
+  // status, resolving with the completed run or throwing on failure/timeout.
+  waitForEvaluation: async (
+    id: string,
+    opts?: { intervalMs?: number; timeoutMs?: number }
+  ): Promise<ApiEvaluationWithDetails> => {
+    const interval = opts?.intervalMs ?? 2000;
+    const timeoutMs = opts?.timeoutMs ?? 15 * 60 * 1000;
+    const startedAt = Date.now();
+    for (;;) {
+      const run = await request<ApiEvaluationWithDetails>(`/evaluations/${id}`);
+      if (run.status === "completed") return run;
+      if (run.status === "failed") {
+        throw new Error("Evaluation failed — check the server logs.");
+      }
+      if (Date.now() - startedAt > timeoutMs) {
+        throw new Error("Evaluation timed out while waiting for results.");
+      }
+      await new Promise((resolve) => setTimeout(resolve, interval));
+    }
+  },
 
   getHistory: async () => api.getRecentEvals(),
   getResultsList: async () => api.getRecentEvals(),

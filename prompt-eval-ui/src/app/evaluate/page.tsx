@@ -57,10 +57,13 @@ export default function EvaluatePage() {
     }
     try {
       setEvaluating(true);
-      const res = await api.runEvaluation({
+      // The POST returns immediately with status "running"; the real scores land
+      // when the background job finishes, so poll until it reaches a terminal state.
+      const started = await api.runEvaluation({
         dataset_id: effectiveDatasetId,
         prompt_ids: selectedPrompts,
       });
+      const res = await api.waitForEvaluation(started.id);
       setRunResult({
         id: res.id,
         dataset: res.dataset,
@@ -69,6 +72,7 @@ export default function EvaluatePage() {
         score: res.average_score,
         createdAt: res.created_at,
       });
+      console.log("res from waitForEvaluation: ", res);
       toast.success("Evaluation completed.");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed to run evaluation.");

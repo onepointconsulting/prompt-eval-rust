@@ -18,7 +18,7 @@ pub struct RubricCriterion {
 /// Score the judge assigned to a single rubric dimension.
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct DimensionScore {
-    pub score: f64,       // 1.0–10.0
+    pub score: f64,        // 1.0–10.0
     pub reasoning: String, // one-sentence explanation
 }
 
@@ -57,13 +57,12 @@ pub struct EvaluationRequest {
 #[derive(Serialize, Clone, Debug)]
 pub struct EvaluationResult {
     pub id: String,
+    pub status: String,
     pub average_score: f64,
     pub total_items: i32,
-    /// Flat list of all scores in evaluation order.
     pub scores: Vec<f64>,
     pub dataset: String,
     pub prompts: Vec<String>,
-    /// Per-prompt average scores — {"p_123": 7.4, "p_456": 6.1}.
     pub per_prompt_scores: HashMap<String, f64>,
     pub created_at: DateTime<Utc>,
 }
@@ -76,7 +75,6 @@ pub struct QuestionDetail {
     pub score: f64,
     pub strengths: Option<Vec<String>>,
     pub weaknesses: Option<Vec<String>>,
-    /// JSONB from evaluation_details.dimension_scores.
     pub dimension_scores: Option<Value>,
     pub judge_reasoning: Option<String>,
     pub reference_used: bool,
@@ -85,6 +83,7 @@ pub struct QuestionDetail {
 #[derive(Serialize, Clone, Debug)]
 pub struct EvaluationWithDetails {
     pub id: String,
+    pub status: String,
     pub average_score: f64,
     pub total_items: i32,
     pub scores: Vec<f64>,
@@ -114,16 +113,11 @@ pub struct Question {
     pub id: i32,
     pub dataset_id: String,
     pub question_text: String,
-    /// Semantic specification of what a correct response must contain.
-    /// NOT a verbatim answer — used as a reference by the judge.
     pub expected_answer: Option<String>,
     pub question_order: i32,
-    /// {"VAR_NAME": "value"} bindings for templated prompts.
     pub variable_values: Option<Value>,
     pub tags: Option<Vec<String>>,
-    /// easy | medium | hard | adversarial
     pub difficulty: Option<String>,
-    /// happy_path | edge_case | adversarial | emotional_stress | etc.
     pub case_type: Option<String>,
 }
 
@@ -187,23 +181,16 @@ pub struct Prompt {
     pub id: String,
     pub name: String,
     pub template: String,
-    /// Extracted {{VAR_NAME}} placeholder names.
     pub variables: Option<Vec<String>>,
     pub is_templated: bool,
     pub status: String, // draft | active | archived
     pub runs: i32,
     pub updated_at: DateTime<Utc>,
-    /// Denormalised mean = total_score_sum / total_score_count.
     pub average_score: Option<f64>,
-    /// Short snake_case domain label e.g. "educational_assistant".
     pub domain: Option<String>,
-    /// JSONB: Vec<RubricCriterion>. Deserialise with serde_json::from_value.
     pub rubric: Option<Value>,
-    /// Human-readable description of what ideal output looks like.
     pub expected_output_format: Option<String>,
-    /// When true, evaluation fetches KB context from the context engine per question.
     pub use_context: bool,
-    /// LightRAG project name to query, e.g. "my_project_v1".
     pub context_project: Option<String>,
 }
 
@@ -219,7 +206,6 @@ pub struct CreatePromptRequest {
     pub status: Option<String>,
     #[serde(default)]
     pub domain: Option<String>,
-    /// JSONB-serialisable Vec<RubricCriterion>.
     #[serde(default)]
     pub rubric: Option<Value>,
     #[serde(default)]
@@ -247,23 +233,17 @@ pub struct UpdatePromptRequest {
 #[derive(Deserialize)]
 pub struct GeneratePromptRequest {
     pub description: String,
-    /// When set, skip generation entirely — preserve this text as the template
-    /// and only extract rubric/domain/variables metadata from it.
     #[serde(default)]
     pub existing_template: Option<String>,
 }
 
 /// Response from POST /api/prompts/generate.
-/// The frontend should persist this via POST /api/prompts (CreatePromptRequest).
 #[derive(Serialize)]
 pub struct GeneratePromptResponse {
     pub template: String,
     pub variables: Vec<String>,
-    /// Domain label inferred by the generator.
     pub domain: String,
-    /// Rubric criteria specific to this prompt's purpose.
     pub rubric: Vec<RubricCriterion>,
-    /// What ideal output looks like for this prompt.
     pub expected_output_format: String,
 }
 
@@ -283,17 +263,11 @@ fn default_test_case_count() -> i32 {
 /// One AI-generated test case with rich metadata.
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct GeneratedTestCase {
-    /// Variable bindings for filling the prompt template.
     pub variable_values: Value,
-    /// Semantic specification of what a correct response must contain.
     pub expected_answer: Option<String>,
-    /// easy | medium | hard | adversarial
     pub difficulty: String,
-    /// happy_path | edge_case | emotional_stress | adversarial | etc.
     pub case_type: String,
-    /// ["dimension_tested:relevance", "difficulty:hard", ...]
     pub tags: Vec<String>,
-    /// Why this case probes a specific rubric dimension or failure mode.
     pub reasoning: String,
 }
 

@@ -11,6 +11,7 @@ use axum::{
     http::StatusCode,
     Json,
 };
+use futures::stream::{self, StreamExt};
 use serde_json::{json, Value};
 use sqlx::PgPool;
 use std::collections::HashMap;
@@ -56,23 +57,27 @@ fn build_criteria_text(criteria: &[RubricCriterion]) -> String {
 /// Defensive — every field has a safe fallback so a partial or malformed
 /// judge response never crashes the evaluation run.
 fn parse_judge_output(json: &Value, had_reference: bool) -> JudgeOutput {
+    // dimension_scores arrives as an array of {name, evidence, score, reasoning}
+    // (structured outputs can't express a map with arbitrary keys), so we fold
+    // it back into the HashMap that JudgeOutput uses, keyed by `name`.
     let dimension_scores: HashMap<String, DimensionScore> = json
         .get("dimension_scores")
-        .and_then(|v| v.as_object())
-        .map(|obj| {
-            obj.iter()
-                .map(|(k, v)| {
-                    (
-                        k.clone(),
+        .and_then(|v| v.as_array())
+        .map(|arr| {
+            arr.iter()
+                .filter_map(|item| {
+                    let name = item.get("name")?.as_str()?.to_string();
+                    Some((
+                        name,
                         DimensionScore {
-                            score: v.get("score").and_then(|s| s.as_f64()).unwrap_or(5.0),
-                            reasoning: v
+                            score: item.get("score").and_then(|s| s.as_f64()).unwrap_or(5.0),
+                            reasoning: item
                                 .get("reasoning")
                                 .and_then(|r| r.as_str())
                                 .unwrap_or("")
                                 .to_string(),
                         },
-                    )
+                    ))
                 })
                 .collect()
         })
@@ -145,6 +150,13 @@ fn parse_judge_output(json: &Value, had_reference: bool) -> JudgeOutput {
 /// The prompt puts judge_reasoning first — this is the G-Eval pattern: force
 /// the model to articulate reasoning before committing to numeric scores,
 /// which produces more consistent and calibrated outputs.
+///
+/// The response is constrained to a JSON schema via `send_structured`, so the
+/// returned text is guaranteed well-formed JSON — no markdown-fence stripping or
+/// best-effort parsing needed. `dimension_scores` is requested as an *array*
+/// (structured outputs can't express a map with arbitrary keys); the schema's
+/// field order also pins reasoning/evidence ahead of every numeric score, which
+/// is what makes the G-Eval ordering hold under constrained decoding.
 async fn judge_response(
     llm: &AnthropicClient,
     question: &str,
@@ -217,18 +229,18 @@ PRECISION RULES — read before scoring:
 - For every weakness you list, you MUST quote the exact phrase from the response that
   constitutes the violation in square brackets, e.g. ["phrase that violates the criterion"].
 
-Respond with ONLY valid JSON — no markdown fences, no prose before or after.
-The "evidence" field in each dimension forces you to reason before scoring — fill it first:
+The "evidence" field in each dimension forces you to reason before scoring — fill it first.
+Produce exactly one dimension_scores entry per criterion listed above, naming each one exactly:
 {{
-  "pre_reasoning": "<quote specific phrases from the response for each criterion before scoring>",
   "judge_reasoning": "<2-3 sentences of overall assessment written after reviewing all dimensions>",
-  "dimension_scores": {{
-    "<criterion_name>": {{
+  "dimension_scores": [
+    {{
+      "name": "<criterion name exactly as listed above>",
       "evidence": "<quote from response that most influenced this score, or 'none' if compliant>",
       "score": <1-10>,
       "reasoning": "<one concise sentence>"
     }}
-  }},
+  ],
   "strengths": ["<specific concrete strength with brief quote>"],
   "weaknesses": ["<violation with exact quote in brackets, e.g. used first-person: [I'd recommend]>"],
   "overall_score": <weighted average 1.0-10.0>,
@@ -237,20 +249,57 @@ The "evidence" field in each dimension forces you to reason before scoring — f
         question, response, reference_section, prompt_context, kb_section, criteria_text
     );
 
+    // The API guarantees the response matches this schema, so the returned text
+    // is always valid JSON for it. Note the absent numeric bounds on `score`:
+    // structured outputs don't support minimum/maximum, so the 1-10 range is
+    // enforced in the prompt and clamped (for overall_score) in parse_judge_output.
+    let schema = json!({
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+            "judge_reasoning": { "type": "string" },
+            "dimension_scores": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "name": { "type": "string" },
+                        "evidence": { "type": "string" },
+                        "score": { "type": "number" },
+                        "reasoning": { "type": "string" }
+                    },
+                    "required": ["name", "evidence", "score", "reasoning"]
+                }
+            },
+            "strengths": { "type": "array", "items": { "type": "string" } },
+            "weaknesses": { "type": "array", "items": { "type": "string" } },
+            "overall_score": { "type": "number" },
+            "reference_used": { "type": "boolean" }
+        },
+        "required": [
+            "judge_reasoning", "dimension_scores", "strengths",
+            "weaknesses", "overall_score", "reference_used"
+        ]
+    });
+
+    println!("judge_schema: {:?}", schema);
+
     let text = llm
-        .send_text(llm.model_sonnet(), 2000, &judge_prompt, Some(system))
+        .send_structured(
+            llm.model_sonnet(),
+            2000,
+            &judge_prompt,
+            Some(system),
+            schema,
+        )
         .await?;
 
-    // Strip markdown fences in case the model ignores the instruction.
-    let cleaned = text
-        .trim()
-        .trim_start_matches("```json")
-        .trim_start_matches("```")
-        .trim_end_matches("```")
-        .trim();
-
-    let json: Value = serde_json::from_str(cleaned).unwrap_or_else(|e| {
-        eprintln!("⚠️  judge_response JSON parse error: {e}\nraw={}", cleaned);
+    // Parse is still fallible — a refusal or a max_tokens cutoff can return text
+    // that doesn't satisfy the schema. Fall back to an all-default JudgeOutput
+    // rather than failing the whole evaluation run.
+    let json: Value = serde_json::from_str(&text).unwrap_or_else(|e| {
+        eprintln!("⚠️  judge_response JSON parse error: {e}\nraw={}", text);
         Value::Null
     });
 
@@ -430,87 +479,114 @@ struct EvaluationDetail {
     reference_used: bool,
 }
 
-async fn save_evaluation_run(
+/// Insert the run row up front with status='running' so the client gets a
+/// durable ID to poll immediately. average_score starts at 0 and per_prompt_scores
+/// is left NULL — both are filled in by finalize_evaluation_run when the job ends.
+async fn insert_evaluation_run(
     pool: &PgPool,
     run_id: &str,
     dataset_id: &str,
     prompt_ids: &[String],
-    average_score: f64,
     total_questions: i32,
-    per_prompt_scores: &HashMap<String, f64>,
     created_at: chrono::DateTime<chrono::Utc>,
 ) -> Result<(), StatusCode> {
-    let per_prompt_json = serde_json::to_value(per_prompt_scores).unwrap_or_else(|_| json!({}));
-
     println!(
-        "   [db] insert evaluation_runs id={} prompts={} avg={:.3} per_prompt={:?}",
+        "   [db] insert evaluation_runs id={} prompts={} status=running",
         run_id,
-        prompt_ids.len(),
-        average_score,
-        per_prompt_scores
+        prompt_ids.len()
     );
 
     sqlx::query(
         r#"
         INSERT INTO evaluation_runs
-            (id, dataset_id, prompt_ids, average_score, total_questions,
-             status, per_prompt_scores, created_at)
-        VALUES ($1, $2, $3, $4, $5, 'completed', $6, $7)
+            (id, dataset_id, prompt_ids, average_score, total_questions, status, created_at)
+        VALUES ($1, $2, $3, 0, $4, 'running', $5)
         "#,
     )
     .bind(run_id)
     .bind(dataset_id)
     .bind(prompt_ids)
-    .bind(average_score)
     .bind(total_questions)
-    .bind(per_prompt_json)
     .bind(created_at)
     .execute(pool)
     .await
     .map_err(|e| {
-        eprintln!("Failed to save evaluation run: {}", e);
+        eprintln!("Failed to insert evaluation run: {}", e);
         StatusCode::INTERNAL_SERVER_ERROR
     })?;
 
     Ok(())
 }
 
-async fn save_evaluation_details(
+/// Close out a run: write the final aggregate score, per-prompt breakdown, and
+/// terminal status ('completed' or 'failed'). Called once, from the background job.
+async fn finalize_evaluation_run(
     pool: &PgPool,
-    details: &[EvaluationDetail],
+    run_id: &str,
+    average_score: f64,
+    per_prompt_scores: &HashMap<String, f64>,
+    status: &str,
 ) -> Result<(), StatusCode> {
+    let per_prompt_json = serde_json::to_value(per_prompt_scores).unwrap_or_else(|_| json!({}));
+
     println!(
-        "   [db] inserting {} evaluation_details rows",
-        details.len()
+        "   [db] finalize evaluation_runs id={} status={} avg={:.3}",
+        run_id, status, average_score
     );
 
-    for detail in details {
-        sqlx::query(
-            r#"
-            INSERT INTO evaluation_details
-                (run_id, question_id, prompt_id, model_answer, score,
-                 strengths, weaknesses, dimension_scores,
-                 judge_reasoning, reference_used, created_at)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, NOW())
-            "#,
-        )
-        .bind(&detail.run_id)
-        .bind(detail.question_id)
-        .bind(&detail.prompt_id)
-        .bind(&detail.response)
-        .bind(detail.score)
-        .bind(detail.strengths.as_slice())
-        .bind(detail.weaknesses.as_slice())
-        .bind(&detail.dimension_scores)
-        .bind(&detail.judge_reasoning)
-        .bind(detail.reference_used)
-        .execute(pool)
-        .await
-        .map_err(|e| {
-            eprintln!("Failed to save evaluation detail: {}", e);
-            StatusCode::INTERNAL_SERVER_ERROR
-        })?;
-    }
+    sqlx::query(
+        r#"
+        UPDATE evaluation_runs
+        SET average_score = $2, per_prompt_scores = $3, status = $4
+        WHERE id = $1
+        "#,
+    )
+    .bind(run_id)
+    .bind(average_score)
+    .bind(per_prompt_json)
+    .bind(status)
+    .execute(pool)
+    .await
+    .map_err(|e| {
+        eprintln!("Failed to finalize evaluation run: {}", e);
+        StatusCode::INTERNAL_SERVER_ERROR
+    })?;
+
+    Ok(())
+}
+
+/// Persist one (run, prompt, question) result row. Called from the per-question
+/// task the moment a score is ready, so a mid-run failure never discards work
+/// already completed — each row is durable as soon as it's scored.
+async fn insert_evaluation_detail(
+    pool: &PgPool,
+    detail: &EvaluationDetail,
+) -> Result<(), StatusCode> {
+    sqlx::query(
+        r#"
+        INSERT INTO evaluation_details
+            (run_id, question_id, prompt_id, model_answer, score,
+             strengths, weaknesses, dimension_scores,
+             judge_reasoning, reference_used, created_at)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, NOW())
+        "#,
+    )
+    .bind(&detail.run_id)
+    .bind(detail.question_id)
+    .bind(&detail.prompt_id)
+    .bind(&detail.response)
+    .bind(detail.score)
+    .bind(detail.strengths.as_slice())
+    .bind(detail.weaknesses.as_slice())
+    .bind(&detail.dimension_scores)
+    .bind(&detail.judge_reasoning)
+    .bind(detail.reference_used)
+    .execute(pool)
+    .await
+    .map_err(|e| {
+        eprintln!("Failed to save evaluation detail: {}", e);
+        StatusCode::INTERNAL_SERVER_ERROR
+    })?;
 
     Ok(())
 }
@@ -566,6 +642,7 @@ pub async fn run_evaluation(
         payload.dataset_id, payload.prompt_ids
     );
 
+    // Validate inputs synchronously so the client gets a 4xx now, before we spawn.
     let dataset = resolve_dataset(&pool, &payload).await?;
     let questions = load_questions(&pool, &dataset.id).await?;
 
@@ -582,15 +659,77 @@ pub async fn run_evaluation(
 
     let run_id = format!("eval_{}", chrono::Utc::now().timestamp());
     let created_at = chrono::Utc::now();
+    let total_questions = questions.len() as i32;
 
+    // Persist the run as 'running' before returning, so the ID the client polls is
+    // already backed by a row. If this insert fails there's nothing to clean up yet.
+    insert_evaluation_run(
+        &pool,
+        &run_id,
+        &dataset.id,
+        &payload.prompt_ids,
+        total_questions,
+        created_at,
+    )
+    .await?;
+
+    // Hand the heavy work (potentially hundreds of LLM calls) to a background task.
+    // tokio::spawn requires a 'static future, so we move owned clones in — PgPool and
+    // AnthropicClient are cheap to clone (both wrap an Arc internally).
+    tokio::spawn(run_evaluation_job(
+        pool.clone(),
+        llm.clone(),
+        context_client.clone(),
+        run_id.clone(),
+        payload.prompt_ids.clone(),
+        questions,
+    ));
+
+    // Return immediately. The frontend polls GET /api/evaluations/:id until `status`
+    // leaves 'running'.
+    Ok(Json(EvaluationResult {
+        id: run_id,
+        status: "running".to_string(),
+        average_score: 0.0,
+        total_items: total_questions,
+        scores: vec![],
+        dataset: dataset.name,
+        prompts: payload.prompt_ids,
+        per_prompt_scores: HashMap::new(),
+        created_at,
+    }))
+}
+
+/// Max questions evaluated concurrently within a single prompt. Bounded by the DB
+/// pool (`max_connections(5)` in db.rs): each task briefly grabs a connection to
+/// persist its detail row, and we leave headroom for the poll/list endpoints that
+/// hit the same pool while a run is in flight. Raise this and the pool together.
+const QUESTION_CONCURRENCY: usize = 3;
+
+/// The background half of an evaluation. Runs every prompt × question pair,
+/// persisting each result the moment it's scored, then writes the terminal status.
+/// Takes everything by value because it outlives the request that spawned it.
+async fn run_evaluation_job(
+    pool: PgPool,
+    llm: AnthropicClient,
+    context_client: Option<ContextClient>,
+    run_id: String,
+    prompt_ids: Vec<String>,
+    questions: Vec<EvalQuestion>,
+) {
     let mut all_scores: Vec<f64> = vec![];
-    let mut all_details: Vec<EvaluationDetail> = vec![];
     let mut per_prompt_scores: HashMap<String, f64> = HashMap::new();
 
-    for prompt_id in &payload.prompt_ids {
+    for prompt_id in &prompt_ids {
         println!("\n🔄 Testing prompt_id={}", prompt_id);
 
-        let prompt = load_prompt_context(&pool, prompt_id).await?;
+        let prompt = match load_prompt_context(&pool, prompt_id).await {
+            Ok(p) => p,
+            Err(e) => {
+                eprintln!("❌ Skipping prompt {prompt_id}: failed to load context: {e:?}");
+                continue;
+            }
+        };
         println!(
             "   is_templated={}  domain={:?}  rubric_criteria={}",
             prompt.is_templated,
@@ -598,208 +737,233 @@ pub async fn run_evaluation(
             prompt.rubric.len()
         );
 
-        let mut run_scores: Vec<f64> = vec![];
-
-        for (i, question) in questions.iter().enumerate() {
-            println!(
-                "   Q{}  id={}  text=\"{}\"",
-                i + 1,
-                question.id,
-                preview(&question.question_text, 120)
-            );
-
-            // Fill template variables or fall back to appending the question directly.
-            let mut full_prompt = if prompt.is_templated {
-                if let Some(vars) = &question.variable_values {
-                    fill_template(&prompt.template, vars)
-                } else {
-                    fill_template(
-                        &prompt.template,
-                        &json!({ "QUESTION": question.question_text }),
-                    )
-                }
-            } else {
-                format!(
-                    "{}\n\nUser question: {}",
-                    prompt.template, question.question_text
+        // Run this prompt's questions concurrently. The futures borrow pool/llm/
+        // prompt/run_id; buffer_unordered keeps at most QUESTION_CONCURRENCY in
+        // flight, and the stream is fully awaited before `prompt` drops.
+        //
+        // We stream over indices rather than `questions.iter()` deliberately: a
+        // closure taking `&EvalQuestion` would need to be lifetime-general for any
+        // borrow, which `tokio::spawn`'s 'static bound rejects ("FnOnce is not
+        // general enough"). Taking an owned `usize` and indexing inside sidesteps it.
+        let scored: Vec<Option<f64>> = stream::iter(0..questions.len())
+            .map(|i| {
+                evaluate_one_question(
+                    &pool,
+                    &llm,
+                    &context_client,
+                    &run_id,
+                    prompt_id,
+                    &prompt,
+                    &questions[i],
+                    i,
                 )
-            };
+            })
+            .buffer_unordered(QUESTION_CONCURRENCY)
+            .collect()
+            .await;
 
-            // Fetch knowledge base context if this prompt is configured to use it.
-            // Also capture the raw context string so we can pass it to the judge —
-            // the judge needs to know what information was available to verify claims.
-            let mut fetched_kb_context: Option<String> = None;
-            if prompt.use_context {
-                match (&context_client, &prompt.context_project) {
-                    (Some(client), Some(project)) => {
-                        match client.fetch_context(&question.question_text, project).await {
-                            Ok(ctx) if !ctx.is_empty() => {
-                                full_prompt.push_str(
-                                    "\n\n## Knowledge Base Context\n\
-                                    The following information is relevant to this question. \
-                                    Draw on these specifics in your response.\n\n",
-                                );
-                                full_prompt.push_str(&ctx);
-                                full_prompt.push_str(
-                                    "\n\n---\n\
-                                    Now respond to the question above, following all instructions \
-                                    and drawing on the knowledge provided where relevant.",
-                                );
-                                println!("🔍 context injected ({} chars)", ctx.len());
-                                fetched_kb_context = Some(ctx);
-                            }
-                            Ok(_) => println!("⚠️  context API returned empty result"),
-                            Err(e) => {
-                                eprintln!("⚠️  context API error (continuing without): {e}")
-                            }
-                        }
-                    }
-                    (None, _) => {
-                        eprintln!("⚠️  use_context=true but CONTEXT_ENGINE_URL/KEY not set")
-                    }
-                    (_, None) => {
-                        eprintln!("⚠️  use_context=true but context_project not set on prompt")
-                    }
-                }
-            }
-
-            // For non-templated prompts the question has not yet been appended — add it now.
-            // Templated prompts already embed the question via {{USER_MESSAGE}} substitution,
-            // so we skip this to avoid duplicating the question with the wrong framing.
-            if !prompt.is_templated {
-                full_prompt.push_str("\n\n---\n\nUser question: ");
-                full_prompt.push_str(&question.question_text);
-                full_prompt.push_str("\n\nYour response:");
-            }
-
-            // Log the tail of the full prompt so we can confirm context is being seen by Haiku.
-            let prompt_chars: Vec<char> = full_prompt.chars().collect();
-            let tail_start = prompt_chars.len().saturating_sub(300);
-            let tail: String = prompt_chars[tail_start..].iter().collect();
-            println!("📝 prompt tail (last 300 chars): {:?}", tail);
-
-            // Generate model response (Haiku — cost-efficient for bulk generation).
-            let response = llm
-                .send_text(llm.model_haiku(), 1000, &full_prompt, None)
-                .await
-                .map_err(|e| {
-                    eprintln!("❌ Haiku call failed for question {}: {:?}", question.id, e);
-                    StatusCode::INTERNAL_SERVER_ERROR
-                })?;
-
-            println!(
-                "   ✅ response chars={}  preview=\"{}\"",
-                response.chars().count(),
-                preview(&response, 120)
-            );
-
-            // Judge the response (Sonnet — stronger model as independent evaluator).
-            let judge = judge_response(
-                &llm,
-                &question.question_text,
-                &response,
-                question.expected_answer.as_deref(),
-                &prompt.rubric,
-                Some(&prompt.template),
-                fetched_kb_context.as_deref(),
-            )
-            .await
-            .map_err(|e| {
-                eprintln!("❌ Judge failed for question {}: {:?}", question.id, e);
-                StatusCode::INTERNAL_SERVER_ERROR
-            })?;
-
-            println!(
-                "   📊 score={:.1}  reference_used={}  strengths={}  weaknesses={}",
-                judge.overall_score,
-                judge.reference_used,
-                judge.strengths.len(),
-                judge.weaknesses.len()
-            );
-
-            run_scores.push(judge.overall_score);
-            all_scores.push(judge.overall_score);
-
-            all_details.push(EvaluationDetail {
-                run_id: run_id.clone(),
-                prompt_id: prompt_id.clone(),
-                question_id: question.id,
-                response,
-                score: judge.overall_score,
-                strengths: judge.strengths,
-                weaknesses: judge.weaknesses,
-                dimension_scores: serde_json::to_value(&judge.dimension_scores)
-                    .unwrap_or(Value::Null),
-                judge_reasoning: judge.judge_reasoning,
-                reference_used: judge.reference_used,
-            });
-        }
-
+        let run_scores: Vec<f64> = scored.into_iter().flatten().collect();
         let score_sum: f64 = run_scores.iter().sum();
         let score_count = run_scores.len() as i32;
-        let run_avg = if score_count > 0 {
-            score_sum / score_count as f64
+
+        if score_count > 0 {
+            let run_avg = score_sum / score_count as f64;
+            println!(
+                "   prompt_id={}  run_avg={:.3}  (sum={:.1} / count={})",
+                prompt_id, run_avg, score_sum, score_count
+            );
+            per_prompt_scores.insert(prompt_id.clone(), run_avg);
+
+            // Best-effort: a stats update failure shouldn't sink the run's own results.
+            if let Err(e) =
+                persist_prompt_eval_stats(&pool, prompt_id, score_sum, score_count).await
+            {
+                eprintln!("⚠️  prompt stats update failed for {prompt_id}: {e:?}");
+            }
+            all_scores.extend(run_scores);
         } else {
-            0.0
-        };
-
-        println!(
-            "   prompt_id={}  run_avg={:.3}  (sum={:.1} / count={})",
-            prompt_id, run_avg, score_sum, score_count
-        );
-
-        per_prompt_scores.insert(prompt_id.clone(), run_avg);
-        persist_prompt_eval_stats(&pool, prompt_id, score_sum, score_count).await?;
+            eprintln!("⚠️  prompt {prompt_id} produced no scored questions");
+        }
     }
 
-    let overall_avg = if all_scores.is_empty() {
-        0.0
+    // No successful results at all → mark failed so the client stops polling and
+    // surfaces an error, rather than reporting a meaningless 0.0 average.
+    let (status, overall_avg) = if all_scores.is_empty() {
+        ("failed", 0.0)
     } else {
-        all_scores.iter().sum::<f64>() / all_scores.len() as f64
+        (
+            "completed",
+            all_scores.iter().sum::<f64>() / all_scores.len() as f64,
+        )
     };
 
     println!(
-        "\n📦 run_id={}  total_scored={}  overall_avg={:.3}",
+        "\n📦 run_id={}  status={}  total_scored={}  overall_avg={:.3}",
         run_id,
+        status,
         all_scores.len(),
         overall_avg
     );
 
-    save_evaluation_run(
-        &pool,
-        &run_id,
-        &dataset.id,
-        &payload.prompt_ids,
-        overall_avg,
-        questions.len() as i32,
-        &per_prompt_scores,
-        created_at,
-    )
-    .await?;
+    if let Err(e) =
+        finalize_evaluation_run(&pool, &run_id, overall_avg, &per_prompt_scores, status).await
+    {
+        eprintln!("❌ Failed to finalize run {run_id}: {e:?}");
+    }
+}
 
-    save_evaluation_details(&pool, &all_details).await?;
-
+/// Evaluate a single (prompt, question): build the prompt, optionally inject KB
+/// context, generate with Haiku, judge with Sonnet, and persist the detail row.
+/// Returns the score on success, or `None` on any failure (logged) — one bad
+/// question is skipped, never allowed to sink the whole run.
+async fn evaluate_one_question(
+    pool: &PgPool,
+    llm: &AnthropicClient,
+    context_client: &Option<ContextClient>,
+    run_id: &str,
+    prompt_id: &str,
+    prompt: &PromptContext,
+    question: &EvalQuestion,
+    index: usize,
+) -> Option<f64> {
     println!(
-        "✨ Evaluation complete  run_id={}  details={}",
-        run_id,
-        all_details.len()
+        "   Q{}  id={}  text=\"{}\"",
+        index + 1,
+        question.id,
+        preview(&question.question_text, 120)
     );
 
-    Ok(Json(EvaluationResult {
-        id: run_id,
-        average_score: overall_avg,
-        total_items: all_scores.len() as i32,
-        scores: all_scores,
-        dataset: dataset.name,
-        prompts: payload.prompt_ids,
-        per_prompt_scores,
-        created_at,
-    }))
+    // Fill template variables or fall back to appending the question directly.
+    let mut full_prompt = if prompt.is_templated {
+        if let Some(vars) = &question.variable_values {
+            fill_template(&prompt.template, vars)
+        } else {
+            fill_template(
+                &prompt.template,
+                &json!({ "QUESTION": question.question_text }),
+            )
+        }
+    } else {
+        format!(
+            "{}\n\nUser question: {}",
+            prompt.template, question.question_text
+        )
+    };
+
+    // Fetch knowledge base context if this prompt is configured to use it.
+    // Also capture the raw context string so we can pass it to the judge —
+    // the judge needs to know what information was available to verify claims.
+    let mut fetched_kb_context: Option<String> = None;
+    if prompt.use_context {
+        match (context_client, &prompt.context_project) {
+            (Some(client), Some(project)) => {
+                match client.fetch_context(&question.question_text, project).await {
+                    Ok(ctx) if !ctx.is_empty() => {
+                        full_prompt.push_str(
+                            "\n\n## Knowledge Base Context\n\
+                            The following information is relevant to this question. \
+                            Draw on these specifics in your response.\n\n",
+                        );
+                        full_prompt.push_str(&ctx);
+                        full_prompt.push_str(
+                            "\n\n---\n\
+                            Now respond to the question above, following all instructions \
+                            and drawing on the knowledge provided where relevant.",
+                        );
+                        println!("🔍 context injected ({} chars)", ctx.len());
+                        fetched_kb_context = Some(ctx);
+                    }
+                    Ok(_) => println!("⚠️  context API returned empty result"),
+                    Err(e) => eprintln!("⚠️  context API error (continuing without): {e}"),
+                }
+            }
+            (None, _) => eprintln!("⚠️  use_context=true but CONTEXT_ENGINE_URL/KEY not set"),
+            (_, None) => eprintln!("⚠️  use_context=true but context_project not set on prompt"),
+        }
+    }
+
+    // For non-templated prompts the question has not yet been appended — add it now.
+    // Templated prompts already embed the question via {{USER_MESSAGE}} substitution,
+    // so we skip this to avoid duplicating the question with the wrong framing.
+    if !prompt.is_templated {
+        full_prompt.push_str("\n\n---\n\nUser question: ");
+        full_prompt.push_str(&question.question_text);
+        full_prompt.push_str("\n\nYour response:");
+    }
+
+    // Generate model response (Haiku — cost-efficient for bulk generation).
+    let response = match llm.send_text(llm.model_haiku(), 1000, &full_prompt, None).await {
+        Ok(r) => r,
+        Err(e) => {
+            eprintln!("❌ Haiku call failed for question {}: {:?}", question.id, e);
+            return None;
+        }
+    };
+
+    println!(
+        "   ✅ response chars={}  preview=\"{}\"",
+        response.chars().count(),
+        preview(&response, 120)
+    );
+
+    // Judge the response (Sonnet — stronger model as independent evaluator).
+    let judge = match judge_response(
+        llm,
+        &question.question_text,
+        &response,
+        question.expected_answer.as_deref(),
+        &prompt.rubric,
+        Some(&prompt.template),
+        fetched_kb_context.as_deref(),
+    )
+    .await
+    {
+        Ok(j) => j,
+        Err(e) => {
+            eprintln!("❌ Judge failed for question {}: {:?}", question.id, e);
+            return None;
+        }
+    };
+
+    println!(
+        "   📊 score={:.1}  reference_used={}  strengths={}  weaknesses={}",
+        judge.overall_score,
+        judge.reference_used,
+        judge.strengths.len(),
+        judge.weaknesses.len()
+    );
+
+    let detail = EvaluationDetail {
+        run_id: run_id.to_string(),
+        prompt_id: prompt_id.to_string(),
+        question_id: question.id,
+        response,
+        score: judge.overall_score,
+        strengths: judge.strengths,
+        weaknesses: judge.weaknesses,
+        dimension_scores: serde_json::to_value(&judge.dimension_scores).unwrap_or(Value::Null),
+        judge_reasoning: judge.judge_reasoning,
+        reference_used: judge.reference_used,
+    };
+
+    // Persist before returning the score. If the row doesn't land, treat the
+    // question as failed so the run's average stays consistent with what
+    // GET /api/evaluations/:id recomputes from the detail rows.
+    if let Err(e) = insert_evaluation_detail(pool, &detail).await {
+        eprintln!(
+            "❌ Failed to persist detail for question {}: {:?}",
+            question.id, e
+        );
+        return None;
+    }
+
+    Some(detail.score)
 }
 
 #[derive(sqlx::FromRow)]
 struct EvalRunListRow {
     id: String,
+    status: Option<String>,
     prompt_ids: Vec<String>,
     average_score: f64,
     total_questions: i32,
@@ -812,6 +976,7 @@ struct EvalRunListRow {
 #[derive(sqlx::FromRow)]
 struct EvalRunRow {
     id: String,
+    status: Option<String>,
     dataset_id: Option<String>,
     prompt_ids: Vec<String>,
     average_score: f64,
@@ -843,6 +1008,7 @@ pub async fn list_evaluations(
         r#"
         SELECT
             er.id,
+            er.status,
             er.prompt_ids,
             er.average_score,
             er.total_questions,
@@ -853,7 +1019,7 @@ pub async fn list_evaluations(
         FROM evaluation_runs er
         LEFT JOIN datasets d ON er.dataset_id = d.id
         LEFT JOIN evaluation_details ed ON er.id = ed.run_id
-        GROUP BY er.id, er.prompt_ids, er.average_score, er.total_questions,
+        GROUP BY er.id, er.status, er.prompt_ids, er.average_score, er.total_questions,
                  er.created_at, er.per_prompt_scores, d.name
         ORDER BY er.created_at DESC
         LIMIT 50
@@ -876,6 +1042,7 @@ pub async fn list_evaluations(
 
             EvaluationResult {
                 id: row.id,
+                status: row.status.unwrap_or_else(|| "completed".to_string()),
                 average_score: row.average_score,
                 total_items: row.total_questions,
                 scores: row.scores.unwrap_or_default(),
@@ -899,7 +1066,7 @@ pub async fn get_evaluation(
 
     let run = sqlx::query_as::<_, EvalRunRow>(
         r#"
-        SELECT id, dataset_id, prompt_ids, average_score, total_questions,
+        SELECT id, status, dataset_id, prompt_ids, average_score, total_questions,
                per_prompt_scores, created_at
         FROM evaluation_runs
         WHERE id = $1
@@ -971,6 +1138,7 @@ pub async fn get_evaluation(
 
     Ok(Json(EvaluationWithDetails {
         id: run.id,
+        status: run.status.unwrap_or_else(|| "completed".to_string()),
         average_score: run.average_score,
         total_items: run.total_questions,
         scores,
@@ -1092,39 +1260,25 @@ async fn generate_test_cases_with_ai(
         None => String::new(),
     };
 
-    let make_prompt = |retry: bool| -> String {
-        if retry {
-            // Stripped-down retry prompt when the model produced invalid JSON.
-            format!(
-                "Return ONLY minified JSON array, no prose, no markdown. \
-                 Exactly {} items. Each item: \
-                 {{\"variable_values\":{{...}},\"expected_answer\":\"...\",\
-                 \"difficulty\":\"medium\",\"case_type\":\"happy_path\",\
-                 \"tags\":[\"...\"],\"reasoning\":\"...\"}}. \
-                 Variables: {:?}",
-                count, prompt.variables
-            )
-        } else {
-            {
-                // For non-templated prompts (no variables), the question text has nowhere to
-                // live except variable_values. We instruct Sonnet to use the key "QUESTION"
-                // so the frontend's preferred-key extraction can find it.
-                let variable_instruction = if prompt.variables.is_empty() {
-                    "This prompt has NO template variables — it is a fixed system prompt. \
-                     For each test case, put the user's question text into variable_values \
-                     as {\"QUESTION\": \"<the question the user would ask>\"}. \
-                     The QUESTION value is what will be sent to the model as the user turn."
-                        .to_string()
-                } else {
-                    format!(
-                        "TEMPLATE VARIABLES: {:?}\n\
-                         Set realistic values for every variable listed above.",
-                        prompt.variables
-                    )
-                };
+    // For non-templated prompts (no variables), the question text has nowhere to
+    // live except variable_values. We instruct Sonnet to use the key "QUESTION"
+    // so the frontend's preferred-key extraction can find it.
+    let variable_instruction = if prompt.variables.is_empty() {
+        "This prompt has NO template variables — it is a fixed system prompt. \
+         For each test case, put the user's question text into variable_values \
+         as {\"QUESTION\": \"<the question the user would ask>\"}. \
+         The QUESTION value is what will be sent to the model as the user turn."
+            .to_string()
+    } else {
+        format!(
+            "TEMPLATE VARIABLES: {:?}\n\
+             Set realistic values for every variable listed above.",
+            prompt.variables
+        )
+    };
 
-                format!(
-                    r#"You are a test-case engineer generating evaluation data for an LLM prompt.
+    let user_prompt = format!(
+        r#"You are a test-case engineer generating evaluation data for an LLM prompt.
 
 DOMAIN: {}
 EXPECTED OUTPUT FORMAT: {}
@@ -1137,7 +1291,8 @@ PROMPT TEMPLATE:
 EVALUATION RUBRIC:
 {}{}
 
-Generate {} test cases that comprehensively exercise this prompt.
+Generate EXACTLY {} test cases that comprehensively exercise this prompt. The
+"test_cases" array MUST contain exactly that many items — do not return fewer.
 
 DIFFICULTY DISTRIBUTION:
 - ~30% easy   (straightforward happy-path)
@@ -1155,71 +1310,80 @@ Each case must:
    out_of_scope, boundary_value, adversarial, multi_part, etc.)
 4. Choose tags that identify the rubric dimension being probed and the difficulty
 
-Return ONLY a valid JSON array (no markdown fences, no prose):
-[{{
-  "variable_values": {{{{}}}},
-  "expected_answer": "...",
-  "difficulty": "easy|medium|hard|adversarial",
-  "case_type": "...",
-  "tags": ["dimension_tested:criterion_name", "difficulty:level"],
-  "reasoning": "one sentence: what failure mode or success criterion this tests"
-}}]"#,
-                    domain,
-                    output_format,
-                    prompt.template,
-                    variable_instruction,
-                    rubric_text,
-                    kb_section,
-                    count,
-                )
-            }
-        }
+Return the cases under a "test_cases" array."#,
+        domain,
+        output_format,
+        prompt.template,
+        variable_instruction,
+        rubric_text,
+        kb_section,
+        count,
+    );
+
+    // Pin variable_values to explicit string properties. Structured outputs can't
+    // express an object with arbitrary keys (additionalProperties:false + no
+    // properties = empty object only), but we know the exact variable names here —
+    // enumerating them constrains the model to fill every one and nothing else.
+    let var_names: Vec<&str> = if prompt.variables.is_empty() {
+        vec!["QUESTION"]
+    } else {
+        prompt.variables.iter().map(String::as_str).collect()
     };
+    let var_props = Value::Object(
+        var_names
+            .iter()
+            .map(|name| (name.to_string(), json!({ "type": "string" })))
+            .collect(),
+    );
+    let var_required = Value::Array(var_names.iter().map(|n| Value::String(n.to_string())).collect());
 
-    let mut parsed: Option<Value> = None;
-
-    // Two-pass: normal prompt first, then a stripped-down retry on JSON parse failure.
-    for retry in [false, true] {
-        let text = llm
-            .send_text(llm.model_sonnet(), 4000, &make_prompt(retry), None)
-            .await?;
-
-        let cleaned = text
-            .trim()
-            .trim_start_matches("```json")
-            .trim_start_matches("```")
-            .trim_end_matches("```")
-            .trim();
-
-        // Try full parse first; if that fails, try extracting the JSON array substring.
-        let try_parsed = serde_json::from_str::<Value>(cleaned).or_else(|_| {
-            let start = cleaned.find('[').ok_or_else(|| {
-                serde_json::Error::io(std::io::Error::new(
-                    std::io::ErrorKind::InvalidData,
-                    "no array start",
-                ))
-            })?;
-            let end = cleaned.rfind(']').ok_or_else(|| {
-                serde_json::Error::io(std::io::Error::new(
-                    std::io::ErrorKind::InvalidData,
-                    "no array end",
-                ))
-            })?;
-            serde_json::from_str(&cleaned[start..=end])
-        });
-
-        match try_parsed {
-            Ok(v) => {
-                parsed = Some(v);
-                break;
+    let schema = json!({
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+            "test_cases": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "variable_values": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": var_props,
+                            "required": var_required
+                        },
+                        "expected_answer": { "type": "string" },
+                        "difficulty": {
+                            "type": "string",
+                            "enum": ["easy", "medium", "hard", "adversarial"]
+                        },
+                        "case_type": { "type": "string" },
+                        "tags": { "type": "array", "items": { "type": "string" } },
+                        "reasoning": { "type": "string" }
+                    },
+                    "required": [
+                        "variable_values", "expected_answer", "difficulty",
+                        "case_type", "tags", "reasoning"
+                    ]
+                }
             }
-            Err(e) => {
-                eprintln!("generate_test_cases parse error (retry={}): {}", retry, e);
-            }
-        }
-    }
+        },
+        "required": ["test_cases"]
+    });
 
-    let parsed = parsed.ok_or(StatusCode::BAD_GATEWAY)?;
+    // Schema-constrained output → guaranteed valid JSON in the test_cases shape, so
+    // the old two-pass retry + fence-stripping + substring extraction is no longer
+    // needed. Note: structured outputs can't enforce array length (no minItems),
+    // so the prompt asks for `count` and the .take(count) below still caps it.
+    let text = llm
+        .send_structured(llm.model_sonnet(), 4000, &user_prompt, None, schema)
+        .await?;
+
+    let parsed: Value = serde_json::from_str(&text).map_err(|e| {
+        eprintln!("generate_test_cases JSON parse error: {e}\nraw={text}");
+        StatusCode::BAD_GATEWAY
+    })?;
     let arr = if let Some(a) = parsed.as_array() {
         a
     } else if let Some(a) = parsed.get("test_cases").and_then(|v| v.as_array()) {
@@ -1325,7 +1489,6 @@ mod tests {
         }
     }
 
-
     #[test]
     fn parse_judge_output_valid() {
         let json = json!({
@@ -1339,6 +1502,9 @@ mod tests {
         let output = parse_judge_output(&json, false);
         assert_eq!(output.dimension_scores.len(), 1);
         assert_eq!(output.dimension_scores["tone"].score, 8.0);
-        assert_eq!(output.dimension_scores["tone"].reasoning, "The response has a professional and friendly tone.");
+        assert_eq!(
+            output.dimension_scores["tone"].reasoning,
+            "The response has a professional and friendly tone."
+        );
     }
 }
