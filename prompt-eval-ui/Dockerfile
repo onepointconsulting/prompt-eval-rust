@@ -2,17 +2,20 @@ FROM oven/bun:1 AS builder
 
 WORKDIR /app
 
-COPY package.json bun.lock ./
+COPY prompt-eval-ui/package.json prompt-eval-ui/bun.lock ./
 RUN bun install --frozen-lockfile
 
-COPY . .
+COPY prompt-eval-ui/ .
 
-ARG NEXT_PUBLIC_API_BASE_URL=http://localhost:3001/api
+ARG NEXT_PUBLIC_API_BASE_URL=http://prompt-backend.onepointltd.ai/api
 ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
 
 RUN bun run build
 
 FROM oven/bun:1 AS runner
+
+COPY docker/run_prompt_eval_ui.sh /docker/run.sh
+RUN sed -i 's/\r$//' /docker/run.sh && chmod +x /docker/run.sh
 
 WORKDIR /app
 
@@ -26,4 +29,4 @@ COPY --from=builder /app/public ./public
 
 EXPOSE 3000
 
-CMD ["bun", "server.js"]
+CMD ["/docker/run.sh"]

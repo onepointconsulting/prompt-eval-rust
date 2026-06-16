@@ -12,6 +12,9 @@ RUN cargo build --release
 
 FROM debian:bookworm-slim AS runner
 
+COPY docker/run_prompt_eval_rust.sh /docker/run.sh
+RUN sed -i 's/\r$//' /docker/run.sh && chmod +x /docker/run.sh
+
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates \
     && rm -rf /var/lib/apt/lists/*
@@ -23,4 +26,4 @@ ENV BOOTSTRAP_SCRIPT=/var/sql/db-queries.sql
 
 EXPOSE 3001
 
-CMD ["prompt_eval"]
+CMD ["/docker/run.sh"]

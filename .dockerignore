@@ -1,5 +1,7 @@
 target/
-prompt-eval-ui/
+prompt-eval-ui/node_modules/
+prompt-eval-ui/.next/
+prompt-eval-ui/out/
 .env
 .git/
 .gitignore
