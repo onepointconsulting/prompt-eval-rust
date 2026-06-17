@@ -12,3 +12,5 @@ docs/queries/*
 !docs/queries/db-queries.sql
 part-1.png
 core-flow.png
+
+env.portainer
