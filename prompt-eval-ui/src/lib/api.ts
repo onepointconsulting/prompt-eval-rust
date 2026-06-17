@@ -12,11 +12,26 @@ import type {
   TrendPoint,
 } from "@/lib/types";
 
+import { getSession } from "next-auth/react";
+
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:3001/api";
 
+// Pull the backend JWT off the NextAuth session and present it as a Bearer
+// token. The Rust API authenticates every request from this header; without it
+// the backend returns 401 and these calls throw.
+async function authHeaders(): Promise<Record<string, string>> {
+  const session = (await getSession()) as { accessToken?: string } | null;
+  return session?.accessToken
+    ? { Authorization: `Bearer ${session.accessToken}` }
+    : {};
+}
+
 async function request<T>(path: string): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, { cache: "no-store" });
+  const res = await fetch(`${API_BASE}${path}`, {
+    cache: "no-store",
+    headers: await authHeaders(),
+  });
   if (!res.ok) {
     throw new Error(`API ${res.status}: ${res.statusText}`);
   }
@@ -31,7 +46,7 @@ async function requestWithBody<T>(
   const res = await fetch(`${API_BASE}${path}`, {
     method,
     cache: "no-store",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...(await authHeaders()) },
     body: body ? JSON.stringify(body) : undefined,
   });
   if (!res.ok) {
@@ -210,10 +225,14 @@ export const api = {
 
   getPerformanceTrend: async (): Promise<TrendPoint[]> => {
     const evals = await request<ApiEvaluation[]>("/evaluations");
-    return evals.slice(0, 7).map((e, i) => ({
-      date: e.created_at?.slice(0, 10) || `Run ${i + 1}`,
-      score: e.average_score,
-    }));
+    return evals
+      .slice()
+      .sort((a, b) => (a.created_at ?? "").localeCompare(b.created_at ?? ""))
+      .slice(-7)
+      .map((e, i) => ({
+        date: e.created_at?.slice(0, 10) || `Run ${i + 1}`,
+        score: e.average_score,
+      }));
   },
 
   getRecentEvals: async (): Promise<EvalSummary[]> => {

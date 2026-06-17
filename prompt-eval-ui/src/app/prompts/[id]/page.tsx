@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { api } from "@/lib/api";
 import type { RubricCriterion } from "@/lib/types";
+import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -67,9 +68,6 @@ export default function PromptDetailPage() {
     if (!trimmedTemplate) { toast.error("Template is required."); return; }
     try {
       setSaving(true);
-      // Drop incomplete rows (a blank "Add criterion" the user never filled in),
-      // and send the array even when empty so deletions/clears actually persist
-      // (the backend keeps the existing rubric only when the field is omitted).
       const cleanedRubric = rubric
         .map((r) => ({
           name: r.name.trim(),
@@ -182,11 +180,15 @@ export default function PromptDetailPage() {
           </div>
 
           {/* Knowledge base context */}
-          <div className="rounded-xl border bg-white p-4">
+          <div className="rounded-xl border bg-red-300/50 p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold text-slate-900">Knowledge base context</p>
-                <p className="mt-0.5 text-xs text-slate-500">
+                {/* icon  */}
+                <div className="flex items-center gap-2">
+                  <InformationCircleIcon className="w-4 h-4 text-slate-900" />
+                  <p className="text-sm font-semibold text-slate-900">Knowledge base context</p>
+                </div>
+                <p className="mt-0.5 text-xs text-slate-900">
                   Fetch relevant context from the LightRAG engine before each evaluation response.
                 </p>
               </div>
@@ -202,7 +204,7 @@ export default function PromptDetailPage() {
             </div>
             {useContext && (
               <div className="mt-3">
-                <label className="mb-1 block text-xs font-semibold text-slate-600">
+                <label className="mb-1 block text-xs font-semibold text-slate-900">
                   Project name
                 </label>
                 <Input
@@ -211,7 +213,7 @@ export default function PromptDetailPage() {
                   onChange={(e) => setContextProject(e.target.value)}
                   className="max-w-sm"
                 />
-                <p className="mt-1 text-xs text-slate-400">
+                <p className="mt-1 text-xs text-slate-900">
                   The LightRAG project to query. Must match a configured project on the context engine.
                 </p>
               </div>
@@ -235,9 +237,8 @@ export default function PromptDetailPage() {
                   const ok = totalPct === 100;
                   return (
                     <span
-                      className={`whitespace-nowrap text-xs font-medium ${
-                        ok ? "text-slate-500" : "text-amber-600"
-                      }`}
+                      className={`whitespace-nowrap text-xs font-medium ${ok ? "text-slate-500" : "text-amber-600"
+                        }`}
                     >
                       Total: {totalPct}%{ok ? "" : " — should be 100%"}
                     </span>

@@ -1,3 +1,4 @@
+use crate::auth::AuthUser;
 use crate::llm::anthropic_client::AnthropicClient;
 use crate::models::{
     CreatePromptRequest, DeleteResponse, GeneratePromptRequest, GeneratePromptResponse, Prompt,
@@ -43,16 +44,21 @@ fn default_rubric() -> Vec<RubricCriterion> {
 // ── Read handlers (DB only) ───────────────────────────────────────────────────
 
 // GET /api/prompts
-pub async fn list(State(pool): State<PgPool>) -> Result<Json<Vec<Prompt>>, StatusCode> {
+pub async fn list(
+    State(pool): State<PgPool>,
+    user: AuthUser,
+) -> Result<Json<Vec<Prompt>>, StatusCode> {
     let prompts = sqlx::query_as::<_, Prompt>(
         r#"
         SELECT id, name, template, variables, is_templated, status, runs,
                updated_at, average_score, domain, rubric, expected_output_format,
                use_context, context_project
         FROM prompts
+        WHERE user_id = $1
         ORDER BY updated_at DESC
         "#,
     )
+    .bind(&user.user_id)
     .fetch_all(&pool)
     .await
     .map_err(|e| {
@@ -66,6 +72,7 @@ pub async fn list(State(pool): State<PgPool>) -> Result<Json<Vec<Prompt>>, Statu
 // GET /api/prompts/:id
 pub async fn get(
     State(pool): State<PgPool>,
+    user: AuthUser,
     Path(id): Path<String>,
 ) -> Result<Json<Prompt>, StatusCode> {
     let prompt = sqlx::query_as::<_, Prompt>(
@@ -73,10 +80,11 @@ pub async fn get(
         SELECT id, name, template, variables, is_templated, status, runs,
                updated_at, average_score, domain, rubric, expected_output_format,
                use_context, context_project
-        FROM prompts WHERE id = $1
+        FROM prompts WHERE id = $1 AND user_id = $2
         "#,
     )
     .bind(&id)
+    .bind(&user.user_id)
     .fetch_optional(&pool)
     .await
     .map_err(|e| {
@@ -93,6 +101,7 @@ pub async fn get(
 // POST /api/prompts
 pub async fn create(
     State(pool): State<PgPool>,
+    user: AuthUser,
     Json(payload): Json<CreatePromptRequest>,
 ) -> Result<(StatusCode, Json<Prompt>), StatusCode> {
     println!("➕ Creating prompt: {}", payload.name);
@@ -111,8 +120,8 @@ pub async fn create(
         INSERT INTO prompts
             (id, name, template, variables, is_templated, status, runs,
              updated_at, average_score, domain, rubric, expected_output_format,
-             use_context, context_project)
-        VALUES ($1, $2, $3, $4, $5, $6, 0, $7, NULL, $8, $9, $10, $11, $12)
+             use_context, context_project, user_id)
+        VALUES ($1, $2, $3, $4, $5, $6, 0, $7, NULL, $8, $9, $10, $11, $12, $13)
         RETURNING id, name, template, variables, is_templated, status, runs,
                   updated_at, average_score, domain, rubric, expected_output_format,
                   use_context, context_project
@@ -130,6 +139,7 @@ pub async fn create(
     .bind(&payload.expected_output_format)
     .bind(use_context)
     .bind(&payload.context_project)
+    .bind(&user.user_id)
     .fetch_one(&pool)
     .await
     .map_err(|e| {
@@ -143,6 +153,7 @@ pub async fn create(
 // PUT /api/prompts/:id
 pub async fn update(
     State(pool): State<PgPool>,
+    user: AuthUser,
     Path(id): Path<String>,
     Json(payload): Json<UpdatePromptRequest>,
 ) -> Result<Json<Prompt>, StatusCode> {
@@ -153,10 +164,11 @@ pub async fn update(
         SELECT id, name, template, variables, is_templated, status, runs,
                updated_at, average_score, domain, rubric, expected_output_format,
                use_context, context_project
-        FROM prompts WHERE id = $1
+        FROM prompts WHERE id = $1 AND user_id = $2
         "#,
     )
     .bind(&id)
+    .bind(&user.user_id)
     .fetch_optional(&pool)
     .await
     .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
@@ -187,7 +199,7 @@ pub async fn update(
         SET name = $1, template = $2, variables = $3, is_templated = $4,
             status = $5, updated_at = $6, domain = $7, rubric = $8,
             expected_output_format = $9, use_context = $10, context_project = $11
-        WHERE id = $12
+        WHERE id = $12 AND user_id = $13
         RETURNING id, name, template, variables, is_templated, status, runs,
                   updated_at, average_score, domain, rubric, expected_output_format,
                   use_context, context_project
@@ -205,6 +217,7 @@ pub async fn update(
     .bind(new_use_context)
     .bind(new_context_project)
     .bind(&id)
+    .bind(&user.user_id)
     .fetch_one(&pool)
     .await
     .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
@@ -215,12 +228,14 @@ pub async fn update(
 // DELETE /api/prompts/:id
 pub async fn delete(
     State(pool): State<PgPool>,
+    user: AuthUser,
     Path(id): Path<String>,
 ) -> Result<Json<DeleteResponse>, StatusCode> {
     println!("🗑️  Deleting prompt: {}", id);
 
-    let result = sqlx::query("DELETE FROM prompts WHERE id = $1")
+    let result = sqlx::query("DELETE FROM prompts WHERE id = $1 AND user_id = $2")
         .bind(&id)
+        .bind(&user.user_id)
         .execute(&pool)
         .await
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
@@ -242,6 +257,7 @@ pub async fn delete(
 /// The frontend should persist the response via POST /api/prompts.
 pub async fn generate_prompt(
     State(llm): State<AnthropicClient>,
+    _user: AuthUser,
     Json(payload): Json<GeneratePromptRequest>,
 ) -> Result<Json<GeneratePromptResponse>, StatusCode> {
     let system = "You are an expert prompt engineer. \
@@ -279,8 +295,11 @@ Requirements:
             existing
         );
 
+        // 2000, not 1000: a 3–5 criterion rubric with detailed descriptions can
+        // exceed 1000 tokens, get truncated, fail to parse, and silently fall back
+        // to the generic default rubric.
         let text = llm
-            .send_text(llm.model_sonnet(), 1000, &extract_prompt, Some(system))
+            .send_text(llm.model_sonnet(), 2000, &extract_prompt, Some(system))
             .await
             .unwrap_or_default();
 
@@ -372,10 +391,16 @@ Requirements:
         description
     );
 
+    // Surface a failed generation instead of swallowing it. Previously a failed
+    // call became an empty string via `unwrap_or_default()`, which parsed to
+    // nothing and silently triggered the broken fallback below.
+    //
+    // max_tokens is generous (8000): the JSON wraps the full template plus every
+    // variable description, the rubric, and metadata. At 2000 a good generation
+    // was truncated mid-string, failing to parse and looking like a failure.
     let text = llm
-        .send_text(llm.model_sonnet(), 2000, &user_prompt, Some(system))
-        .await
-        .unwrap_or_default();
+        .send_text(llm.model_sonnet(), 8000, &user_prompt, Some(system))
+        .await?;
 
     let cleaned = text
         .trim()
@@ -398,22 +423,17 @@ Requirements:
         .to_string();
 
     if template.is_empty() {
-        // Graceful fallback — never return an error for generation failures.
-        let fallback = format!(
-            "You are a helpful assistant.\n\
-             Context: {{{{CONTEXT}}}}\n\
-             User question: {{{{QUESTION}}}}\n\
-             Task: {}",
-            description
+        // The model returned no usable template (empty or non-JSON response).
+        // Surface it so the client can prompt a retry — never synthesise a
+        // fallback. The old fallback wrapped the raw description as
+        // "Task: <description>" with {{QUESTION}}/{{CONTEXT}} ahead of it, which
+        // produced structurally broken prompts the eval model echoed verbatim
+        // (scored 1.0). A clear failure is far better than a silently bad prompt.
+        eprintln!(
+            "❌ generate_prompt: model returned no usable template; raw={}",
+            cleaned
         );
-        let variables = extract_variables(&fallback);
-        return Ok(Json(GeneratePromptResponse {
-            template: fallback,
-            variables,
-            domain: "general".to_string(),
-            rubric: default_rubric(),
-            expected_output_format: "Clear, accurate, and helpful response.".to_string(),
-        }));
+        return Err(StatusCode::BAD_GATEWAY);
     }
 
     // Use variables extracted from the template text as ground truth

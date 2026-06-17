@@ -1,5 +1,7 @@
 pub mod app_state;
+pub mod auth;
 pub mod bootstrap;
+pub mod db;
 pub mod handlers;
 pub mod llm;
 pub mod models;

@@ -7,6 +7,8 @@ use axum::{
 
 pub fn create_router(state: AppState) -> Router {
     Router::new()
+        // Auth (public — no AuthUser extractor)
+        .route("/api/auth/login", post(handlers::auth::login))
         // Evaluations
         .route("/api/evaluate", post(handlers::evaluations::run_evaluation))
         .route(
