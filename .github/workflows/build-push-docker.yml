@@ -3,7 +3,7 @@ name: Build and push Docker images for Prompt Eval. It builds three Docker image
 on:
   push:
     branches:
-      - deployment
+      - deployment-1
 
 env:
   IMAGE_NAME_BACKEND: prompt-eval/prompt-eval-rust
