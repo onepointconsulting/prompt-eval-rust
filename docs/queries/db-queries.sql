@@ -179,6 +179,16 @@ CREATE TABLE IF NOT EXISTS evaluation_details (
 );
 
 
+CREATE TABLE IF NOT EXISTS users (
+    id            VARCHAR(64)  PRIMARY KEY,            -- format: u_{unix_micros}
+    email         VARCHAR(320) UNIQUE NOT NULL,
+    password_hash TEXT         NOT NULL,               -- argon2 PHC string
+    name          VARCHAR(255),
+    created_at    TIMESTAMPTZ  DEFAULT NOW()
+);
+
+
+
 -- -----------------------------------------------------------------------------
 -- Indexes
 -- -----------------------------------------------------------------------------
@@ -236,3 +246,13 @@ CREATE INDEX IF NOT EXISTS idx_eval_details_run_prompt ON evaluation_details(run
 ALTER TABLE prompts
     ADD COLUMN IF NOT EXISTS use_context      BOOLEAN      NOT NULL DEFAULT FALSE,
     ADD COLUMN IF NOT EXISTS context_project  VARCHAR(100);
+
+
+-- users: add user_id to datasets, prompts, and evaluation_runs
+ALTER TABLE datasets        ADD COLUMN IF NOT EXISTS user_id VARCHAR(64) REFERENCES users(id);
+ALTER TABLE prompts         ADD COLUMN IF NOT EXISTS user_id VARCHAR(64) REFERENCES users(id);
+ALTER TABLE evaluation_runs ADD COLUMN IF NOT EXISTS user_id VARCHAR(64) REFERENCES users(id);
+
+CREATE INDEX IF NOT EXISTS idx_datasets_user  ON datasets(user_id);
+CREATE INDEX IF NOT EXISTS idx_prompts_user   ON prompts(user_id);
+CREATE INDEX IF NOT EXISTS idx_eval_runs_user ON evaluation_runs(user_id);
