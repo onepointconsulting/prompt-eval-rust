@@ -18,6 +18,7 @@ import {
   DocumentTextIcon,
   RocketLaunchIcon,
 } from "@heroicons/react/24/outline";
+import { useSession } from "next-auth/react";
 
 const emptyStats: DashboardStats = {
   totalEvals: 0,
@@ -34,7 +35,8 @@ export default function Home() {
   const trend = useApiData(api.getPerformanceTrend, emptyTrend, "Performance trend");
   const recent = useApiData(api.getRecentEvals, emptyEvals, "Recent evaluations");
   const topPrompts = useApiData(api.getTopPrompts, emptyPrompts, "Top prompts");
-
+  const session = useSession();
+  console.log("session: ", session);
   return (
     <PageContainer
       title="Dashboard"

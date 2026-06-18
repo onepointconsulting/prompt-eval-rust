@@ -2,6 +2,7 @@
 
 import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 type AppShellProps = {
@@ -9,7 +10,13 @@ type AppShellProps = {
 };
 
 export function AppShell({ children }: AppShellProps) {
+  const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  // The login page renders full-screen, without the app chrome (header/sidebar).
+  if (pathname === "/login") {
+    return <>{children}</>;
+  }
 
   return (
     <div className="min-h-screen bg-slate-50">

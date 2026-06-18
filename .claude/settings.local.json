@@ -9,7 +9,8 @@
       "Bash(psql \"postgresql://postgres:root@localhost:5432/prompt_eval\" -c \"SELECT id, name, LEFT\\(template, 200\\) FROM prompts WHERE id IN \\('p_1778753476', 'p_1778772627'\\);\")",
       "Bash(psql *)",
       "Bash(cargo build *)",
-      "Bash(cargo test *)"
+      "Bash(cargo test *)",
+      "Skill(claude-api)"
     ]
   }
 }

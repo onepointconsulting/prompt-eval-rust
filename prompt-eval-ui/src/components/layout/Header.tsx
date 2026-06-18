@@ -12,6 +12,7 @@ import {
   PlayIcon,
   Squares2X2Icon,
 } from "@heroicons/react/24/outline";
+import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -31,6 +32,14 @@ type HeaderProps = {
 
 export function Header({ onToggleSidebar }: HeaderProps) {
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const email = session?.user?.email ?? "";
+  const displayName = email
+    .split("@")[0]
+    .replace(/[._-]+/g, " ")
+    .replace(/\b\w/g, c => c.toUpperCase());
+
+  const initials = email ? email.slice(0, 2).toUpperCase() : "?";
 
   return (
     <header className="fixed inset-x-0 top-0 z-40 h-16 border-b bg-white/95 backdrop-blur">
@@ -69,15 +78,23 @@ export function Header({ onToggleSidebar }: HeaderProps) {
           })}
         </nav>
 
-        <div className="flex items-center gap-2">
-          <div className="hidden text-right sm:block">
-            <p className="text-sm font-semibold text-slate-900">Jafari</p>
-            <p className="text-xs text-slate-500">Admin</p>
+        {email && (
+          <div className="flex items-center gap-3">
+            <div className="hidden text-right sm:block">
+              <p className="text-sm font-semibold text-slate-900">{displayName}</p>
+            </div>
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-900 text-sm font-semibold text-white">
+              {initials}
+            </span>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => signOut({ callbackUrl: "/login" })}
+            >
+              Sign out
+            </Button>
           </div>
-          <button className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-900 text-sm font-semibold text-white">
-            JM
-          </button>
-        </div>
+        )}
       </div>
     </header>
   );

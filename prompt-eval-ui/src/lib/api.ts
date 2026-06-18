@@ -12,11 +12,26 @@ import type {
   TrendPoint,
 } from "@/lib/types";
 
+import { getSession } from "next-auth/react";
+
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:3001/api";
 
+// Pull the backend JWT off the NextAuth session and present it as a Bearer
+// token. The Rust API authenticates every request from this header; without it
+// the backend returns 401 and these calls throw.
+async function authHeaders(): Promise<Record<string, string>> {
+  const session = (await getSession()) as { accessToken?: string } | null;
+  return session?.accessToken
+    ? { Authorization: `Bearer ${session.accessToken}` }
+    : {};
+}
+
 async function request<T>(path: string): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, { cache: "no-store" });
+  const res = await fetch(`${API_BASE}${path}`, {
+    cache: "no-store",
+    headers: await authHeaders(),
+  });
   if (!res.ok) {
     throw new Error(`API ${res.status}: ${res.statusText}`);
   }
@@ -31,7 +46,7 @@ async function requestWithBody<T>(
   const res = await fetch(`${API_BASE}${path}`, {
     method,
     cache: "no-store",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...(await authHeaders()) },
     body: body ? JSON.stringify(body) : undefined,
   });
   if (!res.ok) {
@@ -116,6 +131,7 @@ type ApiDimensionScore = {
 
 type ApiEvaluation = {
   id: string;
+  status: string;
   average_score: number;
   dataset: string;
   prompts: string[];
@@ -209,10 +225,14 @@ export const api = {
 
   getPerformanceTrend: async (): Promise<TrendPoint[]> => {
     const evals = await request<ApiEvaluation[]>("/evaluations");
-    return evals.slice(0, 7).map((e, i) => ({
-      date: e.created_at?.slice(0, 10) || `Run ${i + 1}`,
-      score: e.average_score,
-    }));
+    return evals
+      .slice()
+      .sort((a, b) => (a.created_at ?? "").localeCompare(b.created_at ?? ""))
+      .slice(-7)
+      .map((e, i) => ({
+        date: e.created_at?.slice(0, 10) || `Run ${i + 1}`,
+        score: e.average_score,
+      }));
   },
 
   getRecentEvals: async (): Promise<EvalSummary[]> => {
@@ -367,6 +387,29 @@ export const api = {
     dataset_path?: string;
     prompt_ids: string[];
   }): Promise<ApiEvaluation> => requestWithBody("/evaluate", "POST", payload),
+
+  // POST /evaluate now returns immediately with status "running" and kicks the work
+  // off in a background task. Poll GET /evaluations/:id until it reaches a terminal
+  // status, resolving with the completed run or throwing on failure/timeout.
+  waitForEvaluation: async (
+    id: string,
+    opts?: { intervalMs?: number; timeoutMs?: number }
+  ): Promise<ApiEvaluationWithDetails> => {
+    const interval = opts?.intervalMs ?? 2000;
+    const timeoutMs = opts?.timeoutMs ?? 15 * 60 * 1000;
+    const startedAt = Date.now();
+    for (;;) {
+      const run = await request<ApiEvaluationWithDetails>(`/evaluations/${id}`);
+      if (run.status === "completed") return run;
+      if (run.status === "failed") {
+        throw new Error("Evaluation failed — check the server logs.");
+      }
+      if (Date.now() - startedAt > timeoutMs) {
+        throw new Error("Evaluation timed out while waiting for results.");
+      }
+      await new Promise((resolve) => setTimeout(resolve, interval));
+    }
+  },
 
   getHistory: async () => api.getRecentEvals(),
   getResultsList: async () => api.getRecentEvals(),
