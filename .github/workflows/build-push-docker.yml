@@ -11,7 +11,7 @@ env:
   IMAGE_NAME_NGINX: prompt-eval/prompt-eval-nginx
   AWS_REGION: eu-west-2
   ECR_REGISTRY: 303872128380.dkr.ecr.eu-west-2.amazonaws.com
-  NEXT_PUBLIC_API_BASE_URL: /rust-api
+  NEXT_PUBLIC_API_BASE_URL: /api
 
 jobs:
   build-and-push-prompt-eval-rust:

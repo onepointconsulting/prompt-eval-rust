@@ -21,7 +21,7 @@ async function verifyCredentials(
   password: string
 ): Promise<AuthorizedUser | null> {
   // Runs server-side (inside the ui container), so it needs an absolute,
-  // container-reachable URL — not the browser's relative /rust-api path.
+  // container-reachable URL — not the browser's relative /api path.
   const base =
     process.env.INTERNAL_API_BASE_URL ??
     process.env.NEXT_PUBLIC_API_BASE_URL ??
