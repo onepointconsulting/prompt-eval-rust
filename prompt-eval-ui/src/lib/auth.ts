@@ -25,13 +25,16 @@ async function verifyCredentials(
   const base =
     process.env.INTERNAL_API_BASE_URL ??
     process.env.NEXT_PUBLIC_API_BASE_URL ??
-    "http://127.0.0.1:3001/api";
+    "http://127.0.0.1:3001/rust-api";
   try {
-    const res = await fetch(`${base}/auth/login`, {
+    const url = `${base}/auth/login`
+    console.info("fetching from backend: ", url);
+    const res = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
+    console.info("response from backend: ", res);
     if (!res.ok) return null;
     const data = (await res.json()) as {
       token: string;
