@@ -15,7 +15,7 @@ import type {
 import { getSession } from "next-auth/react";
 
 const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:3001/api";
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:3001/rust-api";
 
 // Pull the backend JWT off the NextAuth session and present it as a Bearer
 // token. The Rust API authenticates every request from this header; without it
