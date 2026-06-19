@@ -5,54 +5,56 @@ use axum::{
     Router,
 };
 
+const API_BASE_URL: &str = "/rust-api";
+
 pub fn create_router(state: AppState) -> Router {
     Router::new()
         // Auth (public — no AuthUser extractor)
-        .route("/api/auth/login", post(handlers::auth::login))
+        .route(format!("{API_BASE_URL}/auth/login").as_str(), post(handlers::auth::login))
         // Evaluations
-        .route("/api/evaluate", post(handlers::evaluations::run_evaluation))
+        .route(format!("{API_BASE_URL}/evaluate").as_str(), post(handlers::evaluations::run_evaluation))
         .route(
-            "/api/evaluations",
+            format!("{API_BASE_URL}/evaluations").as_str(),
             get(handlers::evaluations::list_evaluations),
         )
         .route(
-            "/api/evaluations/:id",
+            format!("{API_BASE_URL}/evaluations/:id").as_str(),
             get(handlers::evaluations::get_evaluation),
         )
         // Prompts
-        .route("/api/prompts", get(handlers::prompts::list))
-        .route("/api/prompts", post(handlers::prompts::create))
+        .route(format!("{API_BASE_URL}/prompts").as_str(), get(handlers::prompts::list))
+        .route(format!("{API_BASE_URL}/prompts").as_str(), post(handlers::prompts::create))
         .route(
-            "/api/prompts/generate",
+            format!("{API_BASE_URL}/prompts/generate").as_str(),
             post(handlers::prompts::generate_prompt),
         )
         .route(
-            "/api/prompts/:id",
+            format!("{API_BASE_URL}/prompts/:id").as_str(),
             get(handlers::prompts::get)
                 .put(handlers::prompts::update)
                 .delete(handlers::prompts::delete),
         )
         .route(
-            "/api/questions/generate",
+            format!("{API_BASE_URL}/questions/generate").as_str(),
             post(handlers::evaluations::generate_test_cases),
         )
         // Datasets
         .route(
-            "/api/datasets",
+            format!("{API_BASE_URL}/datasets").as_str(),
             get(handlers::datasets::list).post(handlers::datasets::create),
         )
-        .route("/api/datasets/upload", post(handlers::datasets::upload))
+        .route(format!("{API_BASE_URL}/datasets/upload").as_str(), post(handlers::datasets::upload))
         .route(
-            "/api/datasets/:id",
+            format!("{API_BASE_URL}/datasets/:id").as_str(),
             get(handlers::datasets::get)
                 .put(handlers::datasets::update)
                 .delete(handlers::datasets::delete),
         )
         .route(
-            "/api/datasets/:id/questions",
+            format!("{API_BASE_URL}/datasets/:id/questions").as_str(),
             get(handlers::datasets::get_questions).post(handlers::datasets::add_question),
         )
         // Stats
-        .route("/api/stats", get(handlers::stats::get))
+        .route(format!("{API_BASE_URL}/stats").as_str(), get(handlers::stats::get))
         .with_state(state)
 }
