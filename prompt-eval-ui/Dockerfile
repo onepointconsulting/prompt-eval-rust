@@ -7,7 +7,7 @@ RUN bun install --frozen-lockfile
 
 COPY prompt-eval-ui/ .
 
-ARG NEXT_PUBLIC_API_BASE_URL=http://prompt-backend.onepointltd.ai/api
+ARG NEXT_PUBLIC_API_BASE_URL=http://prompt-backend.onepointltd.ai/rust-api
 ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
 
 RUN bun run build
