@@ -256,3 +256,7 @@ ALTER TABLE evaluation_runs ADD COLUMN IF NOT EXISTS user_id VARCHAR(64) REFEREN
 CREATE INDEX IF NOT EXISTS idx_datasets_user  ON datasets(user_id);
 CREATE INDEX IF NOT EXISTS idx_prompts_user   ON prompts(user_id);
 CREATE INDEX IF NOT EXISTS idx_eval_runs_user ON evaluation_runs(user_id);
+
+INSERT INTO public.users(
+	id, email, password_hash, name, created_at)
+	VALUES ('u_1781855602534412', 'gil.fernandes@onepointltd.com', '$argon2id$v=19$m=19456,t=2,p=1$Y35/MJV4BexNSJPpxjjA0g$PI2bQ3Kf07U40m3eDdI2DXqL2D1XOXQc1D+j/RnxswU', 'Gil', now());
