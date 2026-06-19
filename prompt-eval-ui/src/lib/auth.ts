@@ -20,8 +20,12 @@ async function verifyCredentials(
   email: string,
   password: string
 ): Promise<AuthorizedUser | null> {
+  // Runs server-side (inside the ui container), so it needs an absolute,
+  // container-reachable URL — not the browser's relative /rust-api path.
   const base =
-    process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:3001/api";
+    process.env.INTERNAL_API_BASE_URL ??
+    process.env.NEXT_PUBLIC_API_BASE_URL ??
+    "http://127.0.0.1:3001/api";
   try {
     const res = await fetch(`${base}/auth/login`, {
       method: "POST",
